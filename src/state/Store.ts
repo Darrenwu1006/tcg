@@ -108,27 +108,8 @@ export class Store<T extends AppState> {
   }
 
   addLog(message: string) {
-    const timestamp = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-    const newLog = `[${timestamp}] ${message}`;
-    const newLogs = [newLog, ...(this.state.logs || [])].slice(0, 50); // Keep last 50 logs
-
-    // Don't add log updates to history to avoid undoing logs themselves (optional choice,
-    // but usually we want logs to persist or revert with state.
-    // If we want undo to revert logs, we should use setState.
-    // Let's use setState so undo reverts the log too, which makes sense for "undoing an action".)
-    this.setState({ logs: newLogs } as Partial<T>, false); // False: don't add log-only updates to history?
-    // Actually, if we undo an action, we probably want the log to disappear too?
-    // Or do we want a log saying "Undid action"?
-    // User asked for "Back" button to go to previous action.
-    // So if I move a card, it logs "Moved card". If I click Back, I expect to be back before the move.
-    // So the log "Moved card" should be gone.
-    // However, addLog is usually called WITH an action.
-    // Let's make addLog just a helper that returns the new logs array, or updates state without history if called standalone.
-    // But typically we'll call setState({ ...changes, logs: [...logs, msg] }).
+    const newLogs = this.getNewLogs(message);
+    this.setState({ logs: newLogs } as Partial<T>, false);
   }
 
   // Helper to get new logs array with a message
@@ -151,5 +132,29 @@ export class Store<T extends AppState> {
 
   private notify() {
     this.listeners.forEach((listener) => listener(this.state));
+  }
+
+  shuffleDeck(player: "me" | "opponent") {
+    const deck =
+      player === "me" ? [...this.state.me.deck] : [...this.state.opponent.deck];
+
+    // Fisher-Yates Shuffle
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+
+    const newState: Partial<T> = {};
+    if (player === "me") {
+      newState.me = { ...this.state.me, deck };
+    } else {
+      newState.opponent = { ...this.state.opponent, deck };
+    }
+
+    newState.logs = this.getNewLogs(
+      `${player === "me" ? "Me" : "Opponent"} shuffled the deck.`
+    );
+
+    this.setState(newState as Partial<T>);
   }
 }

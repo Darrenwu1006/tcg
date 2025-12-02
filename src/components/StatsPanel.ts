@@ -89,6 +89,8 @@ export class StatsPanel {
                 <button class="stat-btn" data-target="me" data-type="defense" data-op="plus">+</button>
             </div>
         </div>
+        </div>
+        <button class="btn reset-stats-btn" data-target="me" style="width: 100%; margin-top: 10px;">Reset Me</button>
       </div>
 
       <div class="stats-section op-stats">
@@ -113,9 +115,11 @@ export class StatsPanel {
                 <button class="stat-btn" data-target="op" data-type="defense" data-op="plus">+</button>
             </div>
         </div>
+        </div>
+        <button class="btn reset-stats-btn" data-target="op" style="width: 100%; margin-top: 10px;">Reset Opp</button>
       </div>
 
-      <button class="btn reset-stats-btn">Force Reset to 0</button>
+
 
       <div class="game-log-section">
         <h3>Game Log</h3>
@@ -146,11 +150,16 @@ export class StatsPanel {
 
       // Reset Button
       if (target.classList.contains("reset-stats-btn")) {
-        // Force total to 0 by setting manual stats to negative base stats
-        this.meManualAttack = -this.meBaseAttack;
-        this.meManualDefense = -this.meBaseDefense;
-        this.opManualAttack = -this.opBaseAttack;
-        this.opManualDefense = -this.opBaseDefense;
+        const player = target.getAttribute("data-target");
+        if (player === "me") {
+          this.meManualAttack = -this.meBaseAttack;
+          this.meManualDefense = -this.meBaseDefense;
+          this.store.addLog("Me reset their stats.");
+        } else if (player === "op") {
+          this.opManualAttack = -this.opBaseAttack;
+          this.opManualDefense = -this.opBaseDefense;
+          this.store.addLog("Opponent stats were reset.");
+        }
         this.updateAllDisplays();
         return;
       }

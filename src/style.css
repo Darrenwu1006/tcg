@@ -594,12 +594,12 @@ body {
 .stats-panel {
   background: #1a1a1a;
   border-right: 1px solid #333;
-  padding: 20px;
+  padding: 10px;
   color: #fff;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .stats-panel h2 {
@@ -621,8 +621,8 @@ body {
 
 .stat-placeholder {
   background: #252525;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 5px;
+  margin-bottom: 5px;
   border-radius: 4px;
 }
 
@@ -773,7 +773,7 @@ body {
   background-color: #d32f2f;
   color: white;
   border: none;
-  padding: 10px;
+  /* padding: 5px; */
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
@@ -786,10 +786,10 @@ body {
 
 /* Game Log */
 .game-log-section {
-  margin-top: 20px;
+  margin-top: 10px;
   border-top: 1px solid #444;
   padding-top: 10px;
-  flex: 1; /* Take remaining space */
+  flex: 0 0 40%; /* Fixed 40% height */
   display: flex;
   flex-direction: column;
   min-height: 0; /* Allow flex child to scroll */

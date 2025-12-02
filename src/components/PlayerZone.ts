@@ -364,6 +364,19 @@ export class PlayerZone {
         this.store.setState({
           [this.playerType]: { ...playerData, deck: deck, hand: newHand },
         } as any);
+        this.store.addLog(
+          `${this.playerType === "me" ? "Me" : "Opponent"} drew a card.`
+        );
+      }
+    });
+
+    const shuffleBtn = this.element.querySelector(".shuffle-btn");
+    shuffleBtn?.addEventListener("click", () => {
+      const state = this.store.getState();
+      if (state.viewPerspective === this.playerType) {
+        this.store.shuffleDeck(this.playerType);
+      } else {
+        alert("You can only shuffle your own deck.");
       }
     });
   }
@@ -540,11 +553,14 @@ export class PlayerZone {
 
       <div class="right-side container">
         <div class="deck-area">
-          <h2>Deck <span class="count">0</span></h2>
-          <div class="slot deck-slot">Deck</div>
+        <h2>Deck <span class="count">0</span></h2>
+        <div class="slot deck-slot" data-pos="deck">Deck</div>
+        <div class="function-area">
           <button class="btn draw-btn">Draw</button>
+          <button class="btn shuffle-btn">Shuffle</button>
         </div>
-        <div class="drop-area">
+      </div>
+      <div class="drop-area">
           <h2>Drop <span class="count">0</span></h2>
           <div class="slot drop-slot" data-pos="drop">Drop</div>
         </div>
