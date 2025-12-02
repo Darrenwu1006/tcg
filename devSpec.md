@@ -150,7 +150,18 @@
   - 修正 Deck Slot 事件監聽器重複問題。
 
 - **Deck Info Panel (牌庫資訊面板)**:
+
   - **右鍵點擊牌庫**: 開啟側邊欄顯示牌庫清單。
   - **UI 優化**:
     - 顯示欄位：卡片資訊 (名稱 + 稀有度 + ID)、總數 (Total)、剩餘 (Rem.)。
     - 樣式調整：文字全部靠左對齊，ID 顯示為灰色小字。
+
+- **Touch Support (觸控支援)**:
+
+  - **Touch Drag Selection**: 支援觸控拖曳選取卡片。
+  - **Long Press Interaction**: 支援長按 (500ms) 模擬右鍵點擊，顯示卡片詳情。
+  - **Double Tap Interaction**: 支援雙擊 (Double Tap) 模擬右鍵點擊，顯示卡片詳情。
+
+- **Deployment (部署)**:
+  - **GitHub Pages**: 成功部署至 GitHub Pages。
+  - **Deployment Guide**: 建立 `DEPLOYMENT.md` 說明部署流程。

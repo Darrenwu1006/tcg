@@ -898,23 +898,63 @@ export class PlayerZone {
     // Touch Long Press for Info
     let longPressTimer: any;
     const longPressDuration = 500; // ms
+    let startX = 0;
+    let startY = 0;
 
-    cardEl.addEventListener("touchstart", () => {
-      // Start timer
-      longPressTimer = setTimeout(() => {
-        this.store.setState({ selectedCard: card });
-        // Optional: Provide haptic feedback if possible, or visual cue
-      }, longPressDuration);
-    });
+    cardEl.addEventListener(
+      "touchstart",
+      (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+        // Start timer
+        longPressTimer = setTimeout(() => {
+          this.store.setState({ selectedCard: card });
+          // Optional: Provide haptic feedback if possible, or visual cue
+          if (navigator.vibrate) navigator.vibrate(50);
+        }, longPressDuration);
+      },
+      { passive: true }
+    );
+
+    // Double Tap Logic
+    let lastTapTime = 0;
+    const doubleTapDelay = 300; // ms
 
     cardEl.addEventListener("touchend", () => {
       clearTimeout(longPressTimer);
+
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTapTime;
+
+      if (tapLength < doubleTapDelay && tapLength > 0) {
+        // Double Tap Detected
+        this.store.setState({ selectedCard: card });
+        if (navigator.vibrate) navigator.vibrate(50);
+
+        // Prevent default click behavior (selection) if double tap
+        // But we can't easily prevent the click event from here since it's a separate event sequence.
+        // However, showing the detail panel usually overlays everything, so it might be fine.
+      }
+
+      lastTapTime = currentTime;
     });
 
-    cardEl.addEventListener("touchmove", () => {
-      // If moved significantly, cancel long press
-      clearTimeout(longPressTimer);
-    });
+    cardEl.addEventListener(
+      "touchmove",
+      (e) => {
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = Math.abs(currentX - startX);
+        const diffY = Math.abs(currentY - startY);
+
+        // If moved significantly (> 10px), cancel long press
+        if (diffX > 10 || diffY > 10) {
+          clearTimeout(longPressTimer);
+        }
+      },
+      { passive: true }
+    );
 
     if (isInteractive) {
       cardEl.addEventListener("click", (e) => {
