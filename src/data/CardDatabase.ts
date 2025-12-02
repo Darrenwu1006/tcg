@@ -51,9 +51,22 @@ export class CardDatabase {
     }
   }
 
+  private resolvePath(path: string): string {
+    const baseUrl = import.meta.env.BASE_URL;
+    // Remove leading slash if present to avoid double slashes if baseUrl ends with slash
+    const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+    // Ensure baseUrl ends with slash
+    const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+    return `${cleanBase}${cleanPath}`;
+  }
+
   private async loadSchoolPool(school: string) {
-    const characterPoolUrl = `/pool/${school}/${school}卡表 - 卡池_角色卡.csv`;
-    const eventPoolUrl = `/pool/${school}/${school}卡表 - 卡池_事件卡.csv`;
+    const characterPoolUrl = this.resolvePath(
+      `pool/${school}/${school}卡表 - 卡池_角色卡.csv`
+    );
+    const eventPoolUrl = this.resolvePath(
+      `pool/${school}/${school}卡表 - 卡池_事件卡.csv`
+    );
 
     try {
       const [charRes, eventRes] = await Promise.all([
@@ -179,7 +192,7 @@ export class CardDatabase {
   }
 
   async loadDeck(school: string, deckName: string): Promise<any[]> {
-    const deckUrl = `/deck/${school}/${deckName}.csv`;
+    const deckUrl = this.resolvePath(`deck/${school}/${deckName}.csv`);
 
     try {
       const res = await fetch(deckUrl);

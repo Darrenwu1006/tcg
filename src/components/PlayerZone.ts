@@ -28,6 +28,7 @@ export class PlayerZone {
     let selectionBox: HTMLElement | null = null;
     let initialShiftKey = false;
 
+    // Mouse Events
     document.addEventListener("mousedown", (e) => {
       // Only allow drag if not clicking on a card or interactive element
       if ((e.target as HTMLElement).closest(".card, button, .slot")) return;
@@ -69,7 +70,69 @@ export class PlayerZone {
       selectionBox.style.top = `${top}px`;
     });
 
-    document.addEventListener("mouseup", (e) => {
+    document.addEventListener("mouseup", () => {
+      finishDrag();
+    });
+
+    // Touch Events
+    document.addEventListener(
+      "touchstart",
+      (e) => {
+        // Only allow drag if not clicking on a card or interactive element
+        if ((e.target as HTMLElement).closest(".card, button, .slot")) return;
+
+        // Only allow drag if this player is the active viewer
+        const state = this.store.getState();
+        if (state.viewPerspective !== this.playerType) return;
+
+        // Prevent default scrolling behavior if we are starting a drag
+        // But we need to be careful not to block scrolling entirely if not dragging
+        // For now, let's assume if we touch empty space, we want to select.
+        // e.preventDefault(); // This might be too aggressive
+
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        initialShiftKey = false; // No shift key on touch usually
+
+        selectionBox = document.createElement("div");
+        selectionBox.className = "selection-box";
+        selectionBox.style.left = `${startX}px`;
+        selectionBox.style.top = `${startY}px`;
+        document.body.appendChild(selectionBox);
+
+        this.store.setState({ selectedCards: [] });
+      },
+      { passive: false }
+    );
+
+    document.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!isDragging || !selectionBox) return;
+        e.preventDefault(); // Prevent scrolling while dragging selection
+
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+
+        const width = Math.abs(currentX - startX);
+        const height = Math.abs(currentY - startY);
+        const left = Math.min(currentX, startX);
+        const top = Math.min(currentY, startY);
+
+        selectionBox.style.width = `${width}px`;
+        selectionBox.style.height = `${height}px`;
+        selectionBox.style.left = `${left}px`;
+        selectionBox.style.top = `${top}px`;
+      },
+      { passive: false }
+    );
+
+    document.addEventListener("touchend", () => {
+      finishDrag();
+    });
+
+    const finishDrag = () => {
       if (!isDragging) return;
       isDragging = false;
 
@@ -124,7 +187,7 @@ export class PlayerZone {
             newSelectedCards.length === 1 ? newSelectedCards[0] : null,
         });
       }
-    });
+    };
   }
 
   private setupSubscription() {
@@ -263,7 +326,7 @@ export class PlayerZone {
       console.error("Error updating counts:", e);
     }
 
-    this.updateHand(playerData.hand, state.playingCard);
+    this.updateHand(playerData.hand);
     this.updateField(playerData.field);
   }
 
@@ -305,7 +368,7 @@ export class PlayerZone {
     });
   }
 
-  private updateHand(hand: Card[], playingCard: Card | null) {
+  private updateHand(hand: Card[]) {
     const handContainer = this.element.querySelector(".hand-cards");
     if (!handContainer) return;
 
@@ -738,7 +801,7 @@ export class PlayerZone {
         selectionBox.style.top = `${top}px`;
       });
 
-      document.addEventListener("mouseup", (e) => {
+      document.addEventListener("mouseup", () => {
         if (!isDragging) return;
         isDragging = false;
 
@@ -830,6 +893,27 @@ export class PlayerZone {
       e.preventDefault();
       e.stopPropagation();
       this.store.setState({ selectedCard: card });
+    });
+
+    // Touch Long Press for Info
+    let longPressTimer: any;
+    const longPressDuration = 500; // ms
+
+    cardEl.addEventListener("touchstart", () => {
+      // Start timer
+      longPressTimer = setTimeout(() => {
+        this.store.setState({ selectedCard: card });
+        // Optional: Provide haptic feedback if possible, or visual cue
+      }, longPressDuration);
+    });
+
+    cardEl.addEventListener("touchend", () => {
+      clearTimeout(longPressTimer);
+    });
+
+    cardEl.addEventListener("touchmove", () => {
+      // If moved significantly, cancel long press
+      clearTimeout(longPressTimer);
     });
 
     if (isInteractive) {

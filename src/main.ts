@@ -23,6 +23,14 @@ const initialState: AppState = {
     school: "karasuno",
   },
   logs: [],
+  turnPlayer: "me",
+  phase: "draw",
+  battleState: {
+    isAttacking: false,
+    defenseChoice: "none",
+    attacker: null,
+  },
+  selectedCards: [],
 };
 
 const store = new Store<AppState>(initialState);
