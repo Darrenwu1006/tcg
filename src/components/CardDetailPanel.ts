@@ -265,7 +265,7 @@ export class CardDetailPanel {
     this.element.innerHTML = `
       <div class="placeholder">
         <h3>Card Details</h3>
-        <p>Right-click a card to view details.</p>
+        <p>Click a card to view details.</p>
       </div>
     `;
   }

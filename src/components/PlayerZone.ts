@@ -288,10 +288,18 @@ export class PlayerZone {
           deckSlot.appendChild(cardWrapper.firstElementChild!);
         }
 
-        // Re-attach listener because innerHTML wiped it
+        // Re-attach listeners because innerHTML wiped them
         // Ideally we'd move this to attachSlotEvents and NOT wipe innerHTML,
         // but the slot text "Deck" + card visual is simple enough to just re-render.
+
+        // Right-click for deck info
         deckSlot.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          this.store.setState({ viewingDeckInfo: { player: this.playerType } });
+        });
+
+        // Left-click also shows deck info
+        deckSlot.addEventListener("click", (e) => {
           e.preventDefault();
           this.store.setState({ viewingDeckInfo: { player: this.playerType } });
         });
@@ -411,10 +419,15 @@ export class PlayerZone {
           this.store.setState({ selectedCard: card });
         });
 
-        // Left-click for selection (Play)
+        // Left-click for details and selection
         cardEl.addEventListener("click", (e) => {
           e.stopPropagation();
           const currentState = this.store.getState();
+
+          // Always show card details on left-click
+          this.store.setState({ selectedCard: card });
+
+          // Handle selection with Shift key
           let newSelected = [...(currentState.selectedCards || [])];
 
           if (e.shiftKey) {
@@ -487,6 +500,13 @@ export class PlayerZone {
 
         // Right-click for details on field cards
         cardEl.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.store.setState({ selectedCard: topCard });
+        });
+
+        // Left-click also shows details on field cards
+        cardEl.addEventListener("click", (e) => {
           e.preventDefault();
           e.stopPropagation();
           this.store.setState({ selectedCard: topCard });
@@ -971,6 +991,11 @@ export class PlayerZone {
       cardEl.addEventListener("click", (e) => {
         e.stopPropagation();
         const currentState = this.store.getState();
+
+        // Always show card details on left-click
+        this.store.setState({ selectedCard: card });
+
+        // Handle selection with Shift key
         let newSelected = [...(currentState.selectedCards || [])];
 
         if (e.shiftKey) {
@@ -991,9 +1016,12 @@ export class PlayerZone {
         });
       });
     } else {
-      // Read Only - No Click Action (or maybe just highlight?)
-      // For now, do nothing on click
-      cardEl.style.cursor = "default";
+      // Read Only - Show details on left-click
+      cardEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.store.setState({ selectedCard: card });
+      });
+      cardEl.style.cursor = "pointer";
     }
   }
 
