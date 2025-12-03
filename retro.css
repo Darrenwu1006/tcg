@@ -1,0 +1,1259 @@
+/* === 1. 全局設定與變數 === */
+:root {
+  /* 基礎顏色 */
+  --dark-grey: #131112; /* 稍微調亮，避免純黑 */
+  --medium-grey: #555;
+  --light-grey: #888;
+  --text-color: #f0f0f0;
+  --accent-color: #ffffff; /* 【修改】將主題強調色改為白色 */
+
+  /* 過渡效果速度 */
+  --transition-speed-layout: 0.7s;
+  --transition-speed-fast: 0.1s;
+
+  /* 佈局尺寸 */
+  --menu-button-size: 40vh;
+  --settings-height: 20vh; /* 設定欄高度 */
+
+  /* Retro UI 風格變數 (主要用於設定面板) */
+  --retro-bg: #7c7c7c; /* 【修改】主要背景色改為米灰色 */
+  --retro-input-bg: #adadad; /* 輸入框的亮背景 */
+  --retro-border: #2c2c2c; /* 邊框與主要文字顏色 */
+  --retro-highlight-bg: #3f3f3f; /* 選中項目的深色背景 */
+  --retro-highlight-text: #f0f0f0; /* 選中項目的亮文字 */
+  --retro-red-bg: #c49797c5; /* 紅色提示背景 */
+  --retro-red-text: #321a1a; /* 紅色提示文字 */
+  --retro-green-status: #34bd3446; /* 正常狀態的深綠色 */
+
+  --retro-red-status: #d93434ea; /* 【新增】異常狀態的深紅色 */
+  --retro-border-style: 2px solid var(--retro-border);
+  --retro-border-style-thick: 4px solid var(--retro-border);
+}
+
+/* 引入拆分的元件樣式表 */
+@import url("components/signal-lights.css");
+
+/* === 2. 基礎與佈局樣式 === */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 300; /* 【調整】使用稍粗的字體作為基礎 */
+  background-color: var(--dark-grey); /* 背景圖片載入失敗時的後備顏色 */
+  color: var(--text-color);
+  overflow: hidden;
+
+  /* 設定背景圖片 */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.remote-control-app {
+  height: 100%;
+  position: relative;
+}
+
+/* 共用的動態過渡效果 */
+.with-transition {
+  transition: all var(--transition-speed-layout) ease-in-out;
+}
+
+/* === Component: 主選單 === */
+.main-menu-container {
+  /* 佈局 */
+  position: absolute;
+  top: 4vh;
+  left: 4vh;
+  width: calc(90vw - 4vh); /* 減去左側 margin，右側不留 margin */
+  height: calc(100vh - 8vh); /* 減去上下 margin */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  z-index: 10;
+
+  /* 樣式: 實體面板 */
+  background-color: #181818; /* 面板主體顏色 */
+  border: 5px solid #a9a9a9;
+  border-radius: 4vh; /* 【修改】統一圓角 */
+  overflow: hidden;
+
+  /* 狀態與動畫 */
+  transform: translateX(0);
+}
+
+.menu-item-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center; /* 讓內部元件垂直置中 */
+
+  flex-basis: 0;
+  background-color: #181818;
+  overflow: hidden;
+  position: relative; /* 為了定位偽元素 */
+}
+
+/* 為各個主選單項目設定背景圖片 (透過偽元素) */
+.menu-item-wrapper[data-menu-id="gallery"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-image: url("media/bg/Grid Taipei.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+  transition: filter var(--transition-speed-layout) ease-in-out,
+    opacity 0.5s ease;
+  filter: grayscale(100%) blur(0px) brightness(0.2); /* 預設為灰階且清晰，並降低亮度 */
+  z-index: 0;
+}
+
+.menu-item-wrapper[data-menu-id="theme"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("media/bg/Iso Taipei_noTxt_left.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+  transition: filter var(--transition-speed-layout) ease-in-out,
+    opacity 0.5s ease;
+  filter: grayscale(100%) blur(0px) brightness(0.2);
+  z-index: 0;
+}
+
+.menu-item-wrapper[data-menu-id="welcome"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("media/bg/Pixel City_noTxt.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+  transition: filter var(--transition-speed-layout) ease-in-out,
+    opacity 0.5s ease;
+  filter: grayscale(100%) blur(0px) brightness(0.2);
+  z-index: 0;
+}
+
+.main-menu-button {
+  min-width: var(--menu-button-size);
+  height: var(--menu-button-size); /* 設定固定高度，使其變為正方形 */
+
+  color: var(--text-color);
+  font-family: "Press Start 2P", cursive;
+  font-size: 4vh;
+  transition: font-size var(--transition-speed-layout) ease-in-out; /* 為字體大小變化添加過渡 */
+
+  /* 讓按鈕內容（文字）在按鈕內部置中 */
+  display: flex;
+  flex-direction: column; /* 因為有 <br /> */
+  justify-content: center;
+  align-items: flex-start; /* 水平靠左對齊 */
+  opacity: 90%;
+  background: none;
+  border: none;
+  padding-left: 2vw; /* 增加左側內距，避免文字貼邊 */
+  position: relative; /* 為了 z-index */
+  z-index: 1; /* 確保按鈕內容在偽元素之上 */
+}
+
+/* 主選單按鈕下方的中文副標題樣式 */
+.main-menu-subtitle {
+  font-size: 3vh;
+  margin-top: 1vh; /* 與主標題的間距 */
+  font-family: Roboto, sans-serif;
+  font-weight: 100;
+  transition: font-size var(--transition-speed-layout) ease-in-out; /* 為字體大小變化添加過渡 */
+  opacity: 70%;
+}
+
+/* 子選單容器 */
+.submenu {
+  display: none;
+  opacity: 0;
+  flex-direction: column;
+  justify-content: center; /* 讓內部按鈕在垂直方向上置中 */
+  align-self: stretch; /* 【維持】讓子選單自身在垂直方向上撐滿父容器 */
+  gap: 1.5vh; /* 【新增】為按鈕之間增加間距 */
+  position: relative; /* 為了 z-index */
+  z-index: 1; /* 確保子選單在偽元素之上 */
+
+  padding: 0 5vw; /* 增加左右內邊距，為三角形指標創造空間 */
+  overflow: hidden;
+  /* 使用 max-height 和 opacity 實現動畫 */
+  transition: max-height var(--transition-speed-layout) ease-in-out,
+    opacity var(--transition-speed-fast) ease-in-out 0.3s; /* 讓透明度變化稍晚於高度變化 */
+}
+
+/* 子選單按鈕 */
+.submenu-button {
+  width: 95%;
+  margin: 0 auto; /* 讓按鈕水平居中 */
+  padding: 1.5vh 2vw;
+  background-color: rgba(255, 255, 255, 0.05); /* 預設為淡色灰底 */
+  border: none;
+  color: var(--text-color);
+  font-size: 3vh;
+  max-height: 10vh; /* 【新增】設定最大高度，避免按鈕過度拉伸 */
+  font-weight: 100;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-speed-fast) ease-in-out,
+    transform var(--transition-speed-fast) ease-in-out,
+    color var(--transition-speed-fast) ease-in-out; /* 【新增】為文字顏色變化添加過渡 */
+}
+
+/* 預設隱藏子選單按鈕，為進場動畫做準備 */
+.submenu-button {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* 子選單按鈕內部佈局 */
+.submenu-button {
+  display: flex;
+  justify-content: flex-start; /* 讓內容從左側開始排列 */
+  align-items: center;
+  position: relative; /* 【新增】為了定位閃爍指標 */
+}
+
+.submenu-button:active {
+  transform: translate(1px, 1px); /* 向右下移動，模擬下沉效果 */
+}
+
+/* 包裹播放資訊和計時器的容器 */
+.playback-info-wrapper {
+  display: flex;
+  align-items: center;
+  align-self: center; /* 讓此區塊自身垂直居中 */
+  position: relative; /* 為了 z-index */
+  z-index: 1; /* 確保播放資訊在偽元素之上 */
+  /* 套用與子選單按鈕相同的樣式，以統一外觀 */
+  width: 50%;
+  margin: 0 auto;
+  padding: 1.5vh 2vw;
+}
+
+/* 當前播放內容顯示 */
+.current-playback-display {
+  /* Jimmy, Note: 此處的文字內容由 JS 根據後端狀態填入。 */
+  padding: 0 1vw;
+  color: var(--text-color);
+  font-size: 3vh;
+  white-space: normal; /* 允許文字自動換行 */
+  line-height: 1.2; /* 設定合適的行高 */
+  /* 為透明度變化添加過渡效果 */
+  opacity: 1; /* 預設為不透明 */
+  transition: opacity 1s ease-in-out;
+}
+
+/* 播放倒數計時器樣式 */
+.playback-countdown-timer {
+  /* 藥丸形狀 */
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 0.5vh 1.5vw;
+  border-radius: 100vw; /* 確保兩端是完美的圓形 */
+  /* 文字樣式 */
+  color: var(--text-color);
+  font-size: 2.5vh;
+  font-family: monospace; /* 使用等寬字體，讓數字跳動時寬度不變 */
+  /* 預設隱藏，並添加過渡效果 */
+  opacity: 0;
+  pointer-events: none; /* 隱藏時不可互動 */
+  transition: opacity 0.3s ease-in-out;
+  /* 確保在 flex 佈局中不被壓縮 */
+  flex-shrink: 0;
+
+  /* 與左側文字的固定間距 */
+  margin-left: 2vw;
+  color: var(--text-color);
+}
+
+/* 觸控按下的瞬間回饋 */
+.main-menu-button:active {
+  transform: scale(0.97); /* 按下時輕微縮小 */
+}
+/* --- Component: 主選單狀態 --- */
+
+/* 項目展開時 */
+.menu-item-wrapper.is-active {
+  /* Jimmy, Note: .is-active 由 JS 在使用者點擊主選單時添加，用於展開子選單。 */
+  flex-grow: 4;
+  background-color: transparent; /* 展開時移除自身背景色，讓背景圖顯示 */
+}
+
+/* 項目展開時，其子選單顯示 */
+.menu-item-wrapper.is-active .submenu {
+  display: flex;
+  opacity: 1;
+  max-height: 100%; /* 【修改】讓子選單高度填滿父容器 */
+  width: 100%; /* 確保子選單填滿寬度 */
+  /* 【新增】當內容超出時，顯示垂直滾動條 */
+  overflow-y: auto;
+}
+
+/* 當選單展開時，觸發內部按鈕的進場動畫 */
+.menu-item-wrapper.is-active .submenu-button {
+  /* 應用 fadeInUp 動畫，讓按鈕從下往上淡入 */
+  animation: fadeInUp 0.4s ease-out forwards;
+  /* forwards 關鍵字確保動畫結束後，按鈕保持在最終狀態 (opacity: 1) */
+}
+
+/* 為每個子選單按鈕設定不同的動畫延遲，創造接續出現的效果 */
+.menu-item-wrapper.is-active .submenu-button:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.menu-item-wrapper.is-active .submenu-button:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.menu-item-wrapper.is-active .submenu-button:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.menu-item-wrapper.is-active .submenu-button:nth-child(4) {
+  animation-delay: 0.5s;
+}
+.menu-item-wrapper.is-active .submenu-button:nth-child(5) {
+  animation-delay: 0.6s;
+}
+/* 您可以根據需要繼續添加更多 :nth-child 規則 */
+
+/* 【新增】當主選單展開時，隱藏當前播放內容顯示 */
+.menu-item-wrapper.is-active .playback-info-wrapper {
+  display: none; /* 【修正】直接隱藏整個 wrapper */
+}
+
+/* 【新邏輯】只有展開的選單，其背景圖才變為黑白 */
+.menu-item-wrapper.is-active::before {
+  filter: grayscale(0%) blur(30px) brightness(0.4); /* 【新邏輯】展開時變為彩色並加上模糊，保持低亮度 */
+}
+
+/* 【新增】當選單被壓縮時，縮小其內部字體 */
+.menu-item-wrapper.is-inactive .main-menu-button {
+  font-size: 2.5vh; /* 4vh -> 2.5vh */
+}
+.menu-item-wrapper.is-inactive .main-menu-subtitle {
+  font-size: 1.5vh; /* 【修正】同步縮小副標題 (2.5vh -> 1.5vh) */
+}
+
+/* 當播放內容為空時，使其透明 */
+.current-playback-display:empty {
+  opacity: 0;
+}
+/* 【新增】只有當播放內容顯示時，才顯示倒數計時器 */
+.playback-info-wrapper:has(.current-playback-display:not(:empty))
+  .playback-countdown-timer[data-location="main"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 項目收合時 */
+.menu-item-wrapper.is-inactive {
+  z-index: 5;
+}
+
+/* === Component: 右側操作列 === */
+
+/* 操作列容器 */
+.action-bar-container {
+  position: absolute;
+  top: 4vh;
+  right: 0;
+  width: 10vw; /* 佔據右側 10% */
+  height: calc(100vh - 8vh);
+  box-sizing: border-box; /* 確保內邊距包含在寬度內 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 讓內部元件水平居中 */
+  justify-content: space-between; /* 將 Logo 和按鈕群組推向兩端 */
+  padding: 0;
+  z-index: 15; /* 層級高於設定面板，低於主選單 */
+}
+
+/* Logo 樣式 */
+.action-bar-logo {
+  width: 60%; /* 【修改】將 Logo 調大 */
+  height: auto;
+}
+
+/* 【新增】底部按鈕群組樣式 */
+.action-buttons-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh; /* 按鈕之間的間距 */
+}
+
+/* 操作列按鈕 */
+.action-bar-button {
+  width: 5vw;
+  height: 4vw;
+  border-radius: 1vw;
+  background-color: transparent; /* 【移除】移除預設底色 */
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+/* 使用 SVG 作為圖示的按鈕 (mask) */
+.icon-button {
+  background-color: var(--text-color); /* 用背景色控制圖示顏色 */
+  -webkit-mask-size: 60%; /* 調整圖示在按鈕中的大小 */
+  mask-size: 60%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+#settings-toggle-btn {
+  /* -webkit-mask-image: url(media/icon/settings.svg); */
+  /* mask-image: url(media/icon/settings.svg); */
+  /* 改用 CSS 繪製漢堡選單 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8vh; /* 線條間距加大 */
+  padding: 0;
+  background-color: transparent; /* 【修正】確保背景透明，避免被 .icon-button 覆蓋 */
+}
+
+/* 漢堡選單線條樣式 */
+.hamburger-line {
+  width: 2.5vw; /* 加寬 */
+  height: 0.4vh; /* 加粗 */
+  background-color: var(--text-color);
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+  transform-origin: center;
+}
+
+/* === 動畫效果：變成叉叉 (X) === */
+/* 當按鈕被選中 (.is-selected) 時觸發 */
+
+/* 第一條線：旋轉 45 度並向下位移 (位移量 = height + gap) */
+#settings-toggle-btn.is-selected .hamburger-line:nth-child(1) {
+  transform: translateY(1.2vh) rotate(45deg);
+}
+
+/* 第二條線：隱藏 */
+#settings-toggle-btn.is-selected .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* 第三條線：旋轉 -45 度並向上位移 */
+#settings-toggle-btn.is-selected .hamburger-line:nth-child(3) {
+  transform: translateY(-1.2vh) rotate(-45deg);
+}
+#standby-btn {
+  -webkit-mask-image: url(media/icon/home.svg);
+  mask-image: url(media/icon/home.svg);
+}
+#sleep-btn {
+  -webkit-mask-image: url(media/icon/moon.svg);
+  mask-image: url(media/icon/moon.svg);
+}
+
+.action-bar-button:active {
+  transform: scale(0.97);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* === Component: 設定面板 === */
+
+/* 設定面板容器 */
+.settings-panel-container {
+  /* 佈局 */
+  position: absolute;
+  top: 4vh;
+  left: 4vh;
+  width: calc(90vw - 4vh);
+  height: calc(100vh - 8vh);
+  box-sizing: border-box; /* 確保 padding 不會讓容器超出畫面 */
+  padding: 4vh;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  gap: 2vh; /* 【新樣式】調整內部 setting-block 的垂直間距 */
+  z-index: 5; /* 層級較低，在主選單之下 */
+
+  /* 預設隱藏整個面板，並添加過渡效果 */
+  opacity: 0;
+  pointer-events: none;
+  /* Retro 風格 */
+  background-color: var(--retro-bg);
+  border: var(--retro-border-style-thick);
+  border-radius: 4vh;
+  transition: opacity var(--transition-speed-layout) ease-in-out;
+  /* Retro 字型 */
+  font-family: "Pixelify Sans", sans-serif;
+  color: var(--retro-border);
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+/* --- 3. 全局應用程式狀態 --- */
+
+/* 狀態一：主選單可見 (預設) */
+/* .state-menu-visible 是預設狀態，大部分樣式直接寫在元件上，此處可留空或用於特定覆蓋 */
+
+/* 狀態二：設定面板可見 */
+.remote-control-app.state-settings-visible .main-menu-container {
+  /* 【修正】恢復為單純的滑出效果 */
+  transform: translateX(calc(-100% - 4vh));
+}
+
+.remote-control-app.state-settings-visible .settings-panel-container {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 動畫：當設定面板可見時，觸發其內部區塊的進場動畫 */
+.remote-control-app.state-settings-visible .setting-block {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* 設定面板中的功能區塊 */
+.setting-block {
+  display: flex;
+  gap: 1vw;
+  padding: 0;
+  border-radius: 2vh;
+  overflow: hidden;
+  margin: 0;
+
+  /* Retro 風格 */
+  position: relative; /* 為了定位偽元素邊框 */
+  border: var(--retro-border-style);
+  background-color: var(--retro-input-bg);
+  box-shadow: 5px 5px 0px rgba(44, 44, 44, 0.5);
+}
+
+/* 預留的第三個版位樣式 */
+.setting-block#3 {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 區塊左側 (標題區) */
+.setting-block-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* border-right: var(--retro-border-style); */
+  gap: 0.1vh;
+  background-color: var(--retro-border);
+}
+
+/* 區塊左側的圖示 */
+.setting-block-icon {
+  width: 10vh; /* 【修改】將圖示放大 */
+  height: 10vh; /* 【修改】將圖示放大 */
+  /* 【修改】移除 filter 屬性以取消陰影 */
+}
+
+.icon-host {
+  -webkit-mask-image: url(media/server.svg);
+  mask-image: url(media/server.svg);
+}
+
+.icon-projector {
+  -webkit-mask-image: url(media/projector.svg);
+  mask-image: url(media/projector.svg);
+}
+
+/* 區塊左側的標題文字 */
+.setting-block-title {
+  font-size: 2vh;
+  font-weight: 400;
+  font-family: "Press Start 2P", cursive; /* Retro 遊戲字型 */
+  color: var(--retro-highlight-text);
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.2);
+}
+
+/* 區塊左側的中文副標題 */
+.setting-block-subtitle {
+  font-family: "Noto Sans TC", sans-serif; /* 使用思源黑體 */
+  font-size: 2vh;
+  font-weight: 400;
+  color: var(--retro-highlight-text);
+  opacity: 0.7; /* 讓副標題稍微暗一點，以突顯主標題 */
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.2);
+}
+
+/* 文字包裝器 (確保標題與副標題總是一起排列) */
+.setting-block-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 區塊右側 (內容區) */
+.setting-block-right {
+  /* 【修改】移除 flex-basis，並增加左外距以避免被覆蓋 */
+  margin-left: 20%;
+  /* 【還原】恢復左右內距，讓內容對齊 */
+  padding: 2vh;
+  position: relative; /* 【新增】讓 Server 狀態可以相對於此區塊定位 */
+}
+
+/* 狀態顯示網格 */
+.status-grid {
+  display: grid;
+  gap: 1.5vh; /* 【修改】拉大按鈕之間的間距 */
+  width: 100%;
+}
+
+.host-status {
+  /* 【修改】將主機狀態也改為 4 欄網格，與投影機對齊 */
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.projector-status {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Server 獨立資訊卡樣式 */
+#server-info-card,
+.server-info-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1vh; /* 與下方按鈕網格的距離 */
+  padding-inline: 0.5vw;
+  border-bottom: var(--retro-border-style);
+}
+
+/* 資訊卡左側標題 */
+.server-info-title {
+  font-family: "Press Start 2P", cursive;
+  font-size: 1.5vh;
+  color: var(--retro-border);
+  opacity: 0.8;
+}
+
+/* 資訊卡右側細節 */
+.server-info-details {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+/* === 4. 通用高亮與選中狀態 === */
+/* Jimmy, Note: 以下 class 由 JS 根據後端狀態或使用者操作動態添加。 */
+
+/* 通用的「已選擇項目」樣式，用於子選單按鈕和播放資訊欄 */
+.selected-item-style {
+  position: relative; /* 為了定位三角形指標 */
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.3); /* 邊框 */
+  color: var(--accent-color); /* 選中時文字變為白色 */
+  transition: background-color var(--transition-speed-fast) ease-in-out,
+    color var(--transition-speed-fast) ease-in-out;
+}
+
+/* 復古遊戲風格的閃爍選擇指標 (三角形) */
+/* .selected-item-style::before {
+  content: "";
+  position: absolute;
+  left: -3.5vw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 1.5vh solid transparent;
+  border-bottom: 1.5vh solid transparent;
+  border-left: 2.2vh solid var(--accent-color);
+  animation: pulsate 2s ease-in-out infinite; 
+} */
+
+/* 返回/清除按鈕 - 已移除，改為常駐的 Action Buttons */
+/* .clear-all-button { ... } */
+
+/* === 5. 動畫關鍵影格 === */
+
+/* 呼吸效果 (用於異常狀態燈號) */
+@keyframes pulsate {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* 用於 Server 狀態指示燈的紅色光暈呼吸動畫 */
+@keyframes breathing-red-glow {
+  0% {
+    background-color: var(--retro-red-status);
+    box-shadow: 0 0 8px var(--retro-red-status), 0 0 4px var(--retro-red-status);
+  }
+  50% {
+    background-color: #a57e7e; /* 呼吸時變為稍暗的紅色 */
+    box-shadow: 0 0 12px #a57e7e, 0 0 6px #a57e7e;
+  }
+  100% {
+    background-color: var(--retro-red-status);
+    box-shadow: 0 0 8px var(--retro-red-status), 0 0 4px var(--retro-red-status);
+  }
+}
+/* 從下往上淡入 (用於設定面板區塊) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === 6. 自訂滾動條樣式 === */
+/* 適用於 Webkit 核心的瀏覽器，如 Chrome, Safari, Edge */
+
+/* 滾動條整體部分 */
+::-webkit-scrollbar {
+  width: 8px; /* 滾動條寬度 */
+}
+
+/* 滾動條軌道 */
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); /* 軌道顏色，設為透明或半透明 */
+  border-radius: 10px;
+}
+
+/* 滾動條滑塊 */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3); /* 滑塊顏色 */
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* 隱藏子選單的滾動條，但保留滾動功能 */
+.submenu::-webkit-scrollbar {
+  display: none; /* 適用於 Webkit 瀏覽器 */
+}
+
+/* === 7. 極光文字動畫 === */
+
+/* 極光動畫 class */
+.text-aurora {
+  /* Jimmy, Note: .text-aurora 由 JS 添加到正在播放的 menu-item-wrapper 的標題上。 */
+  /* 1. 建立一個多彩的、巨大的漸層背景 */
+  background: linear-gradient(
+    120deg,
+    #ffffff,
+    /* 【修改】將綠色改為白色 */ #23a6d5,
+    #e73c7e,
+    #ee7752,
+    #ffffff /* 【修改】將綠色改為白色 */
+  );
+  background-size: 400% 400%;
+
+  /* 2. 將背景裁剪成文字的形狀 */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+
+  /* 3. 應用動畫 */
+  animation: aurora 5s ease infinite;
+}
+
+/* 極光動畫關鍵影格 */
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* === 8. 響應式設計 (Mobile) === */
+/* === 9. Confirmation Modal === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100; /* Highest priority */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.modal-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background-color: var(--retro-bg);
+  border: var(--retro-border-style-thick);
+  border-radius: 2vh;
+  padding: 4vh;
+  width: 40vw;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px);
+  transition: transform 0.3s ease-out;
+  /* 確保內容不會溢出 */
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.modal-overlay.is-visible .modal-content {
+  transform: translateY(0);
+}
+
+/* Modal Header & Title */
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin-bottom: 1vh;
+}
+
+.modal-title-en {
+  font-family: "Press Start 2P", cursive;
+  font-size: 2.5vh;
+  color: var(--retro-border);
+  line-height: 1.2;
+}
+
+.modal-title-zh {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 2vh;
+  font-weight: 700;
+  color: var(--retro-border);
+  opacity: 0.8;
+}
+
+/* Modal Body & Message */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin-bottom: 2vh;
+}
+
+.modal-message-en {
+  font-family: "Roboto", sans-serif;
+  font-size: 2vh;
+  color: var(--retro-border);
+  line-height: 1.4;
+}
+
+.modal-message-zh {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 1.8vh;
+  color: var(--retro-border);
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 2vw;
+  flex-wrap: wrap; /* 允許按鈕換行 */
+}
+
+.modal-button {
+  padding: 1.5vh 3vw;
+  border: var(--retro-border-style);
+  border-radius: 1vh;
+  font-family: "Press Start 2P", cursive;
+  font-size: 1.5vh;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  white-space: nowrap; /* 防止文字換行 */
+}
+
+.modal-button.cancel {
+  background-color: #d1cfc9;
+  color: var(--retro-border);
+}
+
+.modal-button.confirm {
+  background-color: var(--retro-border);
+  color: var(--retro-highlight-text);
+}
+
+.modal-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+@media screen and (max-width: 768px) {
+  /* 隱藏所有滾動條 */
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* --- 1. 主選單介面 --- */
+  .main-menu-container {
+    /* 調整容器大小與位置 */
+    width: calc(100vw - 4vh);
+    /* 高度減去：底部 Action Bar (10vh) + 上下間距 (4vh) */
+    height: calc(100vh - 14vh);
+    top: 2vh; /* 恢復置頂 */
+    left: 2vh;
+  }
+
+  .main-menu-button {
+    /* 1-1 標題置中對齊 */
+    align-items: center;
+    text-align: center;
+    width: 100%; /* 確保佔滿寬度 */
+    padding-left: 0; /* 移除左側內距 */
+    padding-right: 0; /* 移除右側內距 */
+    padding-bottom: 0; /* 移除下側內距 */
+    padding-top: 1.5vh; /* 移除上側內距 */
+    /* main-menu-button的下邊距縮小一點 */
+    margin-bottom: 0;
+    /* 讓主選單的文字縮小一點 */
+    font-size: 3vh;
+    /* 【修正】重置高度，避免繼承桌機版的 40vh 導致過大間距 */
+    height: auto;
+    min-height: 10vh; /* 保持最小高度以利觸控 */
+  }
+
+  .main-menu-subtitle {
+    /* 1-1 副標題置中對齊 */
+    text-align: center;
+    width: 100%;
+    font-size: 2vh;
+  }
+
+  .menu-item-wrapper {
+    flex-direction: column; /* 改為垂直排列 */
+    justify-content: flex-start; /* 內容從上方開始 */
+    padding-top: 2vh;
+  }
+
+  /* 1-2 展開後的子項目排列 */
+  .menu-item-wrapper.is-active .submenu {
+    /* 確保在標題下方 */
+    margin-top: 2vh;
+    padding-bottom: 2vh;
+    /* 自動換行 (雖然 flex-direction: column 已經是垂直堆疊，但確保寬度適應) */
+    width: 90%;
+    /* 新增 scroll bar (已在 .submenu 設定 overflow-y: auto) */
+  }
+
+  /* 調整子選單按鈕樣式以適應手機 */
+  .submenu-button {
+    font-size: 2vh; /* 子選單文字縮小一點 (2.5vh -> 2vh) */
+    padding: 1vh 2vw;
+    /* playback-countdown-timer is-generated跟<span>...</span>這兩個改成垂直排列 */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: auto; /* 允許高度自適應 */
+    max-height: none; /* 移除最大高度限制以免內容被切掉 */
+  }
+
+  /* 針對手機版生成的計時器調整樣式 */
+  .submenu-button .playback-countdown-timer.is-generated {
+    margin-left: 0; /* 移除左邊距 */
+    margin-top: 0.5vh; /* 增加上邊距 */
+  }
+
+  /* playback-info-wrapper selected-item-style整個尺寸包含文字都縮小 */
+  .playback-info-wrapper {
+    width: 80%; /* 縮小寬度 */
+    padding: 1vh 1vw; /* 減少內距 */
+    /* playback-info-wrapper 改成置中對齊，抓一點上下間距出來 */
+    margin: 2vh auto; /* 上下 2vh，左右 auto 置中 */
+    justify-content: center; /* 內部內容置中 */
+  }
+
+  .current-playback-display {
+    font-size: 1.5vh; /* 文字都縮小成1.5vh */
+  }
+
+  .playback-countdown-timer {
+    font-size: 1.5vh; /* 文字都縮小成1.5vh */
+    padding: 0.3vh 1vw; /* 減少計時器內距 */
+  }
+
+  /* --- 2. 設定介面 --- */
+  .settings-panel-container {
+    width: calc(100vw - 4vh);
+    height: calc(100vh - 14vh); /* 【修正】與主選單高度一致 (12vh -> 14vh) */
+    top: 2vh;
+    left: 2vh;
+    padding: 2vh;
+    overflow-y: auto; /* 2-3 新增 scroll bar */
+  }
+
+  .setting-block {
+    /* 2-1 變成垂直排列 */
+    flex-direction: column;
+    height: auto; /* 讓高度自動撐開 */
+    /* overflow: visible; 移除此行以恢復圓角裁切 */
+  }
+
+  .setting-block-left {
+    /* 2-1 setting-block-left 在上方 */
+    position: relative;
+    width: 100%;
+    height: 10vh; /* 固定一個較小的高度 */
+    flex-direction: row; /* 改為水平排列圖示與標題 */
+    align-items: center; /* 確保垂直置中 */
+    justify-content: flex-start; /* 靠左排列 */
+    gap: 2vh;
+    padding: 1vh;
+    box-sizing: border-box;
+  }
+
+  .setting-block-icon {
+    width: 6vh;
+    height: 6vh;
+  }
+
+  .setting-block-right {
+    /* 2-1 setting-block-right 在下方 */
+    margin-left: 0;
+    width: 100%;
+    padding: 2vh;
+    box-sizing: border-box;
+  }
+
+  .setting-block-text-wrapper {
+    align-items: flex-start; /* 手機版文字靠左對齊 (在圖示右邊) */
+  }
+
+  /* 2-2 內容變成雙欄位，垂直排列 */
+  .status-grid {
+    grid-template-columns: repeat(2, 1fr); /* 強制雙欄 */
+  }
+
+  .host-status,
+  .projector-status {
+    grid-template-columns: repeat(2, 1fr); /* 覆蓋原本的設定 */
+  }
+
+  /* --- 3. Action Bar --- */
+  .action-bar-container {
+    /* 調整位置到畫面底部 */
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 10vh; /* 固定高度 */
+    flex-direction: row; /* 改為水平排列 */
+    padding: 0 4vh;
+    background-color: var(--dark-grey); /* 增加背景色以免透明看不清 */
+    border-top: 1px solid #333;
+    z-index: 20; /* 確保在最上層 */
+  }
+
+  .action-bar-logo {
+    /* 3-1 logo 在手機版隱藏 */
+    display: none;
+  }
+
+  .action-buttons-group {
+    /* 3-2 設定選單按鈕以及返回按鈕移到畫面正下方左右排列 */
+    /* 因為 Action Bar 已經在底部，我們讓按鈕群組佔滿寬度並分佈兩側 */
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* 調整按鈕順序或位置 */
+  /* 需求 3-2 說左右排列，目前 HTML 結構是 group 包著兩個按鈕 */
+  /* 我們可以讓 group 寬度 100%，然後 justify-content: space-between */
+
+  /* 特殊處理：因為 Logo 移出去了，Action Bar 裡現在只剩 Logo (被定位走了) 和 Button Group */
+  /* 為了確保 Button Group 佔滿，我們需要調整 Action Bar 的樣式 */
+
+  .action-bar-button {
+    width: 8vh;
+    height: 8vh;
+  }
+
+  /* 響應式 Modal 調整 */
+  .modal-content {
+    width: 80vw; /* 手機版寬度增加 */
+    max-width: none;
+    padding: 3vh;
+  }
+
+  .modal-title-en {
+    font-size: 2vh;
+  }
+
+  .modal-title-zh {
+    font-size: 1.8vh;
+  }
+
+  .modal-message-en {
+    font-size: 1.8vh;
+  }
+
+  .modal-message-zh {
+    font-size: 1.6vh;
+  }
+
+  .modal-button {
+    font-size: 1.2vh;
+    padding: 1.5vh 4vw;
+  }
+
+  /* 手機版漢堡選單調整 */
+  #settings-toggle-btn {
+    gap: 1vh;
+  }
+
+  .hamburger-line {
+    width: 4vh; /* 加寬 */
+    height: 0.5vh; /* 加粗 */
+  }
+
+  /* 手機版動畫位移調整 (位移量 = height + gap) */
+  #settings-toggle-btn.is-selected .hamburger-line:nth-child(1) {
+    transform: translateY(1.5vh) rotate(45deg);
+  }
+
+  #settings-toggle-btn.is-selected .hamburger-line:nth-child(3) {
+    transform: translateY(-1.5vh) rotate(-45deg);
+  }
+}
+
+/* === 10. Orientation Warning === */
+.orientation-warning {
+  display: none; /* 預設隱藏 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--retro-bg);
+  z-index: 9999; /* 最高層級，蓋過所有內容 */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 5vw;
+  box-sizing: border-box; /* 確保 padding 不會撐大寬度 */
+}
+
+.warning-content {
+  border: var(--retro-border-style-thick);
+  padding: 5vh;
+  background-color: var(--retro-input-bg);
+  border-radius: 2vh;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.warning-icon {
+  font-size: 8vh;
+  color: var(--retro-border);
+  margin-bottom: 2vh;
+  animation: rotate-icon 2s infinite linear;
+}
+
+@keyframes rotate-icon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.warning-title-en {
+  font-family: "Press Start 2P", cursive;
+  font-size: 3vh;
+  color: var(--retro-border);
+  margin-bottom: 1vh;
+}
+
+.warning-title-zh {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 2.5vh;
+  font-weight: 700;
+  color: var(--retro-border);
+  margin-bottom: 3vh;
+}
+
+.warning-message-en {
+  font-family: "Roboto", sans-serif;
+  font-size: 2vh;
+  color: var(--retro-border);
+  margin-bottom: 0.5vh;
+}
+
+.warning-message-zh {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 1.8vh;
+  color: var(--retro-border);
+}
+
+/* === Orientation Enforcement Logic === */
+
+/* 1. 平板/桌機 (> 768px) 必須橫向 (Landscape) */
+/* 如果是直向 (Portrait)，顯示警告 */
+@media screen and (min-width: 769px) and (orientation: portrait) {
+  .orientation-warning {
+    display: flex;
+  }
+}
+
+/* 2. 手機 (<= 768px) 必須直向 (Portrait) */
+/* 如果是橫向 (Landscape)，顯示警告 */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+  .orientation-warning {
+    display: flex;
+  }
+}

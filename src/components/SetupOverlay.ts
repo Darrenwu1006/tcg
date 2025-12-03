@@ -7,6 +7,7 @@ export class SetupOverlay {
   private meDeckLoaded = false;
   private opDeckLoaded = false;
   private firstPlayerDecided = false;
+  private availableDecks: any[] = [];
 
   constructor(store: Store<AppState>) {
     this.store = store;
@@ -20,38 +21,34 @@ export class SetupOverlay {
   }
 
   private async loadDatabase() {
-    await CardDatabase.getInstance().loadAll();
+    const db = CardDatabase.getInstance();
+    await db.loadAll();
     console.log("CardDatabase ready");
+
+    this.availableDecks = await db.getAvailableDecks();
+    this.render(); // Re-render to show decks
+    this.loadDefaultDecks();
   }
 
-  private readonly AVAILABLE_DECKS = [
-    {
-      school: "青葉城西",
-      name: "青葉城西卡表 - 極簡軸",
-      label: "青葉城西 - 極簡軸",
-      schoolKey: "seijoh",
-    },
-    {
-      school: "梟谷",
-      name: "梟谷 - 高爆發軸",
-      label: "梟谷 - 高爆發軸",
-      schoolKey: "fukurodani",
-    },
-  ];
-
   private render() {
-    const deckOptions = this.AVAILABLE_DECKS.map(
-      (deck) =>
-        `<option value="${deck.school}|${deck.name}|${deck.schoolKey}">${deck.label}</option>`
-    ).join("");
+    const deckOptions = this.availableDecks
+      .map(
+        (deck) =>
+          `<option value="${deck.path}">${deck.school} - ${deck.name}</option>`
+      )
+      .join("");
 
     this.element.innerHTML = `
       <div class="setup-container">
-        <h1>Game Setup</h1>
+        <div class="setup-header">
+          <h1 class="retro-title-en">GAME SETUP</h1>
+          <h2 class="retro-title-zh">遊戲設定</h2>
+        </div>
         
         <div class="setup-section">
           <div class="player-setup">
-            <h3>Me (Player)</h3>
+            <h3 class="retro-subtitle-en">Me (Player)</h3>
+            <h4 class="retro-subtitle-zh">我方玩家</h4>
             <div class="deck-select">
               <label>選擇牌組:</label>
               <select id="me-deck-select" class="deck-dropdown">
@@ -63,7 +60,8 @@ export class SetupOverlay {
           </div>
 
           <div class="player-setup">
-            <h3>Opponent</h3>
+            <h3 class="retro-subtitle-en">Opponent</h3>
+            <h4 class="retro-subtitle-zh">對手</h4>
             <div class="deck-select">
               <label>選擇牌組:</label>
               <select id="op-deck-select" class="deck-dropdown">
@@ -76,21 +74,16 @@ export class SetupOverlay {
         </div>
 
         <div class="setup-section">
-          <h3>First Player</h3>
+          <h3 class="retro-subtitle-en">First Player</h3>
+          <h4 class="retro-subtitle-zh">先攻玩家</h4>
           <div class="coin-toss-area">
             <button id="coin-toss-btn" class="btn">Coin Toss</button>
             <span id="toss-result" class="result">?</span>
           </div>
         </div>
 
-
-
         <div class="setup-actions">
-            <button id="load-defaults-btn" class="btn">Load Defaults (青葉城西 vs 青葉城西)</button>
-        </div>
-
-        <div class="setup-actions">
-          <button id="start-game-btn" class="start-btn" disabled>Start Game</button>
+          <button id="start-game-btn" class="start-btn" disabled>START GAME</button>
         </div>
       </div>
     `;
@@ -103,7 +96,6 @@ export class SetupOverlay {
     const opSelect = this.element.querySelector("#op-deck-select");
     const tossBtn = this.element.querySelector("#coin-toss-btn");
     const startBtn = this.element.querySelector("#start-game-btn");
-    const loadDefaultsBtn = this.element.querySelector("#load-defaults-btn");
 
     meSelect?.addEventListener("change", (e) =>
       this.handleDeckSelection(e, "me")
@@ -111,8 +103,6 @@ export class SetupOverlay {
     opSelect?.addEventListener("change", (e) =>
       this.handleDeckSelection(e, "opponent")
     );
-
-    loadDefaultsBtn?.addEventListener("click", () => this.loadDefaultDecks());
 
     tossBtn?.addEventListener("click", () => {
       const result = Math.random() < 0.5 ? "me" : "opponent";
@@ -133,9 +123,9 @@ export class SetupOverlay {
 
   private async handleDeckSelection(event: Event, player: "me" | "opponent") {
     const select = event.target as HTMLSelectElement;
-    const value = select.value;
+    const path = select.value;
 
-    if (!value) {
+    if (!path) {
       if (player === "me") {
         this.meDeckLoaded = false;
       } else {
@@ -146,16 +136,17 @@ export class SetupOverlay {
       return;
     }
 
-    const [school, deckName, schoolKey] = value.split("|");
+    const deckInfo = this.availableDecks.find((d) => d.path === path);
+    if (!deckInfo) return;
 
     try {
       const db = CardDatabase.getInstance();
-      const deck = await db.loadDeck(school, deckName);
+      const deck = await db.loadDeck(deckInfo.loader);
 
       if (deck.length > 0) {
         if (player === "me") {
           this.store.setState({
-            me: { ...this.store.getState().me, deck, school: schoolKey },
+            me: { ...this.store.getState().me, deck, school: deckInfo.school },
           });
           this.meDeckLoaded = true;
         } else {
@@ -163,19 +154,15 @@ export class SetupOverlay {
             opponent: {
               ...this.store.getState().opponent,
               deck,
-              school: schoolKey,
+              school: deckInfo.school,
             },
           });
           this.opDeckLoaded = true;
         }
 
-        const deckLabel =
-          this.AVAILABLE_DECKS.find(
-            (d) => d.school === school && d.name === deckName
-          )?.label || deckName;
         this.updateStatus(
           player,
-          `已載入: ${deckLabel} (${deck.length} 張卡片)`
+          `已載入: ${deckInfo.name} (${deck.length} 張卡片)`
         );
         this.checkReady();
       }
@@ -192,28 +179,44 @@ export class SetupOverlay {
   }
 
   private async loadDefaultDecks() {
-    const school = "青葉城西";
-    const deckName = "青葉城西卡表 - 極簡軸";
-    const schoolKey = "seijoh";
+    // Default to Seijoh deck if available
+    const defaultDeck = this.availableDecks.find(
+      (d) => d.school === "青葉城西" && d.name.includes("快攻軸")
+    );
+
+    if (!defaultDeck) {
+      console.warn("Default deck not found");
+      return;
+    }
 
     try {
       const db = CardDatabase.getInstance();
 
-      // Load both decks as 青葉城西
+      // Load both decks
       const [meDeck, opDeck] = await Promise.all([
-        db.loadDeck(school, deckName),
-        db.loadDeck(school, deckName),
+        db.loadDeck(defaultDeck.loader),
+        db.loadDeck(defaultDeck.loader),
       ]);
 
       if (meDeck.length > 0) {
         this.store.setState({
-          me: { ...this.store.getState().me, deck: meDeck, school: schoolKey },
+          me: {
+            ...this.store.getState().me,
+            deck: meDeck,
+            school: defaultDeck.school,
+          },
         });
         this.meDeckLoaded = true;
         this.updateStatus(
           "me",
-          `Loaded: ${school} - 極簡軸 (${meDeck.length} cards)`
+          `Loaded: ${defaultDeck.name} (${meDeck.length} cards)`
         );
+
+        // Update select element
+        const meSelect = this.element.querySelector(
+          "#me-deck-select"
+        ) as HTMLSelectElement;
+        if (meSelect) meSelect.value = defaultDeck.path;
       }
 
       if (opDeck.length > 0) {
@@ -221,20 +224,25 @@ export class SetupOverlay {
           opponent: {
             ...this.store.getState().opponent,
             deck: opDeck,
-            school: schoolKey,
+            school: defaultDeck.school,
           },
         });
         this.opDeckLoaded = true;
         this.updateStatus(
           "opponent",
-          `Loaded: ${school} - 極簡軸 (${opDeck.length} cards)`
+          `Loaded: ${defaultDeck.name} (${opDeck.length} cards)`
         );
+
+        // Update select element
+        const opSelect = this.element.querySelector(
+          "#op-deck-select"
+        ) as HTMLSelectElement;
+        if (opSelect) opSelect.value = defaultDeck.path;
       }
 
       this.checkReady();
     } catch (error) {
       console.error("Failed to load default decks:", error);
-      alert("Failed to load default decks. Check console.");
     }
   }
 

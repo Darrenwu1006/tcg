@@ -152,7 +152,7 @@ export class Store<T extends AppState> {
     }
 
     newState.logs = this.getNewLogs(
-      `${player === "me" ? "Me" : "Opponent"} shuffled the deck.`
+      `${player === "me" ? "我方" : "對手"} 洗切了牌庫`
     );
 
     this.setState(newState as Partial<T>);

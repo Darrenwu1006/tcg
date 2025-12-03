@@ -3,6 +3,7 @@ export interface CardPool {
     id: string;
     name: string;
     type: "CHARACTER" | "EVENT";
+    school: string;
     rarity: string;
     role: string;
     timing?: string;
@@ -36,16 +37,9 @@ export class CardDatabase {
     if (this.loaded) return;
 
     try {
-      // Load pool data for all available schools
-      const schools = ["青葉城西", "烏野", "音駒", "梟谷"];
-      for (const school of schools) {
-        await this.loadSchoolPool(school);
-      }
-
+      await this.loadConsolidatedPools();
       this.loaded = true;
-      console.log(
-        `CardDatabase loaded ${this.cards.size} cards from ${schools.length} school(s).`
-      );
+      console.log(`CardDatabase loaded ${this.cards.size} cards.`);
     } catch (error) {
       console.error("Failed to load card pools:", error);
     }
@@ -53,24 +47,18 @@ export class CardDatabase {
 
   private resolvePath(path: string): string {
     const baseUrl = import.meta.env.BASE_URL;
-    // Remove leading slash if present to avoid double slashes if baseUrl ends with slash
     const cleanPath = path.startsWith("/") ? path.slice(1) : path;
-    // Ensure baseUrl ends with slash
     const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
     return `${cleanBase}${cleanPath}`;
   }
 
-  private async loadSchoolPool(school: string) {
-    const characterPoolUrl = this.resolvePath(
-      `pool/${school}/${school}卡表 - 卡池_角色卡.csv`
-    );
-    const eventPoolUrl = this.resolvePath(
-      `pool/${school}/${school}卡表 - 卡池_事件卡.csv`
-    );
+  private async loadConsolidatedPools() {
+    const charPoolUrl = this.resolvePath("pool/All_Characters.csv");
+    const eventPoolUrl = this.resolvePath("pool/All_Events.csv");
 
     try {
       const [charRes, eventRes] = await Promise.all([
-        fetch(characterPoolUrl),
+        fetch(charPoolUrl),
         fetch(eventPoolUrl),
       ]);
 
@@ -84,9 +72,9 @@ export class CardDatabase {
         this.parsePoolCSV(content, "EVENT");
       }
 
-      console.log(`Loaded pool for ${school}`);
+      console.log("Loaded consolidated pools");
     } catch (error) {
-      console.error(`Failed to load pool for ${school}:`, error);
+      console.error("Failed to load consolidated pools:", error);
     }
   }
 
@@ -98,17 +86,16 @@ export class CardDatabase {
       const line = lines[i].trim();
       if (!line) continue;
 
-      // Split by comma, but handle quoted fields
       const parts = this.parseCSVLine(line);
+      if (parts.length < 4) continue;
 
-      if (parts.length < 3) continue;
+      // New format includes School as first column
+      // CHARACTER: School,卡片類型,卡片編號,卡片名稱,時機點,稀有度,位置,發球,攔網,接球,托球,攻擊,完整技能,注釋
+      // EVENT:     School,卡片類型,卡片編號,卡片名稱,稀有度,時機點,發球,攔網,接球,托球,攻擊,完整技能,注釋
 
-      // Character cards format: 卡片類型,卡片編號,卡片名稱,時機點,稀有度,位置,發球,攔網,接球,托球,攻擊,完整技能,注釋
-      // Event cards format:     卡片類型,卡片編號,卡片名稱,稀有度,時機點,發球,攔網,接球,托球,攻擊,完整技能,注釋
-      // Note: Event cards have rarity and timing swapped compared to character cards
-
-      const id = parts[1]?.trim();
-      const name = parts[2]?.trim();
+      const school = parts[0]?.trim();
+      const id = parts[2]?.trim();
+      const name = parts[3]?.trim();
 
       if (!id || !name) continue;
 
@@ -119,14 +106,33 @@ export class CardDatabase {
       };
 
       if (expectedType === "CHARACTER") {
-        // CHARACTER: 卡片類型,卡片編號,卡片名稱,時機點,稀有度,位置,發球,攔網,接球,托球,攻擊,完整技能,注釋
         this.cards.set(id, {
           id,
           name,
           type: "CHARACTER",
-          timing: parts[3]?.trim() || "-",
+          school,
+          timing: parts[4]?.trim() || "-",
+          rarity: parts[5]?.trim() || "-",
+          role: parts[6]?.trim() || "-",
+          stats: {
+            serve: parseStat(parts[7]),
+            block: parseStat(parts[8]),
+            receive: parseStat(parts[9]),
+            toss: parseStat(parts[10]),
+            attack: parseStat(parts[11]),
+          },
+          skill: parts[12]?.trim() || "-",
+          note: parts[13]?.trim() || "-",
+        });
+      } else {
+        this.cards.set(id, {
+          id,
+          name,
+          type: "EVENT",
+          school,
           rarity: parts[4]?.trim() || "-",
-          role: parts[5]?.trim() || "-",
+          timing: parts[5]?.trim() || "-",
+          role: "-",
           stats: {
             serve: parseStat(parts[6]),
             block: parseStat(parts[7]),
@@ -136,26 +142,6 @@ export class CardDatabase {
           },
           skill: parts[11]?.trim() || "-",
           note: parts[12]?.trim() || "-",
-        });
-      } else {
-        // EVENT: 卡片類型,卡片編號,卡片名稱,稀有度,時機點,發球,攔網,接球,托球,攻擊,完整技能,注釋
-        // Note: rarity and timing are swapped compared to CHARACTER cards
-        this.cards.set(id, {
-          id,
-          name,
-          type: "EVENT",
-          rarity: parts[3]?.trim() || "-",
-          timing: parts[4]?.trim() || "-",
-          role: "-",
-          stats: {
-            serve: parseStat(parts[5]),
-            block: parseStat(parts[6]),
-            receive: parseStat(parts[7]),
-            toss: parseStat(parts[8]),
-            attack: parseStat(parts[9]),
-          },
-          skill: parts[10]?.trim() || "-",
-          note: parts[11]?.trim() || "-",
         });
       }
     }
@@ -191,17 +177,79 @@ export class CardDatabase {
     return Array.from(this.cards.values());
   }
 
-  async loadDeck(school: string, deckName: string): Promise<any[]> {
-    const deckUrl = this.resolvePath(`deck/${school}/${deckName}.csv`);
+  // Helper method to get total card count from deck CSV content
+  private getTotalCardCount(content: string): number {
+    const lines = content.split("\n");
+    let totalCount = 0;
 
+    // Skip header (line 0): 卡片名稱,卡片編號,數量
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const parts = line.split(",");
+      if (parts.length < 2) continue;
+
+      let count = 0; // Default to 0 if not specified
+
+      if (parts.length >= 3) {
+        const countStr = parts[2]?.trim();
+        if (countStr) {
+          const parsed = parseInt(countStr);
+          if (!isNaN(parsed)) {
+            count = parsed;
+          }
+        }
+      }
+
+      totalCount += count;
+    }
+
+    return totalCount;
+  }
+
+  // New method to get available decks using import.meta.glob
+  async getAvailableDecks() {
+    const deckFiles = import.meta.glob("/src/assets/decks/**/*.csv", {
+      as: "raw",
+    });
+    const decks = [];
+
+    for (const path in deckFiles) {
+      const parts = path.split("/");
+      const filename = parts[parts.length - 1];
+      const school = parts[parts.length - 2]; // Assuming structure src/assets/decks/School/DeckName.csv
+      const name = filename.replace(".csv", "");
+
+      // Load the deck content to check card count
+      try {
+        const content = await deckFiles[path]();
+        const cardCount = this.getTotalCardCount(content);
+
+        // Only include decks with exactly 40 cards
+        if (cardCount === 40) {
+          decks.push({
+            school,
+            name,
+            path,
+            loader: deckFiles[path],
+            cardCount,
+          });
+        }
+      } catch (error) {
+        console.warn(`Failed to load deck at ${path}:`, error);
+      }
+    }
+
+    return decks;
+  }
+
+  async loadDeck(loader: () => Promise<string>): Promise<any[]> {
     try {
-      const res = await fetch(deckUrl);
-      if (!res.ok) throw new Error(`Failed to fetch deck: ${deckUrl}`);
-
-      const content = await res.text();
+      const content = await loader();
       return this.parseDeckCSV(content);
     } catch (error) {
-      console.error(`Failed to load deck ${deckName} for ${school}:`, error);
+      console.error("Failed to load deck:", error);
       return [];
     }
   }
@@ -216,13 +264,22 @@ export class CardDatabase {
       if (!line) continue;
 
       const parts = line.split(",");
-      if (parts.length < 3) continue;
+      if (parts.length < 2) continue; // Allow missing quantity
 
       const id = parts[1]?.trim();
-      const countStr = parts[2]?.trim();
-      const count = parseInt(countStr);
+      let count = 0; // Default to 0
 
-      if (!id || isNaN(count) || count === 0) continue;
+      if (parts.length >= 3) {
+        const countStr = parts[2]?.trim();
+        if (countStr) {
+          const parsed = parseInt(countStr);
+          if (!isNaN(parsed)) {
+            count = parsed;
+          }
+        }
+      }
+
+      if (!id || count === 0) continue;
 
       // Get card data from pool
       const cardData = this.getCard(id);

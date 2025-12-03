@@ -365,7 +365,7 @@ export class PlayerZone {
           [this.playerType]: { ...playerData, deck: deck, hand: newHand },
         } as any);
         this.store.addLog(
-          `${this.playerType === "me" ? "Me" : "Opponent"} drew a card.`
+          `${this.playerType === "me" ? "我方" : "對手"} 抽了一張卡`
         );
       }
     });
@@ -488,9 +488,11 @@ export class PlayerZone {
         // Right-click for details on field cards
         cardEl.addEventListener("contextmenu", (e) => {
           e.preventDefault();
-          e.stopPropagation(); // Prevent bubbling if necessary
+          e.stopPropagation();
           this.store.setState({ selectedCard: topCard });
         });
+
+        cardEl.style.cursor = "pointer";
 
         slot.appendChild(cardEl);
 
@@ -514,7 +516,6 @@ export class PlayerZone {
           <div class="slot set-card-slot" data-pos="set">Set</div>
         </div>
         <div class="function-area">
-          <button class="btn shuffle-btn">Shuffle</button>
           <button class="btn back-btn">Back</button>
         </div>
       </div>
@@ -574,23 +575,7 @@ export class PlayerZone {
   }
 
   private attachFunctionEvents() {
-    const shuffleBtn = this.element.querySelector(".shuffle-btn");
     const backBtn = this.element.querySelector(".back-btn");
-
-    shuffleBtn?.addEventListener("click", () => {
-      const state = this.store.getState();
-      if (this.playerType !== state.viewPerspective) return;
-
-      const playerData = state[this.playerType];
-      const newDeck = this.shuffle([...playerData.deck]);
-
-      this.store.setState({
-        [this.playerType]: { ...playerData, deck: newDeck },
-        logs: this.store.getNewLogs(
-          `${this.playerType === "me" ? "我方" : "對手"} 洗切了牌庫`
-        ),
-      } as any);
-    });
 
     backBtn?.addEventListener("click", () => {
       const state = this.store.getState();
@@ -738,7 +723,14 @@ export class PlayerZone {
                 <h3>${this.expandedZone.toUpperCase()} Stack ${
       !isOwnerView ? "(Read Only)" : ""
     }</h3>
-                <button class="close-btn">Close</button>
+                <div class="header-buttons">
+                    ${
+                      isOwnerView
+                        ? '<button class="btn move-to-hand-btn">Move to Hand</button>'
+                        : ""
+                    }
+                    <button class="close-btn">Close</button>
+                </div>
             </div>
             
             <div class="stack-layout">
@@ -759,10 +751,21 @@ export class PlayerZone {
     const activeContainer = overlay.querySelector(".active-card-container");
     const grid = overlay.querySelector(".expanded-grid") as HTMLElement;
     const closeBtn = overlay.querySelector(".close-btn");
+    const moveToHandBtn = overlay.querySelector(".move-to-hand-btn");
 
     closeBtn?.addEventListener("click", () => {
       this.expandedZone = null;
       this.renderExpandedOverlay();
+    });
+
+    // Move to Hand button
+    moveToHandBtn?.addEventListener("click", () => {
+      const state = this.store.getState();
+      if (state.selectedCards && state.selectedCards.length > 0) {
+        this.moveCard(state.selectedCards[0], "hand");
+        this.expandedZone = null;
+        this.renderExpandedOverlay();
+      }
     });
 
     // Close on background click

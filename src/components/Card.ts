@@ -4,23 +4,30 @@ export class Card {
   static render(
     card: CardType,
     isBack: boolean = false,
-    school: string = "karasuno"
+    school: string = "烏野"
   ): string {
+    const getSchoolClass = (schoolName: string): string => {
+      switch (schoolName) {
+        case "青葉城西":
+          return "seijoh";
+        case "烏野":
+          return "karasuno";
+        case "音駒":
+          return "nekoma";
+        case "梟谷":
+          return "fukurodani";
+        default:
+          return "karasuno";
+      }
+    };
+
+    const schoolClass = getSchoolClass(school);
+
     if (isBack) {
-      const schoolName =
-        school === "seijoh"
-          ? "Aoba Johsai"
-          : school === "karasuno"
-          ? "Karasuno"
-          : school === "nekoma"
-          ? "Nekoma"
-          : school === "fukurodani"
-          ? "Fukurodani"
-          : "Unknown";
       return `
-        <div class="card back ${school}">
+        <div class="card back ${schoolClass}">
           <div class="card-back-design">
-             <div class="school-name">${schoolName}</div>
+             <div class="school-name">${school}</div>
           </div>
         </div>
       `;
@@ -35,25 +42,40 @@ export class Card {
       attack: 0,
     };
 
-    // Helper to render a stat if it exists (non-zero or specific logic)
-    // For now, render all stats for characters
-    const formatStat = (val: number | null | undefined) =>
-      val === null ? "-" : val ?? 0;
+    const renderBlockBar = (value: number | null | undefined): string => {
+      const val = value === null ? 0 : value ?? 0;
+      const maxBlocks = 6;
+      const filledBlocks = Math.min(Math.max(val, 0), maxBlocks);
+      const emptyBlocks = maxBlocks - filledBlocks;
+
+      let blocksHtml = '<div class="block-bar-container">';
+      for (let i = 0; i < filledBlocks; i++) {
+        blocksHtml += '<div class="block filled"></div>';
+      }
+      for (let i = 0; i < emptyBlocks; i++) {
+        blocksHtml += '<div class="block empty"></div>';
+      }
+      blocksHtml += "</div>";
+
+      return blocksHtml;
+    };
 
     const statsHtml = !isEvent
       ? `
         <div class="card-stats">
-          <div class="stat serve">S:${formatStat(stats.serve)}</div>
-          <div class="stat block">B:${formatStat(stats.block)}</div>
-          <div class="stat receive">R:${formatStat(stats.receive)}</div>
-          <div class="stat toss">T:${formatStat(stats.toss)}</div>
-          <div class="stat attack">A:${formatStat(stats.attack)}</div>
+          <div class="stat">S: ${renderBlockBar(stats.serve)}</div>
+          <div class="stat">B: ${renderBlockBar(stats.block)}</div>
+          <div class="stat">R: ${renderBlockBar(stats.receive)}</div>
+          <div class="stat">T: ${renderBlockBar(stats.toss)}</div>
+          <div class="stat">A: ${renderBlockBar(stats.attack)}</div>
         </div>
       `
       : ``;
 
     return `
-      <div class="card ${isEvent ? "event" : "character"}" data-id="${card.id}">
+      <div class="card ${
+        isEvent ? "event" : "character"
+      } ${schoolClass}" data-id="${card.id}">
         <div class="card-header">
           <div class="card-name">${card.name}</div>
         </div>

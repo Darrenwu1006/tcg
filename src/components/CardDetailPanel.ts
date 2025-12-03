@@ -52,12 +52,12 @@ export class CardDetailPanel {
         remaining: number;
         id: string;
         rarity: string;
+        type: "CHARACTER" | "EVENT";
       }
     >();
 
     // Count Totals
     allCards.forEach((card) => {
-      // Use ID or Name as key. ID is better if unique per card type.
       const key = card.id;
       if (!cardStats.has(key)) {
         cardStats.set(key, {
@@ -66,6 +66,7 @@ export class CardDetailPanel {
           remaining: 0,
           id: card.id,
           rarity: card.rarity || "",
+          type: card.type,
         });
       }
       const stat = cardStats.get(key)!;
@@ -85,6 +86,34 @@ export class CardDetailPanel {
       a.id.localeCompare(b.id)
     );
 
+    // Group by type
+    const characterCards = statsArray.filter((s) => s.type === "CHARACTER");
+    const eventCards = statsArray.filter((s) => s.type === "EVENT");
+
+    // Helper function to render card rows
+    const renderCardRows = (cards: typeof statsArray) => {
+      return cards
+        .map(
+          (stat) => `
+            <tr class="${stat.remaining === 0 ? "empty" : ""}">
+                <td class="card-info-cell">
+                    <div class="card-name-row">
+                        <span class="card-name">${stat.name}</span>
+                        ${
+                          stat.rarity
+                            ? `<span class="card-rarity">(${stat.rarity})</span>`
+                            : ""
+                        }
+                    </div>
+                    <div class="card-id">${stat.id}</div>
+                </td>
+                <td class="card-count">${stat.remaining}/${stat.total}</td>
+            </tr>
+        `
+        )
+        .join("");
+    };
+
     this.element.innerHTML = `
         <div class="deck-info-panel">
             <div class="deck-info-header">
@@ -92,40 +121,46 @@ export class CardDetailPanel {
                 <button class="close-btn">Close</button>
             </div>
             <div class="deck-info-content">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Card Info</th>
-                            <th>Total</th>
-                            <th>Rem.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${statsArray
-                          .map(
-                            (stat) => `
-                            <tr class="${stat.remaining === 0 ? "empty" : ""}">
-                                <td class="card-info-cell">
-                                    <div class="card-name-row">
-                                        <span class="card-name">${
-                                          stat.name
-                                        }</span>
-                                        ${
-                                          stat.rarity
-                                            ? `<span class="card-rarity">(${stat.rarity})</span>`
-                                            : ""
-                                        }
-                                    </div>
-                                    <div class="card-id">${stat.id}</div>
-                                </td>
-                                <td>${stat.total}</td>
-                                <td>${stat.remaining}</td>
+                ${
+                  characterCards.length > 0
+                    ? `
+                <div class="deck-group">
+                    <h4 class="deck-group-header">角色卡 Character Cards</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>卡片資訊</th>
+                                <th>剩餘/總數</th>
                             </tr>
-                        `
-                          )
-                          .join("")}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            ${renderCardRows(characterCards)}
+                        </tbody>
+                    </table>
+                </div>
+                `
+                    : ""
+                }
+                ${
+                  eventCards.length > 0
+                    ? `
+                <div class="deck-group">
+                    <h4 class="deck-group-header">事件卡 Event Cards</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>卡片資訊</th>
+                                <th>剩餘/總數</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${renderCardRows(eventCards)}
+                        </tbody>
+                    </table>
+                </div>
+                `
+                    : ""
+                }
             </div>
         </div>
       `;
@@ -135,33 +170,48 @@ export class CardDetailPanel {
     });
   }
 
+  private renderBlockBar(value: number | null | undefined): string {
+    const val = value === null ? 0 : value ?? 0;
+    const maxBlocks = 6;
+    const filledBlocks = Math.min(Math.max(val, 0), maxBlocks);
+    const emptyBlocks = maxBlocks - filledBlocks;
+
+    let blocksHtml = '<div class="block-bar-container">';
+    for (let i = 0; i < filledBlocks; i++) {
+      blocksHtml += '<div class="block filled"></div>';
+    }
+    for (let i = 0; i < emptyBlocks; i++) {
+      blocksHtml += '<div class="block empty"></div>';
+    }
+    blocksHtml += "</div>";
+
+    return `${blocksHtml} <span class="block-value">${val}</span>`;
+  }
+
   private renderCardDetails(card: Card) {
     const isEvent = card.type === "EVENT";
-
-    const formatStat = (val: number | null | undefined) =>
-      val === null ? "-" : val ?? 0;
 
     const statsHtml = !isEvent
       ? `
         <div class="detail-stats">
-          <div class="detail-stat"><span>Serve</span><span>${formatStat(
+          <div class="detail-stat"><span>Serve</span><span>${this.renderBlockBar(
             card.stats?.serve
           )}</span></div>
-          <div class="detail-stat"><span>Block</span><span>${formatStat(
+          <div class="detail-stat"><span>Block</span><span>${this.renderBlockBar(
             card.stats?.block
           )}</span></div>
-          <div class="detail-stat"><span>Receive</span><span>${formatStat(
+          <div class="detail-stat"><span>Receive</span><span>${this.renderBlockBar(
             card.stats?.receive
           )}</span></div>
-          <div class="detail-stat"><span>Toss</span><span>${formatStat(
+          <div class="detail-stat"><span>Toss</span><span>${this.renderBlockBar(
             card.stats?.toss
           )}</span></div>
-          <div class="detail-stat"><span>Attack</span><span>${formatStat(
+          <div class="detail-stat"><span>Attack</span><span>${this.renderBlockBar(
             card.stats?.attack
           )}</span></div>
         </div>
       `
-      : `<div class="detail-type">EVENT CARD</div>`;
+      : ``;
 
     this.element.innerHTML = `
       <div class="detail-content ${isEvent ? "event" : "character"}">
@@ -192,17 +242,12 @@ export class CardDetailPanel {
           <p>${card.skill || card.description || "無技能"}</p>
           ${
             card.note && card.note !== "-"
-              ? `
-            <h3>注釋</h3>
-            <p>${card.note}</p>
-          `
+              ? `<h3>注釋</h3><p>${card.note}</p>`
               : ""
           }
         </div>
       </div>
     `;
-
-    // Action buttons removed per user request (moved to slot interaction)
   }
 
   private renderTimingBadges(timing: string): string {

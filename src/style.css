@@ -1,8 +1,12 @@
+/* === Retro Fonts Import === */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap");
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
+  /* === Original Color Variables === */
   --color-me-bg: #1a1a1a;
   --color-me-text: #ffffff;
   --color-op-bg: #242424; /* Dark Gray */
@@ -10,8 +14,42 @@
   --color-container-bg: rgba(255, 255, 255, 0.1);
   --color-border: rgba(255, 255, 255, 0.2);
 
+  /* === Retro Color Scheme === */
+  /* 基礎顏色 */
+  --dark-grey: #131112;
+  --medium-grey: #555;
+  --light-grey: #888;
+  --text-color: #f0f0f0;
+  --accent-color: #ffffff;
+
+  /* Retro UI 風格顏色 */
+  --retro-bg: #7c7c7c; /* 米灰色主背景 */
+  --retro-input-bg: #adadad; /* 輸入框亮背景 */
+  --retro-border: #2c2c2c; /* 邊框與主要文字顏色 */
+  --retro-highlight-bg: #3f3f3f; /* 選中項目深色背景 */
+  --retro-highlight-text: #f0f0f0; /* 選中項目亮文字 */
+
+  /* 狀態顏色 */
+  --retro-green-status: #34bd3446; /* 正常狀態綠色 */
+  --retro-red-status: #d93434ea; /* 異常狀態紅色 */
+  --retro-red-bg: #c49797c5; /* 紅色提示背景 */
+  --retro-red-text: #321a1a; /* 紅色提示文字 */
+
+  /* 邊框樣式 */
+  --retro-border-style: 2px solid var(--retro-border);
+  --retro-border-style-thick: 4px solid var(--retro-border);
+
+  /* Retro 陰影效果 */
+  --retro-shadow: 5px 5px 0px rgba(44, 44, 44, 0.5);
+  --retro-shadow-large: 10px 10px 0px rgba(0, 0, 0, 0.5);
+
+  /* === Retro Fonts === */
+  --font-retro-game: "Press Start 2P", cursive; /* 8-bit 遊戲字體 */
+  --font-retro-pixel: "Pixelify Sans", sans-serif; /* 像素風字體 */
+  --font-chinese: "Noto Sans TC", sans-serif; /* 思源黑體 */
+
   /* Card Size - Increased */
-  --card-width: min(9vw, 8.5vh);
+  --card-width: min(9vw, 9vh);
   --card-height: calc(var(--card-width) * (86 / 59));
 
   color-scheme: light dark;
@@ -57,12 +95,19 @@ body {
   transform: rotate(180deg);
 }
 
-/* Net */
+/* Net - Retro 像素化虛線 */
 .net {
-  height: 2px;
-  background-color: white;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #ffffff 0px,
+    #ffffff 8px,
+    transparent 8px,
+    transparent 16px
+  );
   width: 100%;
   z-index: 10;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 /* Player Zone */
@@ -75,27 +120,61 @@ body {
 }
 
 .player-zone.me {
-  background-color: var(--color-me-bg);
-  color: var(--color-me-text);
+  /* Retro 偏暗配色 */
+  background-color: #1a1a1a;
+  color: var(--text-color);
   flex-direction: row;
+
+  /* 點陣網格背景 */
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.03) 10px,
+      rgba(255, 255, 255, 0.03) 11px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.03) 10px,
+      rgba(255, 255, 255, 0.03) 11px
+    );
 }
 
 .player-zone.opponent {
-  background-color: var(--color-op-bg);
-  color: var(--color-op-text);
+  /* Retro 偏暗配色 */
+  background-color: #242424;
+  color: var(--text-color);
   /* flex-direction: row-reverse; Removed to swap containers back */
   transform: rotate(180deg);
+
+  /* 點陣網格背景 */
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.03) 10px,
+      rgba(255, 255, 255, 0.03) 11px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.03) 10px,
+      rgba(255, 255, 255, 0.03) 11px
+    );
 }
 
-/* Columns */
+/* Columns - Retro 樣式 */
 .left-side {
   flex: 1.5; /* 15% */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-container-bg);
-  border: 1px solid var(--color-border);
+  background-color: rgba(124, 124, 124, 0.15);
+  border: var(--retro-border-style);
   border-radius: 8px;
 }
 
@@ -114,8 +193,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  background-color: var(--color-container-bg);
-  border: 1px solid var(--color-border);
+  background-color: rgba(124, 124, 124, 0.15);
+  border: var(--retro-border-style);
   border-radius: 8px;
 }
 
@@ -158,57 +237,79 @@ body {
 } /* Action */
 /* bot-row removed as Serve/Event moved to sides */
 
+/* 手牌區 - Retro 復古化 */
 .hand-area {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: auto; /* Allow content to dictate height, or fixed */
+  height: auto;
   min-height: 80px;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.6); /* Darker, semi-transparent */
-  backdrop-filter: blur(5px);
-  border-radius: 8px 8px 0 0;
+  padding: 12px;
+
+  /* 實色 retro 背景 */
+  background-color: var(--retro-bg);
+  border: var(--retro-border-style-thick);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.5);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
-  border-bottom: none;
   z-index: 10;
 }
 
-/* Slots */
+/* Slots - Retro 粗邊框 */
 .slot {
   width: var(--card-width);
   height: var(--card-height);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+
+  /* Retro 粗邊框 */
+  border: 3px solid rgba(255, 255, 255, 0.4);
+
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8em;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
   position: relative;
+
+  /* 點陣背景 */
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 5px,
+    rgba(255, 255, 255, 0.02) 5px,
+    rgba(255, 255, 255, 0.02) 6px
+  );
 }
 
-/* Zone Specific Styles (Borders) */
+/* Zone Specific Styles (Borders) - Retro 粗邊框 */
 .receive-slot {
   border-color: #2196f3;
+  border-width: 4px;
 } /* Blue */
 .toss-slot {
   border-color: #4caf50;
+  border-width: 4px;
 } /* Green */
 .attack-slot {
   border-color: #f44336;
+  border-width: 4px;
 } /* Red */
 .serve-slot {
   border-color: #ffeb3b;
+  border-width: 4px;
 } /* Yellow */
 .block-slot {
   border-color: #9e9e9e;
+  border-width: 4px;
 } /* Gray */
 .event-slot {
   border-color: #ffffff;
+  border-width: 4px;
 } /* White */
 
 /* Labels (Optional: could be pseudo-elements) */
@@ -228,11 +329,13 @@ body {
 
 .info-area {
   width: 90%;
-  padding: 5px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
+  padding: 8px;
+  background-color: var(--retro-input-bg);
+  border: var(--retro-border-style);
+  border-radius: 6px;
   text-align: center;
+  box-shadow: var(--retro-shadow);
+  font-family: var(--font-retro-pixel);
 }
 
 .info-content {
@@ -250,27 +353,47 @@ body {
 .function-area {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
   width: 90%;
+  align-items: center;
 }
 
 .set-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   min-height: 150px;
+  width: 100%;
+}
+
+.deck-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.drop-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
 }
 
 .set-area h2,
 .deck-area h2,
 .drop-area h2 {
-  font-size: 18px;
-  margin-top: 0;
-  border-bottom: 1px solid #444;
+  font-family: var(--font-retro-pixel);
+  font-size: 14px;
+  margin: 0;
+  border-bottom: var(--retro-border-style);
   padding-bottom: 5px;
   padding-top: 5px;
-  margin-bottom: 0;
+  width: 90%;
+  text-align: center;
 }
 
 .set-cards-container {
@@ -286,7 +409,7 @@ body {
   height: 88px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  margin-left: -20px; /* Overlap */
+  margin-left: -40px; /* Overlap */
   transition: transform 0.2s, margin 0.2s;
   position: relative;
   z-index: 1;
@@ -324,37 +447,59 @@ body {
 }
 
 .btn {
-  padding: 5px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background-color: #333;
-  color: white;
+  padding: 8px 16px;
+  border: var(--retro-border-style);
+  border-radius: 6px;
+  background-color: var(--retro-input-bg);
+  color: var(--retro-border);
+  font-family: var(--font-retro-pixel);
   cursor: pointer;
-  font-size: 0.8em;
-  transition: background-color 0.2s;
+  font-size: 0.9em;
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 .btn:hover {
-  background-color: #555;
+  background-color: var(--retro-highlight-bg);
+  color: var(--retro-highlight-text);
+}
+
+/* 按鈕下沉效果 */
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .draw-btn {
   width: 100%;
-  background-color: #2196f3;
-  border-color: #1976d2;
+  background-color: var(--retro-border);
+  color: var(--retro-highlight-text);
+  border: var(--retro-border-style);
+  font-family: var(--font-retro-pixel);
 }
 
 .draw-btn:hover {
-  background-color: #1976d2;
+  background-color: var(--retro-highlight-bg);
 }
 
 .shuffle-btn {
+  width: 100%;
   background-color: #ff9800;
-  border-color: #f57c00;
+  color: var(--retro-border);
+  border: var(--retro-border-style);
+  font-family: var(--font-retro-pixel);
 }
 
 .shuffle-btn:hover {
   background-color: #f57c00;
+}
+
+.back-btn {
+  width: 100%;
 }
 
 .reset-btn {
@@ -382,14 +527,27 @@ body {
 /* Switch Button */
 /* Switch View Button - Removed duplicate definition here. See bottom of file. */
 
-/* Setup Overlay */
+/* === Retro Animations === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Setup Overlay - Retro Style */
 .setup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -398,15 +556,77 @@ body {
 }
 
 .setup-container {
-  background-color: #2a2a2a;
+  /* Retro 面板樣式 */
+  background-color: var(--retro-bg);
+  border: var(--retro-border-style-thick);
+  border-radius: 16px;
+  box-shadow: var(--retro-shadow-large);
+
+  /* 佈局 */
   padding: 40px;
-  border-radius: 12px;
-  border: 1px solid #444;
-  width: 600px;
+  width: 50vw;
+  height: 80vh;
   max-width: 90%;
   display: flex;
   flex-direction: column;
   gap: 30px;
+
+  /* Retro 字體 */
+  font-family: var(--font-retro-pixel);
+  color: var(--retro-border);
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+
+  /* 淡入上浮動畫 */
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Setup Header */
+.setup-header {
+  text-align: center;
+  border-bottom: var(--retro-border-style);
+  padding-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+/* Retro 標題樣式 - 主標題 */
+.retro-title-en {
+  font-family: var(--font-retro-game);
+  font-size: 28px;
+  color: var(--retro-border);
+  margin: 0 0 10px 0;
+  text-shadow: 3px 3px 0px rgba(255, 255, 255, 0.2);
+  letter-spacing: 2px;
+}
+
+.retro-title-zh {
+  font-family: var(--font-chinese);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--retro-border);
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* Retro 標題樣式 - 副標題 */
+.retro-subtitle-en {
+  font-family: var(--font-retro-pixel);
+  font-size: 16px;
+  color: var(--retro-border);
+  margin: 0 0 5px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.retro-subtitle-zh {
+  font-family: var(--font-chinese);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--retro-border);
+  margin: 0 0 10px 0;
+  opacity: 0.7;
 }
 
 .setup-section {
@@ -416,9 +636,11 @@ body {
 }
 
 .player-setup {
-  background-color: #333;
-  padding: 15px;
+  background-color: var(--retro-input-bg);
+  border: var(--retro-border-style);
+  padding: 20px;
   border-radius: 8px;
+  box-shadow: var(--retro-shadow);
 }
 
 .deck-select {
@@ -456,15 +678,42 @@ body {
 }
 
 .start-btn {
+  /* Retro 按鈕樣式 */
   padding: 15px 40px;
   font-size: 1.2em;
-  background-color: #4caf50;
-  border-color: #388e3c;
+  font-family: var(--font-retro-game);
+
+  background-color: var(--retro-border);
+  color: var(--retro-highlight-text);
+  border: var(--retro-border-style);
+  border-radius: 8px;
+
+  /* 實體陰影 */
+  box-shadow: var(--retro-shadow);
+
+  cursor: pointer;
+  transition: all 0.1s ease;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+/* 按鈕下沉效果 */
+.start-btn:active {
+  transform: translate(5px, 5px);
+  box-shadow: none;
+}
+
+.start-btn:hover:not(:disabled) {
+  background-color: var(--retro-highlight-bg);
 }
 
 .start-btn:disabled {
-  background-color: #555;
-  border-color: #444;
+  background-color: var(--medium-grey);
+  color: var(--light-grey);
+  cursor: not-allowed;
+  opacity: 0.6;
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -474,25 +723,29 @@ body {
 }
 
 .deck-dropdown {
-  padding: 8px 12px;
-  border: 2px solid #444;
-  border-radius: 4px;
+  padding: 10px 14px;
+  border: var(--retro-border-style);
+  border-radius: 6px;
   font-size: 14px;
-  background: #2a2a2a;
-  color: #fff;
+  background: var(--retro-input-bg);
+  color: var(--retro-border);
+  font-family: var(--font-retro-pixel);
   cursor: pointer;
   min-width: 280px;
   outline: none;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 .deck-dropdown:hover {
-  border-color: #666;
-  background: #333;
+  background: var(--retro-highlight-bg);
+  color: var(--retro-highlight-text);
 }
 
 .deck-dropdown:focus {
-  border-color: #4caf50;
-  background: #333;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
 }
 
 .deck-dropdown option {
@@ -514,7 +767,7 @@ body {
 .card {
   width: var(--card-width);
   height: var(--card-height);
-  border-radius: 6px;
+  border-radius: 4px;
   background-color: #fff;
   color: #000;
   display: flex;
@@ -523,9 +776,12 @@ body {
   transition: transform 0.2s ease, z-index 0s;
   cursor: pointer;
   font-size: 0.8em;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+
+  /* Retro 粗邊框 */
+  border: 3px solid #2c2c2c;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+
   overflow: hidden;
-  border: 1px solid #ccc;
 }
 
 .card:hover {
@@ -535,49 +791,98 @@ body {
   border-color: #fff;
 }
 
+/* 卡片頂部學校色條 */
 .card-header {
-  background-color: #333;
-  color: white;
-  padding: 4px;
+  padding: 5px 4px;
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: 0.8em;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+}
+
+/* 烏野 - 橙色系 */
+.card.karasuno.character .card-header {
+  background: #ff8c00; /* Solid Orange */
+  color: #fff;
+}
+
+.card.karasuno.event .card-header {
+  background: #cc7000; /* Darker Solid Orange */
+  color: #fff;
+}
+
+/* 青葉城西 - 青綠色系 */
+.card.seijoh.character .card-header {
+  background: #00cccc; /* Solid Teal */
+  color: #fff;
+}
+
+.card.seijoh.event .card-header {
+  background: #008080; /* Darker Solid Teal */
+  color: #fff;
+}
+
+/* 音駒 - 紅色系 */
+.card.nekoma.character .card-header {
+  background: #ff3333; /* Solid Red */
+  color: #fff;
+}
+
+.card.nekoma.event .card-header {
+  background: #cc0000; /* Darker Solid Red */
+  color: #fff;
+}
+
+/* 梟谷 - 金色系 */
+.card.fukurodani.character .card-header {
+  background: #ffd700; /* Solid Gold */
+  color: #fff; /* 或黑色，視對比度而定，白色在深金/橙上應該還好 */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.card.fukurodani.event .card-header {
+  background: #b8860b; /* Darker Solid Gold */
+  color: #fff;
+}
+
+.card-name {
+  font-weight: bold;
+  font-size: 11px;
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.card.character .card-header {
-  background-color: #1976d2; /* Blue for Character */
-}
-
-.card.event .card-header {
-  background-color: #e64a19; /* Orange for Event */
-}
-
-.card-name {
-  font-weight: bold;
-  font-size: 14px; /* Increased from default/small */
-  text-align: center;
-  line-height: 1.2;
-}
-
 .card-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  /* gap: 1px; */
-  font-size: 8px;
-  margin-top: auto; /* Push to bottom */
-  background: rgba(0, 0, 0, 0.1);
-  /* padding: 1px; */
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  font-size: 7px;
+  margin-top: auto;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 3px;
+  gap: 2px;
+  width: 100%; /* Fill container width */
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .stat {
-  background-color: #ddd;
-  padding: 1px 2px;
-  text-align: center;
+  background-color: #f0f0f0;
+  padding: 2px 4px;
+  text-align: left;
   border-radius: 2px;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex; /* Ensure single line */
+  align-items: center;
+  gap: 4px; /* Space between label and bar */
 }
 
 /* App Layout */
@@ -590,40 +895,54 @@ body {
   background-color: #121212;
 }
 
-/* Stats Panel (Left) */
+/* Stats Panel - Retro 風格 */
 .stats-panel {
-  background: #1a1a1a;
-  border-right: 1px solid #333;
-  padding: 10px;
-  color: #fff;
+  /* Retro 面板樣式 */
+  background: var(--retro-bg);
+  border-right: var(--retro-border-style-thick);
+  padding: 15px;
+  color: var(--retro-border);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
+
+  /* Retro 字體 */
+  font-family: var(--font-retro-pixel);
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 .stats-panel h2 {
-  font-size: 18px;
+  /* Retro 主標題 */
+  font-family: var(--font-retro-game);
+  font-size: 10px;
   margin-top: 0;
-  border-bottom: 1px solid #444;
-  padding-bottom: 5px;
-  padding-top: 5px;
+  border-bottom: var(--retro-border-style);
+  padding-bottom: 8px;
+  padding-top: 8px;
   margin-bottom: 0;
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.1);
 }
 
 .stats-section h3 {
+  font-family: var(--font-retro-pixel);
   font-size: 14px;
-  color: #aaa;
+  color: var(--retro-border);
   margin: 0 0 10px 0;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .stat-placeholder {
-  background: #252525;
-  padding: 5px;
-  margin-bottom: 5px;
+  background: var(--retro-input-bg);
+  border: var(--retro-border-style);
+  padding: 8px;
+  margin-bottom: 8px;
   border-radius: 4px;
+  box-shadow: var(--retro-shadow);
 }
 
 .stat-placeholder label {
@@ -635,11 +954,13 @@ body {
 }
 
 .stat-placeholder .value {
+  font-family: var(--font-retro-game);
   font-size: 24px;
   font-weight: bold;
   color: #00ff88;
-  min-width: 40px;
+  min-width: 50px;
   text-align: center;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
 }
 
 .stat-controls {
@@ -650,17 +971,27 @@ body {
 }
 
 .stat-btn {
-  background: #333;
-  border: 1px solid #555;
-  color: white;
-  width: 30px;
-  height: 30px;
+  /* Retro 方形按鈕 */
+  background: var(--retro-border);
+  border: var(--retro-border-style);
+  color: var(--retro-highlight-text);
+  width: 32px;
+  height: 32px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 18px;
+  font-family: var(--font-retro-pixel);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+}
+
+/* 按鈕下沉效果 */
+.stat-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .expanded-header h3 {
@@ -829,33 +1160,52 @@ body {
   text-align: center;
 }
 
-/* Card Detail Panel (Right) */
+/* Card Detail Panel - 遊戲卡帶風格 🎮 */
 .card-detail-panel {
-  background: #1a1a1a;
-  border-left: 1px solid #333;
-  padding: 20px;
-  color: #fff;
+  background: var(--retro-bg);
+  border-left: var(--retro-border-style-thick);
+  padding: 0;
+  color: var(--retro-border);
   overflow-y: auto;
+  font-family: var(--font-retro-pixel);
+
+  /* 立體卡帶陰影 */
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+
+  position: relative;
+}
+
+/* 頂部彩色漸層條 */
+/* 頂部彩色漸層條 removed per user request */
+.card-detail-panel::before {
+  display: none;
 }
 
 .card-detail-panel .placeholder {
-  color: #666;
+  color: var(--retro-border);
   text-align: center;
   margin-top: 50px;
+  padding: 20px;
+  font-family: var(--font-retro-pixel);
 }
 
 .card-detail-panel .detail-header {
-  margin-bottom: 20px;
-  border-bottom: 1px solid #444;
-  padding-bottom: 10px;
+  margin: 20px 20px 20px 20px;
+  padding: 15px;
+  border: var(--retro-border-style);
+  border-radius: 8px;
+  background: var(--retro-input-bg);
+  box-shadow: var(--retro-shadow);
 }
 
 .card-detail-panel h2 {
   margin: 0;
-  font-size: 24px;
-  color: #fff;
-  padding-bottom: 5px;
-  padding-top: 5px;
+  font-family: var(--font-retro-game);
+  font-size: 20px;
+  color: var(--retro-border);
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.2);
+  padding-bottom: 8px;
+  padding-top: 0;
 }
 
 .card-detail-panel .detail-id {
@@ -881,36 +1231,108 @@ body {
 }
 
 .card-detail-panel .detail-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0 20px 20px 20px;
+  padding: 15px;
+  background: var(--retro-input-bg);
+  border: var(--retro-border-style);
+  border-radius: 8px;
+  box-shadow: var(--retro-shadow);
 }
 
 /* Action buttons removed */
 
 .card-detail-panel .detail-stat {
-  background: #333;
-  padding: 8px;
-  border-radius: 4px;
+  background: transparent;
+  border: none;
+  padding: 5px 0;
+  border-radius: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* Align start to control spacing */
+  align-items: center;
+  box-shadow: none;
+  border-bottom: 1px dashed var(--retro-border);
+  /* gap: 0px; Reduced gap from 20px */
 }
 
 .card-detail-panel .detail-stat span:first-child {
-  color: #aaa;
+  color: var(--retro-border);
+  font-family: var(--font-retro-pixel);
+  text-transform: uppercase;
+  font-size: 12px;
+  flex: 0 0 auto;
+  min-width: 70px;
 }
 
 .card-detail-panel .detail-stat span:last-child {
+  font-family: var(--font-retro-game);
   font-weight: bold;
-  color: #fff;
+  color: var(--retro-border);
+  text-shadow: none;
+  font-size: 14px;
+  flex: 1;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 方塊進度條樣式 */
+/* CSS-based Block Bar 樣式 */
+.block-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 0px; /* Control spacing between blocks here */
+}
+
+.block {
+  width: 12px;
+  height: 10px;
+  background-color: #444; /* Default empty color */
+  /* border-radius: 1px; */
+}
+
+.block.filled {
+  background-color: #2c2c2c; /* Filled color (dark) */
+}
+
+.block.empty {
+  background-color: rgba(0, 0, 0, 0.1); /* Empty color (light transparent) */
+  /* border: 1px solid rgba(0, 0, 0, 0.2); */
+  box-sizing: border-box;
+}
+
+/* Card specific adjustments */
+.card-stats .block {
+  width: 8px;
+  height: 6px;
+  gap: 0px;
+}
+
+.card-stats .block-bar-container {
+  gap: 0px;
+}
+
+.block-value {
+  font-family: var(--font-retro-game);
+  font-size: 14px;
+}
+
+/* 事件卡不顯示 detail-type */
+.card-detail-panel .detail-type {
+  display: none;
 }
 
 .card-detail-panel .detail-text {
-  background: #252525;
+  background: var(--retro-input-bg);
+  border: var(--retro-border-style);
+  margin: 0 20px 20px 20px;
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 8px;
   line-height: 1.6;
+  box-shadow: var(--retro-shadow);
 }
 
 .card-detail-panel .detail-text-header {
@@ -921,67 +1343,84 @@ body {
 }
 
 .card-detail-panel .detail-text h3 {
-  margin: 0;
-  font-size: 16px;
-  color: #aaa;
-  border-bottom: none;
-  padding-bottom: 0;
+  margin: 0 0 10px 0;
+  font-family: var(--font-retro-pixel);
+  font-size: 14px;
+  color: var(--retro-border);
+  border-bottom: var(--retro-border-style);
+  padding-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .card-detail-panel .detail-text p {
   margin-top: 0;
 }
 
-/* School Specific Card Backs */
+/* School Specific Card Backs - 極簡風格：純色背景 */
+
+/* 青葉城西 - 青綠色 */
 .card.back.seijoh .card-back-design {
-  background: linear-gradient(135deg, #008080, #004d4d); /* Teal */
-  border: 2px solid #00cccc;
+  background: #008080;
 }
 
+/* 烏野 - 橙色 */
 .card.back.karasuno .card-back-design {
-  background: linear-gradient(135deg, #ff8c00, #b35900); /* Orange */
-  border: 2px solid #ffcc00;
+  background: #ff8c00;
 }
 
+/* 音駒 - 紅色 */
 .card.back.nekoma .card-back-design {
-  background: linear-gradient(135deg, #cc0000, #800000); /* Red */
-  border: 2px solid #ff3333;
+  background: #cc0000;
 }
 
+/* 梟谷 - 金色 */
 .card.back.fukurodani .card-back-design {
-  background: linear-gradient(135deg, #ffd700, #b8860b); /* Gold */
-  border: 2px solid #ffffcc;
+  background: #ffd700;
 }
 
-.card.back .school-name {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 10px;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center;
-  width: 100%;
-}
-
-/* Card Back */
+/* Card Back - GB 遊戲卡帶風格 🎮 */
 .card.back {
-  background-color: #222;
-  border: 2px solid #555;
+  background-color: #e8e8e8;
+  border: 3px solid #2c2c2c;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 8px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* 頂部星星邊框 - 白色 */
+/* 頂部星星邊框 - Removed */
+.card.back::before {
+  display: none;
+}
+
+/* 底部 Nintendo 標籤 - Removed */
+.card.back::after {
+  display: none;
+}
+
+/* 卡背設計 - 極簡風格 */
 .card-back-design {
-  width: 80%;
-  height: 80%;
-  border: 2px dashed #555;
-  border-radius: 4px;
-  opacity: 0.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center vertically */
+  height: 100%;
+  position: relative;
+  width: 100%;
+  z-index: 10;
+}
+
+.school-name {
+  font-family: var(--font-retro-game);
+  font-size: 10px;
+  color: #fff;
+  letter-spacing: 3px;
+  /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */
+  /* font-weight: bold; */
 }
 
 /* Opponent Hand Specifics */
@@ -1080,7 +1519,7 @@ body {
 .timing-badge {
   display: inline-block;
   padding: 1px 4px;
-  background: rgba(128, 128, 128, 0.3);
+  background: rgba(74, 74, 74, 0.3);
   border: 1px solid rgba(128, 128, 128, 0.6);
   border-radius: 1px;
   font-size: 8px;
@@ -1145,63 +1584,141 @@ body {
   /* box-shadow: 0 10px 30px rgba(0,0,0,0.5); */
 }
 
-/* Deck Info Panel */
+/* Deck Info Panel - 收銀機收據風格 🧾 */
+/* Deck Info Panel - Game Cartridge Style 🎮 */
 .deck-info-panel {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  background: #1a1a1a;
-  color: #fff;
-  overflow: hidden;
-  border-radius: 12px;
-  /* border: 1px solid #444; */
+  gap: 0;
+  padding: 15px;
+  background: var(--retro-bg); /* Dark background like stats-panel */
+  color: var(--retro-border); /* Light text */
+  overflow-y: auto;
+  border-left: var(--retro-border-style-thick);
+
+  /* Retro 字體 */
+  font-family: var(--font-retro-pixel);
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+/* 頂部鋸齒效果 */
+/* Remove receipt jagged edge */
+.deck-info-panel::before {
+  display: none;
 }
 
 .deck-info-header {
+  /* Retro 主標題 */
+  font-family: var(--font-retro-game);
+  font-size: 10px;
+  margin-top: 0;
+  border-bottom: var(--retro-border-style);
+  padding-bottom: 8px;
+  padding-top: 8px;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #444;
+}
+
+.deck-info-header h3 {
+  margin: 0;
+  font-family: var(--font-retro-game);
+  font-size: 10px;
+  color: var(--retro-border);
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.1);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.deck-info-header .close-btn {
+  background: var(--retro-border);
+  border: var(--retro-border-style);
+  color: var(--retro-highlight-text);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-retro-pixel);
+  font-size: 10px;
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+}
+
+.deck-info-header .close-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .deck-info-content {
   flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Deck Group Styling */
+.deck-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deck-group-header {
+  font-family: var(--font-retro-game);
+  font-size: 14px;
+  color: var(--retro-border);
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 2px solid var(--retro-border);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.1);
 }
 
 .deck-info-content table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9em;
-}
-
-.deck-info-content th,
-.deck-info-content td {
-  text-align: left;
-  padding: 8px;
-  border-bottom: 1px solid #333;
-  vertical-align: middle; /* Ensure vertical centering */
+  font-size: 14px;
 }
 
 .deck-info-content th {
-  color: #aaa;
-  font-weight: normal;
-  position: sticky;
-  top: 0;
-  background: #111;
-  z-index: 1; /* Ensure header stays on top */
+  text-align: left;
+  padding: 10px 6px;
+  border-bottom: var(--retro-border-style);
+  color: var(--retro-border);
+  font-family: var(--font-retro-pixel);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+.deck-info-content td {
+  text-align: left;
+  padding: 10px 6px;
+  border-bottom: 1px solid rgba(44, 44, 44, 0.3);
+  vertical-align: middle;
+  color: var(--retro-border); /* Light text */
+  line-height: 1.5;
+}
+
+.deck-info-content tr:last-child td {
+  border-bottom: none;
 }
 
 .deck-info-content tr.empty {
-  color: #555;
+  opacity: 0.5;
   text-decoration: line-through;
+  color: #888;
 }
 
-.deck-info-content tr:hover {
-  background: rgba(255, 255, 255, 0.05);
+.deck-info-content tr:hover td {
+  background: rgba(255, 255, 255, 0.05); /* Subtle hover */
 }
 
 .card-info-cell {
@@ -1219,17 +1736,30 @@ body {
 
 .card-name {
   font-weight: bold;
-  color: #fff;
+  color: var(--retro-border); /* Light text */
+  font-size: 18px; /* Increased for better readability */
+  font-family: var(--font-retro-game);
 }
 
 .card-rarity {
   font-size: 0.85em;
-  color: #aaa;
+  color: #888; /* Dimmer light text */
+  font-family: var(--font-retro-pixel);
 }
 
 .card-id {
-  font-size: 0.8em;
+  font-size: 11px;
   color: #666;
+  font-family: monospace;
+}
+
+/* Card Count Column */
+.card-count {
+  font-family: var(--font-retro-game);
+  font-size: 16px;
+  font-weight: bold;
+  text-align: right;
+  color: var(--retro-border);
 }
 
 .expanded-header {
@@ -1245,6 +1775,18 @@ body {
   margin: 0;
   color: #fff;
   font-size: 1.2em;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.move-to-hand-btn {
+  background-color: #00ff88;
+  color: #000;
+  font-weight: bold;
 }
 
 .stack-layout {
