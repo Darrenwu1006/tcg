@@ -508,7 +508,8 @@ export class PlayerZone {
         // Left-click also shows details on field cards
         cardEl.addEventListener("click", (e) => {
           e.preventDefault();
-          e.stopPropagation();
+          // Removed stopPropagation to allow slot click to handle "Open Stack" logic
+          // e.stopPropagation();
           this.store.setState({ selectedCard: topCard });
         });
 
@@ -634,7 +635,27 @@ export class PlayerZone {
 
         // Interaction (Move/Play) - Only if Owner
         if (this.playerType === state.viewPerspective) {
+          // Check if we are trying to move cards TO this slot
+          // If selected cards are NOT already in this slot, we move them here.
+          // If selected cards ARE in this slot (e.g. we just clicked one), we might want to open the stack.
+
+          let isMoveAction = false;
           if (selectedCards.length > 0) {
+            // Check if any selected card is NOT in this slot (or not in this position)
+            // If so, it's a move action.
+            const cardsInThisSlot = state[this.playerType].field.filter(
+              (c) => c.position === pos
+            );
+            const selectedAreHere = selectedCards.every((sc) =>
+              cardsInThisSlot.find((c) => c.instanceId === sc.instanceId)
+            );
+
+            if (!selectedAreHere) {
+              isMoveAction = true;
+            }
+          }
+
+          if (isMoveAction) {
             if (slot.classList.contains("deck-slot")) {
               this.moveCard(selectedCards[0], "deck");
               return;
@@ -649,14 +670,23 @@ export class PlayerZone {
             }
           }
 
-          if (playingCard && pos) {
-            this.moveCard(playingCard, pos);
-            return;
+          if (playingCard && pos && !isMoveAction) {
+            // If we have a playing card but decided it's not a move action (e.g. it's already here),
+            // maybe we want to open the stack?
+            // Or if playingCard is set but not selected (e.g. right click?), usually playingCard == selectedCards[0]
           }
         }
 
         // Expansion - Allow for BOTH Owner and Enemy
-        if (!playingCard && selectedCards.length === 0 && pos) {
+        // Open if:
+        // 1. No cards selected (pure click on empty slot)
+        // 2. OR Cards selected but they are already HERE (clicked on stack to open it)
+        const isStackOpenAction =
+          !playingCard ||
+          (selectedCards.length > 0 &&
+            selectedCards.every((sc) => sc.position === pos));
+
+        if (isStackOpenAction && pos) {
           if (
             [
               "serve",
@@ -989,7 +1019,8 @@ export class PlayerZone {
 
     if (isInteractive) {
       cardEl.addEventListener("click", (e) => {
-        e.stopPropagation();
+        // Removed stopPropagation to allow slot click to handle "Open Stack" logic
+        // e.stopPropagation();
         const currentState = this.store.getState();
 
         // Always show card details on left-click
@@ -1017,8 +1048,9 @@ export class PlayerZone {
       });
     } else {
       // Read Only - Show details on left-click
-      cardEl.addEventListener("click", (e) => {
-        e.stopPropagation();
+      cardEl.addEventListener("click", () => {
+        // Removed stopPropagation
+        // e.stopPropagation();
         this.store.setState({ selectedCard: card });
       });
       cardEl.style.cursor = "pointer";
