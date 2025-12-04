@@ -1,8 +1,8 @@
 /* === Retro Fonts Import === */
-@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap&family=DotGothic16&family=Jost:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap");
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Lexend, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -45,7 +45,7 @@
 
   /* === Retro Fonts === */
   --font-retro-game: "Press Start 2P", cursive; /* 8-bit 遊戲字體 */
-  --font-retro-pixel: "Pixelify Sans", sans-serif; /* 像素風字體 */
+  --font-retro-pixel: "Quicksand", sans-serif; /* 像素風字體 */
   --font-chinese: "Noto Sans TC", sans-serif; /* 思源黑體 */
 
   /* Card Size - Increased */
@@ -288,27 +288,27 @@ body {
 
 /* Zone Specific Styles (Borders) - Retro 粗邊框 */
 .receive-slot {
-  border-color: #2196f3;
+  border-color: #17609c;
   border-width: 4px;
 } /* Blue */
 .toss-slot {
-  border-color: #4caf50;
+  border-color: #275529;
   border-width: 4px;
 } /* Green */
 .attack-slot {
-  border-color: #f44336;
+  border-color: #852a23;
   border-width: 4px;
 } /* Red */
 .serve-slot {
-  border-color: #ffeb3b;
+  border-color: #7c7321;
   border-width: 4px;
 } /* Yellow */
 .block-slot {
-  border-color: #9e9e9e;
+  border-color: #484848;
   border-width: 4px;
 } /* Gray */
 .event-slot {
-  border-color: #ffffff;
+  border-color: #484848;
   border-width: 4px;
 } /* White */
 
@@ -446,6 +446,65 @@ body {
   left: 0;
 }
 
+/* 卡片堆疊容器 - 用於 Deck 和 Drop */
+.card-stack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 堆疊效果 - 第一層陰影卡 */
+.card-stack::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: transparent; /* 透明背景，讓學校顏色顯示 */
+  border: 3px solid #2c2c2c;
+  border-radius: 4px;
+  top: 3px;
+  right: -3px;
+  z-index: -1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 堆疊效果 - 第二層陰影卡 */
+.card-stack::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: transparent; /* 透明背景，讓學校顏色顯示 */
+  border: 3px solid #2c2c2c;
+  border-radius: 4px;
+  top: 6px;
+  right: -6px;
+  z-index: -2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 確保卡片在堆疊容器中正確定位 */
+.card-stack .card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Drop slot 也使用相同的卡片樣式 */
+.drop-slot .card {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .btn {
   padding: 8px 16px;
   border: var(--retro-border-style);
@@ -476,19 +535,19 @@ body {
 
 .draw-btn {
   width: 100%;
-  background-color: var(--retro-border);
-  color: var(--retro-highlight-text);
+  background-color: #045045;
+  color: var(--retro-border);
   border: var(--retro-border-style);
   font-family: var(--font-retro-pixel);
 }
 
 .draw-btn:hover {
-  background-color: var(--retro-highlight-bg);
+  background-color: #06917c;
 }
 
 .shuffle-btn {
   width: 100%;
-  background-color: #ff9800;
+  background-color: #6d4914;
   color: var(--retro-border);
   border: var(--retro-border-style);
   font-family: var(--font-retro-pixel);
@@ -850,7 +909,7 @@ body {
 
 .card-name {
   font-weight: bold;
-  font-size: 11px;
+  font-size: 10px;
   color: #fff;
   text-align: center;
   line-height: 1.2;
@@ -998,19 +1057,7 @@ body {
   margin: 0;
 }
 
-.close-btn {
-  background: transparent;
-  border: 1px solid #666;
-  color: #ccc;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
+/* close-btn 已在下方統一定義，此處移除重複定義 */
 
 /* Battle & Phase UI */
 .info-content {
@@ -1103,16 +1150,31 @@ body {
 .reset-stats-btn {
   background-color: #d32f2f;
   color: white;
-  border: none;
-  /* padding: 5px; */
-  border-radius: 4px;
-  cursor: pointer;
   font-weight: bold;
   margin-top: auto; /* Push to bottom if space allows */
+
+  /* Retro 按鈕樣式 */
+  padding: 8px 16px;
+  border: var(--retro-border-style);
+  border-radius: 6px;
+  font-family: var(--font-retro-pixel);
+  cursor: pointer;
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 .reset-stats-btn:hover {
   background-color: #b71c1c;
+}
+
+/* 按鈕下沉效果 */
+.reset-stats-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 /* Game Log */
@@ -1452,19 +1514,33 @@ body {
   bottom: 20px;
   right: 20px;
   z-index: 1000;
-  padding: 6px 12px; /* Reduced padding */
+
+  /* Retro 按鈕樣式 */
+  padding: 8px 16px;
   background: #00ff88;
   color: #000;
-  border: none;
-  border-radius: 4px;
+  border: var(--retro-border-style);
+  border-radius: 6px;
   font-weight: bold;
-  font-size: 12px; /* Smaller font */
+  font-size: 12px;
+  font-family: var(--font-retro-pixel);
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 .switch-view-btn:hover {
   background: #00cc6a;
+}
+
+/* 按鈕下沉效果 */
+.switch-view-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 /* Slot Interaction */
@@ -1519,11 +1595,11 @@ body {
 .timing-badge {
   display: inline-block;
   padding: 1px 4px;
-  background: rgba(74, 74, 74, 0.3);
+  background: rgba(30, 30, 30, 0.3);
   border: 1px solid rgba(128, 128, 128, 0.6);
   border-radius: 1px;
   font-size: 8px;
-  color: #333;
+  color: #161616;
   white-space: nowrap;
   line-height: 1.2;
 }
@@ -1538,10 +1614,10 @@ body {
 .timing-badges .timing-badge {
   font-size: 11px;
   padding: 2px 6px;
-  background: rgba(128, 128, 128, 0.2);
+  background: rgba(55, 55, 55, 0.2);
   border: 1px solid rgba(128, 128, 128, 0.5);
   border-radius: 1px;
-  color: #ccc;
+  color: #1f1f1f;
 }
 
 /* Expanded Overlay */
@@ -1571,17 +1647,45 @@ body {
   bottom: 5%;
 }
 
+/* Expanded Content - 遊戲卡匣風格 🎮 */
 .expanded-content {
-  background-color: transparent; /* Remove inner bg since overlay has it */
+  /* Retro 背景與邊框 */
+  background-color: var(--retro-bg);
+  border: var(--retro-border-style-thick);
+  border-radius: 12px;
+  box-shadow: var(--retro-shadow-large);
+
+  /* 佈局 */
   padding: 20px;
-  /* border-radius: 12px; */
-  /* border: 1px solid #444; */
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  /* box-shadow: 0 10px 30px rgba(0,0,0,0.5); */
+
+  /* 點陣網格背景 */
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 10px,
+      rgba(44, 44, 44, 0.1) 10px,
+      rgba(44, 44, 44, 0.1) 11px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 10px,
+      rgba(44, 44, 44, 0.1) 10px,
+      rgba(44, 44, 44, 0.1) 11px
+    );
+
+  /* Retro 字體 */
+  font-family: var(--font-retro-pixel);
+  color: var(--retro-border);
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 /* Deck Info Panel - 收銀機收據風格 🧾 */
@@ -1671,7 +1775,7 @@ body {
 
 .deck-group-header {
   font-family: var(--font-retro-game);
-  font-size: 14px;
+  font-size: 10px;
   color: var(--retro-border);
   margin: 0;
   padding: 8px 0;
@@ -1726,6 +1830,8 @@ body {
   flex-direction: column;
   gap: 2px;
   align-items: flex-start; /* Force left alignment of flex children */
+  white-space: normal; /* 確保可以換行 */
+  flex-shrink: 0; /* 防止在 flex 容器中被壓縮 */
 }
 
 .card-name-row {
@@ -1737,8 +1843,17 @@ body {
 .card-name {
   font-weight: bold;
   color: var(--retro-border); /* Light text */
-  font-size: 18px; /* Increased for better readability */
+  font-size: 14px; /* Increased for better readability */
   font-family: var(--font-retro-game);
+
+  /* 固定寬度與自動換行 */
+  max-width: 100px;
+  /* white-space: normal; 確保可以換行 */
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
+  flex-shrink: 0; /* 新增：防止在 flex 容器中被壓縮 */
 }
 
 .card-rarity {
@@ -1756,7 +1871,7 @@ body {
 /* Card Count Column */
 .card-count {
   font-family: var(--font-retro-game);
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
   text-align: right;
   color: var(--retro-border);
@@ -1860,18 +1975,33 @@ body {
 }
 
 .close-btn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+  background-color: #ff4444; /* 鮮豔紅色，與 move-to-hand 的綠色風格一致 */
+  color: #000; /* 黑色文字 */
   font-weight: bold;
   font-size: 0.9em;
+
+  /* 與 .btn 一致的樣式 */
+  padding: 8px 16px;
+  border: var(--retro-border-style);
+  border-radius: 6px;
+  font-family: var(--font-retro-pixel);
+  cursor: pointer;
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 .close-btn:hover {
-  background-color: #d32f2f;
+  background-color: #ff6666; /* hover 時變亮 */
+}
+
+/* 按鈕下沉效果 */
+.close-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .stack-count {

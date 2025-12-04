@@ -271,21 +271,45 @@ export class PlayerZone {
 
       // Update Deck Slot
       if (deckSlot) {
-        // Only update visuals, don't re-attach listeners here if possible,
-        // but innerHTML wipes them. So we need to re-attach or use a child container.
-        // Let's use innerHTML for simplicity but ensure we don't leak.
-        deckSlot.innerHTML = "Deck";
+        // Clear content first
+        deckSlot.innerHTML = "";
 
         if (playerData.deck.length > 0) {
-          // Render top card face down
-          const cardHtml = CardComponent.render(
-            playerData.deck[0],
-            true,
-            school
-          );
-          const cardWrapper = document.createElement("div");
-          cardWrapper.innerHTML = cardHtml;
-          deckSlot.appendChild(cardWrapper.firstElementChild!);
+          // Create card stack container
+          const stackContainer = document.createElement("div");
+          stackContainer.className = "card-stack";
+          stackContainer.dataset.count = playerData.deck.length.toString();
+
+          // Render top card face down (Inline to avoid render issues)
+          // Render top card face down (Manual DOM construction)
+          const schoolClass =
+            school === "青葉城西"
+              ? "seijoh"
+              : school === "音駒"
+              ? "nekoma"
+              : school === "梟谷"
+              ? "fukurodani"
+              : "karasuno";
+
+          const cardDiv = document.createElement("div");
+          cardDiv.className = `card back ${schoolClass}`;
+
+          const designDiv = document.createElement("div");
+          designDiv.className = "card-back-design";
+
+          const nameDiv = document.createElement("div");
+          nameDiv.className = "school-name";
+          nameDiv.textContent = school;
+
+          designDiv.appendChild(nameDiv);
+          cardDiv.appendChild(designDiv);
+
+          stackContainer.appendChild(cardDiv);
+
+          deckSlot.appendChild(stackContainer);
+        } else {
+          // Show "Deck" text when empty
+          deckSlot.textContent = "Deck";
         }
 
         // Re-attach listeners because innerHTML wiped them
@@ -308,18 +332,34 @@ export class PlayerZone {
       // Update Drop Slot Visuals
       const dropSlot = this.element.querySelector(".drop-slot");
       if (dropSlot) {
-        dropSlot.innerHTML = "Drop"; // Reset content
+        // Clear content first
+        dropSlot.innerHTML = "";
 
         if (playerData.drop.length > 0) {
-          // Render card back
+          // Render card face up (top card of drop pile)
           const cardHtml = CardComponent.render(
             playerData.drop[playerData.drop.length - 1],
-            true,
+            false, // Face up
             school
           );
-          const cardWrapper = document.createElement("div");
-          cardWrapper.innerHTML = cardHtml;
-          dropSlot.appendChild(cardWrapper.firstElementChild!);
+
+          if (cardHtml && cardHtml.trim().length > 0) {
+            const cardWrapper = document.createElement("div");
+            cardWrapper.innerHTML = cardHtml;
+            const cardEl = cardWrapper.firstElementChild as HTMLElement;
+            dropSlot.appendChild(cardEl);
+          }
+
+          // Add a counter if > 1 card (consistent with field slots)
+          if (playerData.drop.length > 1) {
+            const countBadge = document.createElement("div");
+            countBadge.className = "stack-count";
+            countBadge.textContent = playerData.drop.length.toString();
+            dropSlot.appendChild(countBadge);
+          }
+        } else {
+          // Show "Drop" text when empty
+          dropSlot.textContent = "Drop";
         }
       }
 

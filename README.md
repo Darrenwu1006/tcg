@@ -4,6 +4,19 @@
 
 ## Development Progress Logs
 
+### Progress Log (2025-12-04)
+
+#### Completed (已完成)
+
+- **Card Back Display Fix (卡背顯示修復)**:
+
+  - **Manual DOM Construction**: 修復了 Deck 區域卡背顯示問題，改用手動 DOM 構建方式 (createElement) 以避免 HTML 解析錯誤。
+  - **Visual Verification**: 確認烏野 (Karasuno) 橙色卡背正確顯示。
+
+- **Drop Area Improvements (棄牌區優化)**:
+  - **Face-up Display**: 將 Drop 區域改為正面顯示卡片 (Face-up)，與 Serve/Receive 區域一致。
+  - **Structure Alignment**: 移除 `.card-stack` 容器，直接渲染卡片並添加 `.stack-count` 計數標記，統一樣式結構。
+
 ### Progress Log (2025-12-02)
 
 #### Completed (已完成)
