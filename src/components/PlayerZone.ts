@@ -211,171 +211,231 @@ export class PlayerZone {
 
   private updateCounts(state: AppState) {
     const playerData = this.playerType === "me" ? state.me : state.opponent;
+    const school =
+      this.playerType === "me" ? state.me.school : state.opponent.school;
 
-    try {
-      const setArea = this.element.querySelector(".set-area");
-      const deckSlot = this.element.querySelector(".deck-slot");
+    this.updateSetArea(playerData.set, school, state.viewPerspective);
+    this.updateDeckArea(playerData.deck, school);
+    this.updateDropArea(playerData.drop, school);
 
-      // Get School for Card Backs
-      const school =
-        this.playerType === "me" ? state.me.school : state.opponent.school;
+    const setEl = this.element.querySelector(".set-area .count");
+    const deckEl = this.element.querySelector(".deck-area .count");
 
-      // Update Set Area
-      if (setArea) {
-        // Remove existing cards and slot
-        const existingCards = setArea.querySelectorAll(".set-card, .slot");
-        existingCards.forEach((el) => el.remove());
-
-        // Keep the header
-        const header = setArea.querySelector("h2");
-        setArea.innerHTML = "";
-        if (header) setArea.appendChild(header);
-
-        const setCardsContainer = document.createElement("div");
-        setCardsContainer.className = "set-cards-container";
-        setArea.appendChild(setCardsContainer);
-
-        // Render Set Cards (Face Down)
-        if (playerData.set.length > 0) {
-          playerData.set.forEach((card) => {
-            const cardHtml = CardComponent.render(card, true, school); // Face down with school back
-            const cardWrapper = document.createElement("div");
-            cardWrapper.innerHTML = cardHtml;
-            const cardEl = cardWrapper.firstElementChild as HTMLElement;
-            cardEl.classList.add("set-card");
-            cardEl.dataset.instanceId = card.instanceId;
-
-            // Interaction: Add to Hand
-            // Allow interaction if it's the active player's view
-            const state = this.store.getState();
-            if (this.playerType === state.viewPerspective) {
-              cardEl.addEventListener("click", () => {
-                if (confirm("Add this card to your hand?")) {
-                  this.moveSetCardToHand(card);
-                }
-              });
-              cardEl.style.cursor = "pointer";
-            }
-
-            setCardsContainer.appendChild(cardEl);
-          });
-        } else {
-          // Restore placeholder slot if empty
-          const slot = document.createElement("div");
-          slot.className = "slot set-card-slot";
-          slot.setAttribute("data-pos", "set");
-          slot.textContent = "Set";
-          setCardsContainer.appendChild(slot);
-        }
-      }
-
-      // Update Deck Slot
-      if (deckSlot) {
-        // Clear content first
-        deckSlot.innerHTML = "";
-
-        if (playerData.deck.length > 0) {
-          // Create card stack container
-          const stackContainer = document.createElement("div");
-          stackContainer.className = "card-stack";
-          stackContainer.dataset.count = playerData.deck.length.toString();
-
-          // Render top card face down (Inline to avoid render issues)
-          // Render top card face down (Manual DOM construction)
-          const schoolClass =
-            school === "青葉城西"
-              ? "seijoh"
-              : school === "音駒"
-              ? "nekoma"
-              : school === "梟谷"
-              ? "fukurodani"
-              : "karasuno";
-
-          const cardDiv = document.createElement("div");
-          cardDiv.className = `card back ${schoolClass}`;
-
-          const designDiv = document.createElement("div");
-          designDiv.className = "card-back-design";
-
-          const nameDiv = document.createElement("div");
-          nameDiv.className = "school-name";
-          nameDiv.textContent = school;
-
-          designDiv.appendChild(nameDiv);
-          cardDiv.appendChild(designDiv);
-
-          stackContainer.appendChild(cardDiv);
-
-          deckSlot.appendChild(stackContainer);
-        } else {
-          // Show "Deck" text when empty
-          deckSlot.textContent = "Deck";
-        }
-
-        // Re-attach listeners because innerHTML wiped them
-        // Ideally we'd move this to attachSlotEvents and NOT wipe innerHTML,
-        // but the slot text "Deck" + card visual is simple enough to just re-render.
-
-        // Right-click for deck info
-        deckSlot.addEventListener("contextmenu", (e) => {
-          e.preventDefault();
-          this.store.setState({ viewingDeckInfo: { player: this.playerType } });
-        });
-
-        // Left-click also shows deck info
-        deckSlot.addEventListener("click", (e) => {
-          e.preventDefault();
-          this.store.setState({ viewingDeckInfo: { player: this.playerType } });
-        });
-      }
-
-      // Update Drop Slot Visuals
-      const dropSlot = this.element.querySelector(".drop-slot");
-      if (dropSlot) {
-        // Clear content first
-        dropSlot.innerHTML = "";
-
-        if (playerData.drop.length > 0) {
-          // Render card face up (top card of drop pile)
-          const cardHtml = CardComponent.render(
-            playerData.drop[playerData.drop.length - 1],
-            false, // Face up
-            school
-          );
-
-          if (cardHtml && cardHtml.trim().length > 0) {
-            const cardWrapper = document.createElement("div");
-            cardWrapper.innerHTML = cardHtml;
-            const cardEl = cardWrapper.firstElementChild as HTMLElement;
-            dropSlot.appendChild(cardEl);
-          }
-
-          // Add a counter if > 1 card (consistent with field slots)
-          if (playerData.drop.length > 1) {
-            const countBadge = document.createElement("div");
-            countBadge.className = "stack-count";
-            countBadge.textContent = playerData.drop.length.toString();
-            dropSlot.appendChild(countBadge);
-          }
-        } else {
-          // Show "Drop" text when empty
-          dropSlot.textContent = "Drop";
-        }
-      }
-
-      const setEl = this.element.querySelector(".set-area .count");
-      const deckEl = this.element.querySelector(".deck-area .count");
-      const dropEl = this.element.querySelector(".drop-area .count");
-
-      if (setEl) setEl.textContent = playerData.set.length.toString();
-      if (deckEl) deckEl.textContent = playerData.deck.length.toString();
-      if (dropEl) dropEl.textContent = playerData.drop.length.toString();
-    } catch (e) {
-      console.error("Error updating counts:", e);
-    }
+    if (setEl) setEl.textContent = playerData.set.length.toString();
+    if (deckEl) deckEl.textContent = playerData.deck.length.toString();
 
     this.updateHand(playerData.hand);
     this.updateField(playerData.field);
+  }
+
+  private updateSetArea(
+    setCards: Card[],
+    school: string,
+    viewPerspective: "me" | "opponent"
+  ) {
+    const setArea = this.element.querySelector(".set-area");
+    if (!setArea) return;
+
+    const setCardsContainer = setArea.querySelector(".set-cards-container");
+    if (!setCardsContainer) return;
+
+    const existingCardElements = Array.from(
+      setCardsContainer.querySelectorAll<HTMLElement>(".set-card")
+    );
+    const newInstanceIds = new Set(setCards.map((card) => card.instanceId));
+
+    // Remove old cards
+    existingCardElements.forEach((el) => {
+      if (!newInstanceIds.has(el.dataset.instanceId!)) {
+        el.remove();
+      }
+    });
+
+    // Add or update cards
+    setCards.forEach((card) => {
+      const existingCard = existingCardElements.find(
+        (el) => el.dataset.instanceId === card.instanceId
+      );
+
+      if (existingCard) {
+        // Card exists, check if interaction needs to be updated
+        const shouldBeInteractive = this.playerType === viewPerspective;
+        const hasClickListener = existingCard.style.cursor === "pointer";
+
+        if (shouldBeInteractive !== hasClickListener) {
+          // Interaction state changed, need to re-render
+          const cardHtml = CardComponent.render(card, true, school); // Face down
+          const cardWrapper = document.createElement("div");
+          cardWrapper.innerHTML = cardHtml;
+          const newCardEl = cardWrapper.firstElementChild as HTMLElement;
+          newCardEl.classList.add("set-card");
+          newCardEl.dataset.instanceId = card.instanceId;
+
+          if (shouldBeInteractive) {
+            newCardEl.addEventListener("click", () => {
+              if (confirm("Add this card to your hand?")) {
+                this.moveSetCardToHand(card);
+              }
+            });
+            newCardEl.style.cursor = "pointer";
+          }
+
+          existingCard.replaceWith(newCardEl);
+        }
+      } else {
+        // Card is new, create and append
+        const cardHtml = CardComponent.render(card, true, school); // Face down
+        const cardWrapper = document.createElement("div");
+        cardWrapper.innerHTML = cardHtml;
+        const cardEl = cardWrapper.firstElementChild as HTMLElement;
+        cardEl.classList.add("set-card");
+        cardEl.dataset.instanceId = card.instanceId;
+
+        if (this.playerType === viewPerspective) {
+          cardEl.addEventListener("click", () => {
+            if (confirm("Add this card to your hand?")) {
+              this.moveSetCardToHand(card);
+            }
+          });
+          cardEl.style.cursor = "pointer";
+        }
+        setCardsContainer.appendChild(cardEl);
+      }
+    });
+
+    // Handle placeholder
+    const placeholder =
+      setCardsContainer.querySelector<HTMLElement>(".set-card-slot");
+    if (setCards.length > 0) {
+      if (placeholder) placeholder.remove();
+    } else {
+      if (!placeholder) {
+        const slot = document.createElement("div");
+        slot.className = "slot set-card-slot";
+        slot.setAttribute("data-pos", "set");
+        slot.textContent = "Set";
+        setCardsContainer.appendChild(slot);
+      }
+    }
+
+    // Handle surrender button - Show when Set area is empty and viewing own zone
+    const existingSurrenderBtn =
+      setCardsContainer.querySelector<HTMLElement>(".surrender-btn");
+
+    if (setCards.length === 0 && this.playerType === viewPerspective) {
+      // Show surrender button
+      if (!existingSurrenderBtn) {
+        const surrenderBtn = document.createElement("button");
+        surrenderBtn.className = "btn surrender-btn";
+        surrenderBtn.textContent = "Surrender";
+        surrenderBtn.addEventListener("click", () => this.handleSurrender());
+        setCardsContainer.appendChild(surrenderBtn);
+      }
+    } else {
+      // Remove surrender button if it exists
+      if (existingSurrenderBtn) {
+        existingSurrenderBtn.remove();
+      }
+    }
+  }
+
+  private updateDeckArea(deck: Card[], school: string) {
+    const deckSlot = this.element.querySelector<HTMLElement>(".deck-slot");
+    if (!deckSlot) return;
+
+    const stackContainer = deckSlot.querySelector<HTMLElement>(".card-stack");
+
+    if (deck.length > 0) {
+      const schoolClass =
+        school === "青葉城西"
+          ? "seijoh"
+          : school === "音駒"
+          ? "nekoma"
+          : school === "梟谷"
+          ? "fukurodani"
+          : "karasuno";
+
+      if (stackContainer) {
+        // Already exists, just update count
+        stackContainer.dataset.count = deck.length.toString();
+
+        // Also update the card back style in case school changed
+        const cardDiv = stackContainer.querySelector(".card");
+        if (cardDiv) {
+          cardDiv.className = `card back ${schoolClass}`;
+          const schoolNameDiv = cardDiv.querySelector(".school-name");
+          if (schoolNameDiv) {
+            schoolNameDiv.textContent = school;
+          } else {
+            // Should not happen if structure is consistent, but safe to rebuild
+            cardDiv.innerHTML = `<div class="card-back-design"><div class="school-name">${school}</div></div>`;
+          }
+        }
+      } else {
+        // Needs to be created
+        deckSlot.innerHTML = ""; // Clear "Deck" text
+        const newStackContainer = document.createElement("div");
+        newStackContainer.className = "card-stack";
+        newStackContainer.dataset.count = deck.length.toString();
+
+        const cardDiv = document.createElement("div");
+        cardDiv.className = `card back ${schoolClass}`;
+        cardDiv.innerHTML = `<div class="card-back-design"><div class="school-name">${school}</div></div>`;
+        newStackContainer.appendChild(cardDiv);
+        deckSlot.appendChild(newStackContainer);
+      }
+    } else {
+      // Deck is empty, remove card visual and show text
+      if (stackContainer) {
+        deckSlot.innerHTML = "Deck";
+      }
+    }
+  }
+
+  private updateDropArea(drop: Card[], school: string) {
+    const dropSlot = this.element.querySelector<HTMLElement>(".drop-slot");
+    if (!dropSlot) return;
+
+    const topCard = drop.length > 0 ? drop[drop.length - 1] : null;
+    const existingCardEl = dropSlot.querySelector<HTMLElement>(".card");
+    const existingCountEl = dropSlot.querySelector<HTMLElement>(".stack-count");
+
+    // 1. Update Card
+    if (topCard) {
+      if (
+        !existingCardEl ||
+        existingCardEl.dataset.instanceId !== topCard.instanceId
+      ) {
+        if (existingCardEl) existingCardEl.remove();
+        const cardHtml = CardComponent.render(topCard, false, school);
+        if (cardHtml && cardHtml.trim().length > 0) {
+          const cardWrapper = document.createElement("div");
+          cardWrapper.innerHTML = cardHtml;
+          const newCardEl = cardWrapper.firstElementChild as HTMLElement;
+          // Prepend to keep count at bottom
+          dropSlot.prepend(newCardEl);
+        }
+      }
+    } else {
+      if (existingCardEl) {
+        existingCardEl.remove();
+        dropSlot.textContent = "Drop"; // Show text only when removing last card
+      }
+    }
+
+    // 2. Update Count
+    if (drop.length > 1) {
+      if (existingCountEl) {
+        existingCountEl.textContent = drop.length.toString();
+      } else {
+        const countBadge = document.createElement("div");
+        countBadge.className = "stack-count";
+        countBadge.textContent = drop.length.toString();
+        dropSlot.appendChild(countBadge);
+      }
+    } else {
+      if (existingCountEl) existingCountEl.remove();
+    }
   }
 
   private moveSetCardToHand(card: any) {
@@ -389,6 +449,32 @@ export class PlayerZone {
     this.store.setState({
       [this.playerType]: { ...playerData, set: newSet, hand: newHand },
     } as any);
+  }
+
+  private handleSurrender() {
+    // Show confirmation dialog
+    const confirmSurrender = confirm("確定投降嗎？");
+
+    if (confirmSurrender) {
+      const state = this.store.getState();
+      const winner = this.playerType === "me" ? "opponent" : "me";
+
+      // Increment winner's win count
+      const newWinCount = { ...state.winCount };
+      newWinCount[winner]++;
+
+      // Set match winner and update win count
+      this.store.setState({
+        matchWinner: winner,
+        winCount: newWinCount,
+      } as any);
+
+      this.store.addLog(
+        `${this.playerType === "me" ? "我方" : "對手"} 投降了！勝者：${
+          winner === "me" ? "我方" : "對手"
+        }`
+      );
+    }
   }
 
   private attachDrawEvent() {
@@ -436,86 +522,156 @@ export class PlayerZone {
     const state = this.store.getState();
     const school =
       this.playerType === "me" ? state.me.school : state.opponent.school;
-
     const isVisible = this.playerType === state.viewPerspective;
 
-    handContainer.innerHTML = "";
+    const existingCardElements = Array.from(
+      handContainer.querySelectorAll(".card[data-instance-id]")
+    ) as HTMLElement[];
+    const existingInstanceIds = new Set(
+      existingCardElements.map((el) => el.dataset.instanceId)
+    );
+    const newInstanceIds = new Set(hand.map((card) => card.instanceId));
+
+    // 1. Remove cards that are no longer in the hand
+    existingCardElements.forEach((el) => {
+      const instanceId = el.dataset.instanceId;
+      if (instanceId && !newInstanceIds.has(instanceId)) {
+        el.remove();
+      }
+    });
+
+    // 2. Add or update cards
     hand.forEach((card) => {
-      const cardHtml = CardComponent.render(
-        card,
-        !isVisible, // isBack = !isVisible
-        school
-      );
-      const cardWrapper = document.createElement("div");
-      cardWrapper.innerHTML = cardHtml;
-      const cardEl = cardWrapper.firstElementChild as HTMLElement;
-      cardEl.dataset.instanceId = card.instanceId;
+      if (existingInstanceIds.has(card.instanceId)) {
+        // Card already exists
+        const cardEl = handContainer.querySelector(
+          `.card[data-instance-id="${card.instanceId}"]`
+        ) as HTMLElement;
 
-      if (isVisible) {
-        // Only allow interaction if I can see it (it's the active view)
-        // Right-click for details
-        cardEl.addEventListener("contextmenu", (e) => {
-          e.preventDefault();
-          this.store.setState({ selectedCard: card });
-        });
+        if (cardEl) {
+          // Check if visibility has changed (need to re-render card)
+          const wasVisible = !cardEl.classList.contains("back");
 
-        // Left-click for details and selection
-        cardEl.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const currentState = this.store.getState();
+          if (wasVisible !== isVisible) {
+            // Visibility changed, need to re-render the card
+            const cardHtml = CardComponent.render(
+              card,
+              !isVisible, // isBack = !isVisible
+              school
+            );
+            const cardWrapper = document.createElement("div");
+            cardWrapper.innerHTML = cardHtml;
+            const newCardEl = cardWrapper.firstElementChild as HTMLElement;
 
-          // Always show card details on left-click
-          this.store.setState({ selectedCard: card });
+            if (newCardEl) {
+              newCardEl.dataset.instanceId = card.instanceId;
 
-          // Handle selection with Shift key
-          let newSelected = [...(currentState.selectedCards || [])];
+              // Re-attach interaction events if now visible
+              if (isVisible) {
+                this.attachCardInteractionEvents(newCardEl, card);
+              }
 
-          if (e.shiftKey) {
-            if (newSelected.find((c) => c.instanceId === card.instanceId)) {
-              newSelected = newSelected.filter(
-                (c) => c.instanceId !== card.instanceId
+              // Update selection state
+              const isSelected = !!state.selectedCards?.find(
+                (c) => c.instanceId === card.instanceId
               );
-            } else {
-              newSelected.push(card);
+              if (isSelected) {
+                newCardEl.classList.add("playing", "selected");
+                newCardEl.style.border = "2px solid #00ff88";
+              }
+
+              // Replace old card with new one
+              cardEl.replaceWith(newCardEl);
             }
           } else {
-            newSelected = [card];
+            // Visibility unchanged, just update selection state
+            const isSelected = !!state.selectedCards?.find(
+              (c) => c.instanceId === card.instanceId
+            );
+            if (isSelected) {
+              cardEl.classList.add("playing", "selected");
+              cardEl.style.border = "2px solid #00ff88";
+            } else {
+              cardEl.classList.remove("playing", "selected");
+              cardEl.style.border = ""; // Or original border
+            }
           }
+        }
+      } else {
+        // Card is new, create and append it
+        const cardHtml = CardComponent.render(
+          card,
+          !isVisible, // isBack = !isVisible
+          school
+        );
+        const cardWrapper = document.createElement("div");
+        cardWrapper.innerHTML = cardHtml;
+        const cardEl = cardWrapper.firstElementChild as HTMLElement;
+        if (!cardEl) return;
 
-          this.store.setState({
-            selectedCards: newSelected,
-            playingCard: newSelected.length === 1 ? newSelected[0] : null,
-          });
-        });
+        cardEl.dataset.instanceId = card.instanceId;
 
-        if (
-          state.selectedCards?.find((c) => c.instanceId === card.instanceId)
-        ) {
-          cardEl.classList.add("playing");
-          cardEl.classList.add("selected");
+        if (isVisible) {
+          this.attachCardInteractionEvents(cardEl, card);
+        }
+
+        const isSelected = !!state.selectedCards?.find(
+          (c) => c.instanceId === card.instanceId
+        );
+        if (isSelected) {
+          cardEl.classList.add("playing", "selected");
           cardEl.style.border = "2px solid #00ff88";
         }
+
+        handContainer.appendChild(cardEl);
+      }
+    });
+  }
+
+  // Helper to avoid duplicating event listener logic
+  private attachCardInteractionEvents(cardEl: HTMLElement, card: Card) {
+    // Right-click for details
+    cardEl.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      this.store.setState({ selectedCard: card });
+    });
+
+    // Left-click for details and selection
+    cardEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const currentState = this.store.getState();
+
+      // Always show card details on left-click
+      this.store.setState({ selectedCard: card });
+
+      // Handle selection with Shift key
+      let newSelected = [...(currentState.selectedCards || [])];
+
+      if (e.shiftKey) {
+        if (newSelected.find((c) => c.instanceId === card.instanceId)) {
+          newSelected = newSelected.filter(
+            (c) => c.instanceId !== card.instanceId
+          );
+        } else {
+          newSelected.push(card);
+        }
+      } else {
+        newSelected = [card];
       }
 
-      handContainer.appendChild(cardEl);
+      this.store.setState({
+        selectedCards: newSelected,
+        playingCard: newSelected.length === 1 ? newSelected[0] : null,
+      });
     });
   }
 
   private updateField(field: Card[]) {
-    // Clear all slots first
-    const slots = this.element.querySelectorAll(".slot");
-    slots.forEach((slot) => {
-      // Clear existing content (cards and counts)
-      // We want to keep the text label if it's a text node, but usually we just rebuild.
-      // The easiest way is to remove .card and .stack-count
-      const existingCards = slot.querySelectorAll(".card");
-      existingCards.forEach((c) => c.remove());
-      const existingCounts = slot.querySelectorAll(".stack-count");
-      existingCounts.forEach((c) => c.remove());
-    });
+    const state = this.store.getState();
+    const school =
+      this.playerType === "opponent" ? state.opponent.school : state.me.school;
 
-    // Place cards
-    // Group by position to find the top card
+    // Group new field cards by position
     const positionMap: Record<string, Card[]> = {};
     field.forEach((card) => {
       if (!card.position) return;
@@ -523,49 +679,97 @@ export class PlayerZone {
       positionMap[card.position].push(card);
     });
 
-    Object.entries(positionMap).forEach(([pos, cards]) => {
-      const slot = this.element.querySelector(`.${pos}-slot`);
-      if (slot) {
-        const topCard = cards[cards.length - 1]; // Last one is top
-        const state = this.store.getState();
-        const school =
-          this.playerType === "opponent"
-            ? state.opponent.school
-            : state.me.school;
-        const cardHtml = CardComponent.render(topCard, false, school);
-        const cardWrapper = document.createElement("div");
-        cardWrapper.innerHTML = cardHtml;
-        const cardEl = cardWrapper.firstElementChild as HTMLElement;
-        cardEl.dataset.instanceId = topCard.instanceId;
+    const slots = this.element.querySelectorAll<HTMLElement>(".slot[data-pos]");
 
-        // Right-click for details on field cards
-        cardEl.addEventListener("contextmenu", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this.store.setState({ selectedCard: topCard });
-        });
+    slots.forEach((slot) => {
+      const pos = slot.dataset.pos;
+      if (!pos) return;
 
-        // Left-click also shows details on field cards
-        cardEl.addEventListener("click", (e) => {
-          e.preventDefault();
-          // Removed stopPropagation to allow slot click to handle "Open Stack" logic
-          // e.stopPropagation();
-          this.store.setState({ selectedCard: topCard });
-        });
+      // We only care about field slots here, not hand/deck etc.
+      if (
+        [
+          "serve",
+          "event",
+          "receive",
+          "toss",
+          "attack",
+          "block-left",
+          "block-center",
+          "block-right",
+        ].includes(pos)
+      ) {
+        const cardsInPos = positionMap[pos] || [];
+        const topCard =
+          cardsInPos.length > 0 ? cardsInPos[cardsInPos.length - 1] : null;
 
-        cardEl.style.cursor = "pointer";
+        const existingCardEl = slot.querySelector<HTMLElement>(
+          ".card[data-instance-id]"
+        );
+        const existingInstanceId = existingCardEl?.dataset.instanceId;
+        const existingCountEl = slot.querySelector<HTMLElement>(".stack-count");
 
-        slot.appendChild(cardEl);
+        // 1. Update Card Element
+        if (topCard) {
+          if (existingCardEl && existingInstanceId === topCard.instanceId) {
+            // Card is the same, do nothing to the element itself
+          } else {
+            // Card is new or different, replace the old one
+            if (existingCardEl) existingCardEl.remove();
 
-        // Add a counter if > 1 card
-        if (cards.length > 1) {
-          const countBadge = document.createElement("div");
-          countBadge.className = "stack-count";
-          countBadge.textContent = cards.length.toString();
-          slot.appendChild(countBadge);
+            const cardHtml = CardComponent.render(topCard, false, school);
+            const cardWrapper = document.createElement("div");
+            cardWrapper.innerHTML = cardHtml;
+            const newCardEl = cardWrapper.firstElementChild as HTMLElement;
+
+            if (newCardEl) {
+              newCardEl.dataset.instanceId = topCard.instanceId;
+              // Re-attach events for the new card
+              this.attachFieldCardEvents(newCardEl, topCard);
+              slot.appendChild(newCardEl);
+            }
+          }
+        } else {
+          // No top card, so remove any existing card element
+          if (existingCardEl) {
+            existingCardEl.remove();
+          }
+        }
+
+        // 2. Update Stack Count
+        if (cardsInPos.length > 1) {
+          if (existingCountEl) {
+            existingCountEl.textContent = cardsInPos.length.toString();
+          } else {
+            const countBadge = document.createElement("div");
+            countBadge.className = "stack-count";
+            countBadge.textContent = cardsInPos.length.toString();
+            slot.appendChild(countBadge);
+          }
+        } else {
+          if (existingCountEl) {
+            existingCountEl.remove();
+          }
         }
       }
     });
+  }
+
+  private attachFieldCardEvents(cardEl: HTMLElement, card: Card) {
+    // Right-click for details on field cards
+    cardEl.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.store.setState({ selectedCard: card });
+    });
+
+    // Left-click also shows details on field cards
+    cardEl.addEventListener("click", (e) => {
+      e.preventDefault();
+      // Removed stopPropagation to allow slot click to handle "Open Stack" logic
+      this.store.setState({ selectedCard: card });
+    });
+
+    cardEl.style.cursor = "pointer";
   }
 
   private render() {
@@ -574,7 +778,9 @@ export class PlayerZone {
 
         <div class="set-area">
           <h2>Set Area <span class="count">0</span></h2>
-          <div class="slot set-card-slot" data-pos="set">Set</div>
+          <div class="set-cards-container">
+            <div class="slot set-card-slot" data-pos="set">Set</div>
+          </div>
         </div>
         <div class="function-area">
           <button class="btn back-btn">Back</button>
@@ -609,7 +815,7 @@ export class PlayerZone {
         </div>
 
         <div class="hand-area" data-pos="hand">
-           <div class="hand-cards">Hand Area</div>
+           <div class="hand-cards"></div>
         </div>
       </div>
 
@@ -623,7 +829,7 @@ export class PlayerZone {
         </div>
       </div>
       <div class="drop-area">
-          <h2>Drop <span class="count">0</span></h2>
+          <h2>Drop</h2>
           <div class="slot drop-slot" data-pos="drop">Drop</div>
         </div>
       </div>
@@ -746,6 +952,13 @@ export class PlayerZone {
         }
       });
     });
+
+    // Add specific listeners that don't fit the generic click model
+    const deckSlot = this.element.querySelector('.slot[data-pos="deck"]');
+    deckSlot?.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      this.store.setState({ viewingDeckInfo: { player: this.playerType } });
+    });
   }
 
   private renderExpandedOverlay() {
@@ -866,31 +1079,11 @@ export class PlayerZone {
       let selectionBox: HTMLElement | null = null;
       let initialShiftKey = false;
 
-      grid.addEventListener("mousedown", (e) => {
-        if ((e.target as HTMLElement).closest(".card")) return;
-
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        initialShiftKey = e.shiftKey;
-
-        selectionBox = document.createElement("div");
-        selectionBox.className = "selection-box";
-        selectionBox.style.left = `${startX}px`;
-        selectionBox.style.top = `${startY}px`;
-        document.body.appendChild(selectionBox);
-
-        if (!initialShiftKey) {
-          this.store.setState({ selectedCards: [] });
-        }
-      });
-
-      document.addEventListener("mousemove", (e) => {
+      const handleMouseMove = (e: MouseEvent) => {
         if (!isDragging || !selectionBox) return;
 
         const currentX = e.clientX;
         const currentY = e.clientY;
-
         const width = Math.abs(currentX - startX);
         const height = Math.abs(currentY - startY);
         const left = Math.min(currentX, startX);
@@ -900,11 +1093,14 @@ export class PlayerZone {
         selectionBox.style.height = `${height}px`;
         selectionBox.style.left = `${left}px`;
         selectionBox.style.top = `${top}px`;
-      });
+      };
 
-      document.addEventListener("mouseup", () => {
+      const handleMouseUp = () => {
         if (!isDragging) return;
         isDragging = false;
+
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
 
         if (selectionBox) {
           const boxRect = selectionBox.getBoundingClientRect();
@@ -942,6 +1138,41 @@ export class PlayerZone {
               newSelectedCards.length === 1 ? newSelectedCards[0] : null,
           });
         }
+      };
+
+      grid.addEventListener("mousedown", (e) => {
+        if ((e.target as HTMLElement).closest(".card")) return;
+
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        initialShiftKey = e.shiftKey;
+
+        selectionBox = document.createElement("div");
+        selectionBox.className = "selection-box";
+        selectionBox.style.left = `${startX}px`;
+        selectionBox.style.top = `${startY}px`;
+        document.body.appendChild(selectionBox);
+
+        if (!initialShiftKey) {
+          this.store.setState({ selectedCards: [] });
+        }
+
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
+      });
+
+      // Ensure listeners are removed when overlay is closed externally
+      const closeOverlayCleanup = () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+        if (selectionBox) selectionBox.remove();
+        isDragging = false;
+      };
+
+      closeBtn?.addEventListener("click", closeOverlayCleanup);
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closeOverlayCleanup();
       });
     }
 

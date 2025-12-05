@@ -60,6 +60,10 @@ export interface AppState {
   opponent: PlayerState;
   logs: string[]; // Game action logs
   viewingDeckInfo?: { player: "me" | "opponent" } | null; // Deck Info Overlay state
+
+  // Match Stats
+  winCount: { me: number; opponent: number }; // Win count tracking
+  matchWinner: "me" | "opponent" | null; // Current match winner
 }
 
 export class Store<T extends AppState> {
@@ -80,6 +84,8 @@ export class Store<T extends AppState> {
         defenseChoice: "none",
         attacker: null,
       },
+      winCount: { me: 0, opponent: 0 },
+      matchWinner: null,
     };
   }
 

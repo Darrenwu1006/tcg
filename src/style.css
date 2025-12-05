@@ -813,14 +813,37 @@ body {
   padding: 8px;
 }
 
-/* Card Styles */
+/* 手牌區 - 使用水平滾動與間距，避免重疊 */
 .hand-cards {
   display: flex;
-  justify-content: center;
-  align-items: flex-end; /* Align bottom */
-  gap: 5px;
-  min-height: 100%; /* Ensure it fills the area */
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 4px; /* 讓卡片之間保留微小間距，避免重疊 */
+  min-height: 100%;
   padding-bottom: 10px;
+  position: relative;
+  overflow-x: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hand-cards::-webkit-scrollbar {
+  display: none;
+}
+
+/* 卡片保持原始尺寸，不縮放 */
+.hand-cards .card {
+  flex-shrink: 0; /* 防止因容器寬度不足而縮小 */
+  margin-right: 0; /* 移除負 margin，避免重疊 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hover 時僅輕微放大，不上浮，也不改變相鄰卡片 */
+.hand-cards .card:hover {
+  transform: scale(1.01);
+  z-index: 100 !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
 }
 
 .card {
@@ -1448,20 +1471,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
+  padding: 2px;
   position: relative;
   overflow: hidden;
-}
-
-/* 頂部星星邊框 - 白色 */
-/* 頂部星星邊框 - Removed */
-.card.back::before {
-  display: none;
-}
-
-/* 底部 Nintendo 標籤 - Removed */
-.card.back::after {
-  display: none;
 }
 
 /* 卡背設計 - 極簡風格 */
@@ -1572,6 +1584,51 @@ body {
   transform: none;
   z-index: 5;
   box-shadow: none;
+}
+
+/* Stack Count Badge - Retro Style */
+/* Stack Count Badge - 復古像素徽章（右上角定位）*/
+.stack-count {
+  /* 定位 - 牌堆右上角 */
+  position: absolute;
+  top: -8px;
+  right: -8px;
+
+  /* 外觀 - 灰黑底白字，復古風格 */
+  background-color: #2c2c2c; /* 深灰/黑色背景 */
+  color: #ffffff; /* 白色文字 */
+  border: 2px solid #ffffff; /* 白色邊框 */
+  border-radius: 0; /* 完全方形，像素風 */
+
+  /* 尺寸 */
+  min-width: 20px;
+  min-height: 20px;
+  padding: 2px 4px;
+
+  /* 字體 - 提升可讀性 */
+  font-family: var(--font-retro-game); /* Press Start 2P 像素字體 */
+  font-size: 5px; /* 提升可讀性 */
+  font-weight: bold;
+  line-height: 1;
+
+  /* 佈局 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 陰影 - 硬邊像素風陰影 */
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.8);
+
+  z-index: 20;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+/* Expanded overlay 中的 stack count - 使用相同樣式但可能有不同 z-index */
+.expanded-grid .stack-count {
+  z-index: 5;
 }
 
 /* Playing Card State */
@@ -1858,7 +1915,7 @@ body {
 
 .card-rarity {
   font-size: 0.85em;
-  color: #888; /* Dimmer light text */
+  color: #0f0f0f; /* Dimmer light text */
   font-family: var(--font-retro-pixel);
 }
 
@@ -2004,24 +2061,6 @@ body {
   box-shadow: none;
 }
 
-.stack-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #ff9800;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 5;
-}
-
 /* Selection Box */
 .selection-box {
   position: fixed; /* Fixed to screen coords */
@@ -2029,4 +2068,196 @@ body {
   background-color: rgba(0, 255, 136, 0.2);
   z-index: 9999;
   pointer-events: none; /* Let events pass through */
+}
+
+/* Surrender Button - Positioned above Set slot */
+.set-cards-container {
+  position: relative; /* For absolute positioning of surrender button */
+}
+
+.surrender-btn {
+  /* 絕對定位在 set-card-slot 上方 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+
+  /* Retro 按鈕樣式 - 與專案其他按鈕一致 */
+  padding: 50px 4px;
+  background: #350c0c; /* Red background for danger */
+  color: #ffffff; /* White text */
+  border: var(--retro-border-style);
+  border-radius: 6px; /* 與其他按鈕保持一致 */
+  font-weight: bold;
+  font-size: 0.9em;
+  font-family: var(--font-retro-pixel);
+  cursor: pointer;
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+.surrender-btn:hover {
+  background: #1a0404; /* Darker red on hover */
+}
+
+/* 按鈕下沉效果 */
+.surrender-btn:active {
+  transform: translate(-50%, -50%) translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* Match End Overlay - Minimalist Game Boy Style */
+.match-end-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 5000;
+
+  display: none; /* Hidden by default, shown via JS */
+  align-items: center;
+  justify-content: center;
+}
+
+.match-end-content {
+  /* Retro 背景與邊框 */
+  background-color: var(--retro-bg); /* #7c7c7c 米灰色 */
+  border: var(--retro-border-style-thick); /* 4px solid #2c2c2c */
+  border-radius: 8px;
+  box-shadow: var(--retro-shadow-large); /* 10px 10px 0px */
+
+  /* 佈局 */
+  padding: 40px;
+  min-width: 500px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+
+  /* 點陣網格背景 */
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 10px,
+      rgba(44, 44, 44, 0.1) 10px,
+      rgba(44, 44, 44, 0.1) 11px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 10px,
+      rgba(44, 44, 44, 0.1) 10px,
+      rgba(44, 44, 44, 0.1) 11px
+    );
+
+  /* Retro 字體 */
+  font-family: var(--font-retro-pixel);
+  color: var(--retro-border);
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+.match-end-title {
+  font-family: var(--font-retro-game); /* Press Start 2P */
+  font-size: 24px;
+  color: var(--retro-border);
+  margin: 0;
+  text-shadow: 3px 3px 0px rgba(255, 255, 255, 0.2);
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.match-end-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.match-end-winner {
+  font-family: var(--font-retro-game);
+  font-size: 16px;
+  color: #00ff88; /* Green highlight for winner */
+  text-align: center;
+  text-shadow: 2px 2px 0px rgba(0, 255, 136, 0.3);
+  padding: 15px;
+  background: rgba(0, 255, 136, 0.1);
+  border: var(--retro-border-style);
+  border-radius: 4px;
+  width: 100%;
+}
+
+.match-end-loser {
+  font-family: var(--font-retro-pixel);
+  font-size: 14px;
+  color: #888; /* Gray for loser */
+  text-align: center;
+}
+
+.match-end-score {
+  font-family: var(--font-retro-game);
+  font-size: 14px;
+  color: var(--retro-border);
+  text-align: center;
+  padding: 12px 20px;
+  background: var(--retro-input-bg);
+  border: var(--retro-border-style);
+  border-radius: 4px;
+  box-shadow: var(--retro-shadow);
+}
+
+.match-end-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.match-end-btn {
+  /* Retro 按鈕樣式 */
+  padding: 10px 20px;
+  background: #00ff88; /* Green for primary action */
+  color: #000;
+  border: var(--retro-border-style);
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 12px;
+  font-family: var(--font-retro-pixel);
+  cursor: pointer;
+  box-shadow: var(--retro-shadow);
+  transition: all 0.1s ease;
+
+  /* 字體抗鋸齒 */
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+.match-end-btn:hover {
+  background: #00cc6a;
+}
+
+/* 按鈕下沉效果 */
+.match-end-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.back-to-setup-btn {
+  background: var(--retro-input-bg);
+  color: var(--retro-border);
+}
+
+.back-to-setup-btn:hover {
+  background: #8c8c8c;
 }

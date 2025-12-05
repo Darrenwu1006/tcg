@@ -1,11 +1,13 @@
 import { Store, AppState } from "../state/Store";
 import { PlayerZone } from "./PlayerZone";
+import { MatchEndOverlay } from "./MatchEndOverlay";
 
 export class GameBoard {
   private element: HTMLElement;
   private store: Store<AppState>;
   private opponentZone: PlayerZone;
   private meZone: PlayerZone;
+  private matchEndOverlay: MatchEndOverlay;
 
   constructor(store: Store<AppState>) {
     this.store = store;
@@ -14,6 +16,7 @@ export class GameBoard {
 
     this.opponentZone = new PlayerZone("opponent", this.store);
     this.meZone = new PlayerZone("me", this.store);
+    this.matchEndOverlay = new MatchEndOverlay(this.store);
 
     this.render();
     this.setupSubscription();
@@ -53,6 +56,9 @@ export class GameBoard {
       });
     };
     document.body.appendChild(switchBtn); // Append to body to stay fixed
+
+    // Append Match End Overlay
+    document.body.appendChild(this.matchEndOverlay.getElement());
   }
 
   getElement(): HTMLElement {
