@@ -30,7 +30,9 @@ const initialState: AppState = {
     defenseChoice: "none",
     attacker: null,
   },
+  winCount: { me: 0, opponent: 0 },
   selectedCards: [],
+  matchWinner: null,
 };
 
 const store = new Store<AppState>(initialState);
