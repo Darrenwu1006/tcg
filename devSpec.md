@@ -1,44 +1,15 @@
-## devSpec
+# devSpec - 開發規格文檔
 
-## TypeScript 代碼優化項目 (Code Optimization Tasks)
+> 📅 **最後更新**: 2025-12-05  
+> 🎯 **目標**: 提升代碼質量、可維護性與性能
 
-> 📅 **審查日期**: 2025-12-05  
-> 📊 **審查範圍**: 所有 TS 文件 (13 個文件)  
-> 🎯 **目標**: 提升代碼可維護性、性能和類型安全
+---
 
-### 🔴 高優先級 (Critical Priority)
-
-#### 1. **數據結構重複定義問題**
-
-- **文件**: `src/state/Store.ts`
-- **問題**:
-  - `Card` 介面同時定義了 `stats` 對象和可能的平面屬性
-  - `PlayerState` 有 `currentStats` 但 Card 也有 `stats`，結構不一致
-- **影響**: 類型檢查混亂，可能導致運行時錯誤
-- **建議**: 統一數據結構，決定使用嵌套對象還是平面屬性
-- **工作量**: 1-2 小時
-
-#### 2. **重複的工具函數 - renderBlockBar**
-
-- **文件**:
-  - `src/components/Card.ts` (Line 49-65, maxBlocks=6)
-  - `src/components/CardDetailPanel.ts` (Line 173-189, maxBlocks=5)
-- **問題**: 幾乎相同的函數在兩個地方定義
-- **影響**: 維護困難，包大小增加
-- **建議**: 提取到 `src/utils/renderHelpers.ts`
-- **工作量**: 30 分鐘
-
-#### 3. **學校名稱映射重複**
-
-- **文件**: `src/components/Card.ts` (Line 9-24)
-- **問題**: `getSchoolClass` 函數可能在其他地方也需要
-- **影響**: 添加新學校時容易遺漏
-- **建議**: 提取為 `src/constants/schools.ts` 中的映射表
-- **工作量**: 30 分鐘
+## 📋 待開發項目 (Pending Tasks)
 
 ### 🟡 中優先級 (Medium Priority)
 
-#### 4. **PlayerZone.ts 文件過大**
+#### 4. **PlayerZone.ts 文件過大** 🔜 **下週處理**
 
 - **文件**: `src/components/PlayerZone.ts` (1444 行, 47KB)
 - **問題**:
@@ -54,15 +25,15 @@
   - `CardUpdaters.ts` (卡片更新邏輯)
 - **工作量**: 3-4 小時
 
-#### 5. **未使用的狀態屬性**
+#### 5. **未使用的狀態屬性** 🔜 **下週處理**
 
-- **文件**: `src/state/Store.ts` (Line 43)
-- **問題**: `count: number` 似乎未被使用
+- **文件**: `src/state/Store.ts`
+- **問題**: 可能還有其他未使用的屬性需要檢查
 - **影響**: 佔用內存，混淆開發者
-- **建議**: 驗證後移除或添加註釋說明用途
-- **工作量**: 15 分鐘
+- **建議**: 全面審查並移除或註釋未使用屬性
+- **工作量**: 15-30 分鐘
 
-#### 6. **事件監聽器重複綁定**
+#### 6. **事件監聽器重複綁定** 🔜 **下週處理**
 
 - **文件**: `src/components/PlayerZone.ts` - `setupGlobalDragSelection`
 - **問題**:
@@ -87,8 +58,7 @@
 - **位置**:
   - `Store.ts` Line 74: `MAX_HISTORY = 20`
   - `Store.ts` Line 130: `slice(0, 50)` (logs 上限)
-  - `Card.ts` Line 51: `maxBlocks = 6`
-  - `CardDetailPanel.ts` Line 175: `maxBlocks = 5`
+  - 其他分散的魔術數字
 - **建議**: 提取為配置常量 (`src/constants/config.ts`)
 - **工作量**: 30 分鐘
 
@@ -101,6 +71,64 @@
 
 ---
 
+## ✅ 已完成項目 (Completed Tasks)
+
+### TypeScript 代碼優化 (2025-12-05)
+
+#### ~~1. 數據結構重複定義問題~~ ✅
+
+- **文件**: `src/state/Store.ts`
+- **完成內容**:
+  - ✅ 創建統一的 `Stats` 和 `CardStats` 介面
+  - ✅ `CardStats`: 卡片固有屬性（可為 null）
+  - ✅ `Stats`: 聚合統計結果（number）
+  - ✅ 更新 `Card.stats` 使用 `CardStats` 類型
+  - ✅ 更新 `PlayerState.currentStats` 使用 `Stats` 類型
+  - ✅ 移除未使用的 `AppState.count` 屬性
+  - ✅ 更新 `main.ts` 移除 count 初始化
+  - ✅ 通過 TypeScript 編譯驗證
+- **效益**: 提升類型安全，澄清數據結構語義，移除死代碼
+
+#### ~~2. 重複的工具函數 - renderBlockBar~~ ✅
+
+- **文件**: `src/components/Card.ts`, `CardDetailPanel.ts` → `src/utils/renderHelpers.ts`
+- **完成內容**:
+  - ✅ 創建 `src/utils/renderHelpers.ts` 共用工具文件
+  - ✅ 統一使用 `maxBlocks=6`
+  - ✅ 提供可選參數 `showValue` 控制數值顯示
+  - ✅ null 值顯示為 "-" 而非 "0"
+  - ✅ 重構 `Card.ts` 移除重複代碼
+  - ✅ 重構 `CardDetailPanel.ts` 使用 `showValue=true` 顯示數值
+  - ✅ 添加完整 JSDoc 文檔
+- **效益**: 減少代碼重複，統一渲染邏輯，易於維護
+
+#### ~~3. 學校名稱映射重複~~ ✅
+
+- **文件**: `src/components/Card.ts` → `src/constants/schools.ts`
+- **完成內容**:
+  - ✅ 創建 `src/constants/schools.ts` 集中管理學校映射
+  - ✅ 新增 TypeScript 類型定義 (`SchoolNameZh`, `SchoolClass`)
+  - ✅ 提供輔助函數 (`getSchoolClass()`, `getSchoolName()`, `isValidSchoolName()`)
+  - ✅ 重構 `Card.ts` 移除重複代碼
+  - ✅ 更新文檔到 `devSpec.md`
+- **效益**: 新增學校時只需更新一個文件，避免遺漏
+
+### UI 改進 (2025-12-05)
+
+#### ~~Null 值顯示優化~~ ✅
+
+- **文件**: `src/utils/renderHelpers.ts`
+- **問題**: 卡片能力值為 null 時顯示 "0"，容易與真正的 0 混淆
+- **完成內容**:
+  - ✅ 修改 `renderBlockBar` 函數
+  - ✅ null 值顯示為 "-" 而非 "0"
+  - ✅ 空心方塊保持未填色（表示該卡片沒有此屬性）
+  - ✅ 更新 JSDoc 文檔說明新行為
+- **效益**: 提升數據可讀性，清楚區分「無此屬性」和「數值為 0」
+- **影響範圍**:
+  - ✅ CardDetailPanel 中的卡片詳情顯示
+  - ✅ 所有使用 `renderBlockBar(value, true)` 的地方
+
 ### ✅ 已確認的良好實踐
 
 - ✅ 使用 TypeScript 接口定義
@@ -111,3 +139,120 @@
 - ✅ 良好的訂閱/通知模式
 
 ---
+
+## 開發指南 (Development Guide)
+
+### 學校映射系統 (School Mapping System)
+
+#### 概述 (Overview)
+
+為了提升代碼可維護性並避免重複定義，我們將所有學校相關的映射邏輯集中在 `src/constants/schools.ts` 文件中。
+
+#### 支援的學校 (Supported Schools)
+
+| 中文名稱 | CSS Class    | 英文名稱   |
+| -------- | ------------ | ---------- |
+| 青葉城西 | `seijoh`     | Seijoh     |
+| 烏野     | `karasuno`   | Karasuno   |
+| 音駒     | `nekoma`     | Nekoma     |
+| 梟谷     | `fukurodani` | Fukurodani |
+| 混合學校 | `mixed`      | Mixed      |
+
+#### 使用方式 (Usage)
+
+##### 1. 獲取學校 CSS Class
+
+```typescript
+import { getSchoolClass } from "@/constants/schools";
+
+// 中文名稱 → CSS Class
+const cssClass = getSchoolClass("烏野"); // "karasuno"
+const cssClass2 = getSchoolClass("青葉城西"); // "seijoh"
+const cssClass3 = getSchoolClass("未知學校"); // "karasuno" (default)
+```
+
+##### 2. 獲取學校中文名稱
+
+```typescript
+import { getSchoolName } from "@/constants/schools";
+
+// CSS Class → 中文名稱
+const schoolName = getSchoolName("karasuno"); // "烏野"
+const schoolName2 = getSchoolName("seijoh"); // "青葉城西"
+```
+
+##### 3. 驗證學校名稱
+
+```typescript
+import { isValidSchoolName } from "@/constants/schools";
+
+if (isValidSchoolName("烏野")) {
+  // 是有效的學校名稱
+}
+```
+
+##### 4. 使用映射表
+
+```typescript
+import { SCHOOL_CLASS_MAP, SCHOOL_NAME_MAP } from "@/constants/schools";
+
+// 直接訪問映射表
+const cssClass = SCHOOL_CLASS_MAP["烏野"]; // "karasuno"
+const schoolName = SCHOOL_NAME_MAP["karasuno"]; // "烏野"
+```
+
+##### 5. 獲取支援學校列表
+
+```typescript
+import {
+  SUPPORTED_SCHOOLS,
+  SUPPORTED_SCHOOL_CLASSES,
+} from "@/constants/schools";
+
+// 所有支援的學校中文名稱
+SUPPORTED_SCHOOLS.forEach((school) => {
+  console.log(school); // "青葉城西", "烏野"...
+});
+
+// 所有支援的 CSS Classes
+SUPPORTED_SCHOOL_CLASSES.forEach((className) => {
+  console.log(className); // "seijoh", "karasuno"...
+});
+```
+
+#### TypeScript 類型支援
+
+```typescript
+import type { SchoolNameZh, SchoolClass } from "@/constants/schools";
+
+function processSchool(school: SchoolNameZh) {
+  // school 只能是 "青葉城西" | "烏野" | "音駒" | "梟谷" | "混合學校"
+}
+
+function applyCssClass(className: SchoolClass) {
+  // className 只能是 "seijoh" | "karasuno" | "nekoma" | "fukurodani" | "mixed"
+}
+```
+
+#### 新增學校步驟 (Adding New Schools)
+
+1. 在 `src/constants/schools.ts` 中：
+
+   - 更新 `SchoolNameZh` 類型添加新學校中文名稱
+   - 更新 `SchoolClass` 類型添加新 CSS class
+   - 在 `SCHOOL_CLASS_MAP` 添加映射
+   - 在 `SCHOOL_NAME_MAP` 添加反向映射
+   - 更新 `SUPPORTED_SCHOOLS` 列表
+   - 更新 `SUPPORTED_SCHOOL_CLASSES` 列表
+
+2. 在 CSS 中添加對應的學校樣式類
+
+3. 完成！所有使用 `getSchoolClass()` 的組件會自動支援新學校
+
+#### 優勢 (Benefits)
+
+- ✅ **單一真實來源**: 所有學校映射集中管理
+- ✅ **類型安全**: TypeScript 類型檢查防止拼寫錯誤
+- ✅ **易於維護**: 新增學校只需修改一個文件
+- ✅ **可重用**: 所有組件共用相同的映射邏輯
+- ✅ **文檔完整**: JSDoc 註解提供完整使用說明

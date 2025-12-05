@@ -4,6 +4,39 @@
 
 ## Development Progress Logs
 
+### Progress Log (2025-12-05)
+
+#### Completed (已完成)
+
+- **TypeScript Code Optimization (TypeScript 代碼優化)**:
+
+  - **Data Structure Unification (數據結構統一)**:
+    - 創建統一的 `Stats` 和 `CardStats` 介面，提升類型安全
+    - 移除未使用的 `AppState.count` 屬性
+  - **renderBlockBar Refactoring (renderBlockBar 重構)**:
+    - 提取重複代碼到 `src/utils/renderHelpers.ts`
+    - 統一使用 `maxBlocks=6`
+    - null 值顯示為 "-" 而非 "0"，提升數據可讀性
+  - **School Mapping Centralization (學校映射集中化)**:
+    - 創建 `src/constants/schools.ts` 集中管理學校名稱映射
+    - 提供 `getSchoolClass()`, `getSchoolName()` 等輔助函數
+
+- **UI Improvement (UI 改進)**:
+  - **Card Stats Display (卡片統計顯示)**:
+    - 卡片能力值為 null 時，數值文字顯示 "-" 而非 "0"
+    - 空心方塊保持未填色狀態，更清楚表示該卡片沒有此屬性
+
+### Progress Log (2025-12-04)
+
+#### Completed (已完成)
+
+- **School Mapping Refactor (學校映射重構)**:
+  - **Centralized Constants**: 創建 `src/constants/schools.ts` 集中管理學校名稱映射。
+  - **Type Safety**: 新增 TypeScript 類型定義 (`SchoolNameZh`, `SchoolClass`)，提升類型安全。
+  - **Helper Functions**: 提供 `getSchoolClass()`, `getSchoolName()`, `isValidSchoolName()` 輔助函數。
+  - **Code Deduplication**: 移除 `Card.ts` 中的重複映射邏輯，改用共用常量。
+  - **Maintainability**: 新增學校時只需更新一個文件，避免遺漏。
+
 ### Progress Log (2025-12-04)
 
 #### Completed (已完成)
@@ -94,3 +127,5 @@
   - Enabled Right-click details for field cards.
   - Implemented Horizontal Set area layout with "Add to Hand" interaction.
   - Enabled Full Opponent Interaction (Draw, Play, Move, Set) when viewing their perspective.
+
+---

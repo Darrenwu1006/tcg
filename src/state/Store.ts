@@ -1,5 +1,29 @@
 type Listener<T> = (state: T) => void;
 
+/**
+ * 卡片統計數據類型 (可為 null，因為 CSV 中可能是 "-")
+ * Card stats type - values can be null when card doesn't have that stat
+ */
+export interface CardStats {
+  serve: number | null;
+  block: number | null;
+  receive: number | null;
+  toss: number | null;
+  attack: number | null;
+}
+
+/**
+ * 聚合統計數據類型 (計算後的結果，不會是 null)
+ * Aggregated stats type - calculated totals are always numbers
+ */
+export interface Stats {
+  serve: number;
+  block: number;
+  receive: number;
+  toss: number;
+  attack: number;
+}
+
 export interface Card {
   id: string;
   instanceId: string; // Unique ID for this specific card instance
@@ -9,13 +33,7 @@ export interface Card {
   role?: string; // e.g., WS, MB, S, Li
   type: "CHARACTER" | "EVENT";
   timing?: string; // Activation timing (e.g., "登場時", "發球區域")
-  stats?: {
-    serve: number | null;
-    block: number | null;
-    receive: number | null;
-    toss: number | null;
-    attack: number | null;
-  };
+  stats?: CardStats; // 使用統一的 CardStats 類型
   skill?: string; // Card skill description
   note?: string; // Additional notes
   description?: string; // Fallback for backward compatibility
@@ -30,17 +48,10 @@ export interface PlayerState {
   drop: Card[];
   field: Card[]; // Cards currently on the field
   school: string; // "seijoh", "karasuno", "nekoma", "fukurodani", etc.
-  currentStats?: {
-    serve: number;
-    block: number;
-    receive: number;
-    toss: number;
-    attack: number;
-  };
+  currentStats?: Stats; // 使用統一的 Stats 類型（聚合結果）
 }
 
 export interface AppState {
-  count: number;
   viewPerspective: "me" | "opponent";
   gamePhase: "setup" | "playing";
 

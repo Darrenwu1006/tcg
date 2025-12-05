@@ -1,4 +1,6 @@
 import { Card as CardType } from "../state/Store";
+import { getSchoolClass } from "../constants/schools";
+import { renderBlockBar } from "../utils/renderHelpers";
 
 export class Card {
   static render(
@@ -6,23 +8,6 @@ export class Card {
     isBack: boolean = false,
     school: string = "烏野"
   ): string {
-    const getSchoolClass = (schoolName: string): string => {
-      switch (schoolName) {
-        case "青葉城西":
-          return "seijoh";
-        case "烏野":
-          return "karasuno";
-        case "音駒":
-          return "nekoma";
-        case "梟谷":
-          return "fukurodani";
-        case "混合學校":
-          return "mixed";
-        default:
-          return "karasuno";
-      }
-    };
-
     // Use card's own school for front face, player's school for back
     // This allows mixed school decks to show cards in their respective colors
     const cardSchool = isBack ? school : card.school || school;
@@ -44,24 +29,6 @@ export class Card {
       receive: 0,
       toss: 0,
       attack: 0,
-    };
-
-    const renderBlockBar = (value: number | null | undefined): string => {
-      const val = value === null ? 0 : value ?? 0;
-      const maxBlocks = 6;
-      const filledBlocks = Math.min(Math.max(val, 0), maxBlocks);
-      const emptyBlocks = maxBlocks - filledBlocks;
-
-      let blocksHtml = '<div class="block-bar-container">';
-      for (let i = 0; i < filledBlocks; i++) {
-        blocksHtml += '<div class="block filled"></div>';
-      }
-      for (let i = 0; i < emptyBlocks; i++) {
-        blocksHtml += '<div class="block empty"></div>';
-      }
-      blocksHtml += "</div>";
-
-      return blocksHtml;
     };
 
     const statsHtml = !isEvent

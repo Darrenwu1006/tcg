@@ -1,4 +1,5 @@
 import { Store, AppState, Card } from "../state/Store";
+import { renderBlockBar } from "../utils/renderHelpers";
 
 export class CardDetailPanel {
   private element: HTMLElement;
@@ -170,44 +171,31 @@ export class CardDetailPanel {
     });
   }
 
-  private renderBlockBar(value: number | null | undefined): string {
-    const val = value === null ? 0 : value ?? 0;
-    const maxBlocks = 6;
-    const filledBlocks = Math.min(Math.max(val, 0), maxBlocks);
-    const emptyBlocks = maxBlocks - filledBlocks;
-
-    let blocksHtml = '<div class="block-bar-container">';
-    for (let i = 0; i < filledBlocks; i++) {
-      blocksHtml += '<div class="block filled"></div>';
-    }
-    for (let i = 0; i < emptyBlocks; i++) {
-      blocksHtml += '<div class="block empty"></div>';
-    }
-    blocksHtml += "</div>";
-
-    return `${blocksHtml} <span class="block-value">${val}</span>`;
-  }
-
   private renderCardDetails(card: Card) {
     const isEvent = card.type === "EVENT";
 
     const statsHtml = !isEvent
       ? `
         <div class="detail-stats">
-          <div class="detail-stat"><span>Serve</span><span>${this.renderBlockBar(
-            card.stats?.serve
+          <div class="detail-stat"><span>Serve</span><span>${renderBlockBar(
+            card.stats?.serve,
+            true // Show value in detail panel
           )}</span></div>
-          <div class="detail-stat"><span>Block</span><span>${this.renderBlockBar(
-            card.stats?.block
+          <div class="detail-stat"><span>Block</span><span>${renderBlockBar(
+            card.stats?.block,
+            true
           )}</span></div>
-          <div class="detail-stat"><span>Receive</span><span>${this.renderBlockBar(
-            card.stats?.receive
+          <div class="detail-stat"><span>Receive</span><span>${renderBlockBar(
+            card.stats?.receive,
+            true
           )}</span></div>
-          <div class="detail-stat"><span>Toss</span><span>${this.renderBlockBar(
-            card.stats?.toss
+          <div class="detail-stat"><span>Toss</span><span>${renderBlockBar(
+            card.stats?.toss,
+            true
           )}</span></div>
-          <div class="detail-stat"><span>Attack</span><span>${this.renderBlockBar(
-            card.stats?.attack
+          <div class="detail-stat"><span>Attack</span><span>${renderBlockBar(
+            card.stats?.attack,
+            true
           )}</span></div>
         </div>
       `

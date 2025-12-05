@@ -7,7 +7,6 @@ import { StatsPanel } from "./components/StatsPanel";
 
 // Initialize Store
 const initialState: AppState = {
-  count: 0,
   viewPerspective: "me",
   gamePhase: "setup",
   firstPlayer: null,
