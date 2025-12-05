@@ -346,29 +346,26 @@ export class PlayerZone {
     const stackContainer = deckSlot.querySelector<HTMLElement>(".card-stack");
 
     if (deck.length > 0) {
-      const schoolClass =
-        school === "青葉城西"
-          ? "seijoh"
-          : school === "音駒"
-          ? "nekoma"
-          : school === "梟谷"
-          ? "fukurodani"
-          : "karasuno";
-
       if (stackContainer) {
         // Already exists, just update count
         stackContainer.dataset.count = deck.length.toString();
 
-        // Also update the card back style in case school changed
-        const cardDiv = stackContainer.querySelector(".card");
-        if (cardDiv) {
-          cardDiv.className = `card back ${schoolClass}`;
-          const schoolNameDiv = cardDiv.querySelector(".school-name");
-          if (schoolNameDiv) {
-            schoolNameDiv.textContent = school;
-          } else {
-            // Should not happen if structure is consistent, but safe to rebuild
-            cardDiv.innerHTML = `<div class="card-back-design"><div class="school-name">${school}</div></div>`;
+        // Update the card back using Card.render() for consistency
+        const existingCard = stackContainer.querySelector(".card");
+        if (existingCard) {
+          // Create a dummy card object for rendering the back
+          const dummyCard: Card = {
+            id: "deck-back",
+            instanceId: "deck-back",
+            name: "Deck",
+            type: "CHARACTER",
+          };
+          const cardHtml = CardComponent.render(dummyCard, true, school);
+          const cardWrapper = document.createElement("div");
+          cardWrapper.innerHTML = cardHtml;
+          const newCardEl = cardWrapper.firstElementChild;
+          if (newCardEl) {
+            existingCard.replaceWith(newCardEl);
           }
         }
       } else {
@@ -378,10 +375,20 @@ export class PlayerZone {
         newStackContainer.className = "card-stack";
         newStackContainer.dataset.count = deck.length.toString();
 
-        const cardDiv = document.createElement("div");
-        cardDiv.className = `card back ${schoolClass}`;
-        cardDiv.innerHTML = `<div class="card-back-design"><div class="school-name">${school}</div></div>`;
-        newStackContainer.appendChild(cardDiv);
+        // Use Card.render() to create the card back
+        const dummyCard: Card = {
+          id: "deck-back",
+          instanceId: "deck-back",
+          name: "Deck",
+          type: "CHARACTER",
+        };
+        const cardHtml = CardComponent.render(dummyCard, true, school);
+        const cardWrapper = document.createElement("div");
+        cardWrapper.innerHTML = cardHtml;
+        const cardEl = cardWrapper.firstElementChild;
+        if (cardEl) {
+          newStackContainer.appendChild(cardEl);
+        }
         deckSlot.appendChild(newStackContainer);
       }
     } else {

@@ -16,18 +16,22 @@ export class Card {
           return "nekoma";
         case "梟谷":
           return "fukurodani";
+        case "混合學校":
+          return "mixed";
         default:
           return "karasuno";
       }
     };
 
-    const schoolClass = getSchoolClass(school);
+    // Use card's own school for front face, player's school for back
+    // This allows mixed school decks to show cards in their respective colors
+    const cardSchool = isBack ? school : card.school || school;
+    const schoolClass = getSchoolClass(cardSchool);
 
     if (isBack) {
       return `
         <div class="card back ${schoolClass}">
           <div class="card-back-design">
-             <div class="school-name">${school}</div>
           </div>
         </div>
       `;

@@ -4,6 +4,7 @@ export interface Card {
   id: string;
   instanceId: string; // Unique ID for this specific card instance
   name: string;
+  school?: string; // Card's own school (e.g., "烏野", "音駒")
   rarity?: string; // e.g., R, N, S, P, 頂
   role?: string; // e.g., WS, MB, S, Li
   type: "CHARACTER" | "EVENT";

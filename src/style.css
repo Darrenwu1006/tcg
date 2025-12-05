@@ -1445,27 +1445,58 @@ body {
 
 /* 青葉城西 - 青綠色 */
 .card.back.seijoh .card-back-design {
-  background: #008080;
+  background-color: #008080; /* Fallback color */
+  background-image: url("/src/assets/decks/青葉城西/青葉城西.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: saturate(1) brightness(0.7) contrast(1);
 }
 
 /* 烏野 - 橙色 */
 .card.back.karasuno .card-back-design {
-  background: #ff8c00;
+  background-color: #ff8c00; /* Fallback color */
+  background-image: url("src/assets/decks/烏野/烏野.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: saturate(1) brightness(0.7) contrast(1);
 }
 
 /* 音駒 - 紅色 */
 .card.back.nekoma .card-back-design {
-  background: #cc0000;
+  background-color: #cc0000; /* Fallback color */
+  background-image: url("/src/assets/decks/音駒/音駒.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: saturate(1) brightness(0.7) contrast(1);
 }
 
 /* 梟谷 - 金色 */
 .card.back.fukurodani .card-back-design {
-  background: #ffd700;
+  background-color: #ffd700; /* Fallback color */
+  background-image: url("/src/assets/decks/梟谷/梟谷.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: saturate(1) brightness(0.7) contrast(1);
+}
+
+/* 混合學校 - 蒙德里安風格 */
+.card.back.mixed .card-back-design {
+  background-color: #ffffff; /* Fallback color */
+  background-image: url("/src/assets/decks/混合學校/混合學校3.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* 降低彩度、飽和度和曝光 */
+  filter: saturate(0.1) brightness(0.7) contrast(1);
 }
 
 /* Card Back - GB 遊戲卡帶風格 🎮 */
 .card.back {
-  background-color: #e8e8e8;
+  background-color: #cccccc;
   border: 3px solid #2c2c2c;
   display: flex;
   flex-direction: column;

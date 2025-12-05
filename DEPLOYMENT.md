@@ -6,6 +6,13 @@
 
 當你修改了程式碼並想要保存到 GitHub 儲存庫 (Repository) 時，請執行以下指令：
 
+git add .
+git commit -m "修改說明"
+git push
+
+npm run deploy
+npm run build
+
 ```bash
 # 1. 加入所有修改的檔案
 git add .
