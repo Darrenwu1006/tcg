@@ -1626,7 +1626,7 @@ body {
   right: -8px;
 
   /* 外觀 - 灰黑底白字，復古風格 */
-  background-color: #2c2c2c; /* 深灰/黑色背景 */
+  background-color: #161616; /* 深灰/黑色背景 */
   color: #ffffff; /* 白色文字 */
   border: 2px solid #ffffff; /* 白色邊框 */
   border-radius: 0; /* 完全方形，像素風 */
@@ -1634,11 +1634,11 @@ body {
   /* 尺寸 */
   min-width: 20px;
   min-height: 20px;
-  padding: 2px 4px;
+  padding: 1px 1px;
 
   /* 字體 - 提升可讀性 */
   font-family: var(--font-retro-game); /* Press Start 2P 像素字體 */
-  font-size: 5px; /* 提升可讀性 */
+  font-size: 8px; /* 提升可讀性 */
   font-weight: bold;
   line-height: 1;
 
@@ -1666,7 +1666,6 @@ body {
 .card.playing {
   border: 2px solid #00ff88;
   box-shadow: 0 0 10px #00ff88;
-  transform: translateY(-10px);
 }
 
 /* Timing Badges on Cards */
