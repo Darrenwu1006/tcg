@@ -1,5 +1,7 @@
 import { Store, AppState, Card } from "../state/Store";
 import { Card as CardComponent } from "./Card";
+import { DragSelection } from "./DragSelection";
+import { ExpandedOverlay } from "./ExpandedOverlay";
 
 export class PlayerZone {
   private element: HTMLElement;
@@ -9,6 +11,10 @@ export class PlayerZone {
   private expandedZone: string | null = null;
   private lastPerspective: "me" | "opponent" | null = null;
 
+  // Module instances
+  private dragSelection: DragSelection;
+  private expandedOverlay: ExpandedOverlay;
+
   constructor(playerType: "me" | "opponent", store: Store<AppState>) {
     this.playerType = playerType;
     this.store = store;
@@ -17,177 +23,14 @@ export class PlayerZone {
     this.render();
     this.setupSubscription();
 
-    // Setup drag for both players, but listener will check perspective
-    this.setupGlobalDragSelection();
-  }
-
-  private setupGlobalDragSelection() {
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-    let selectionBox: HTMLElement | null = null;
-    let initialShiftKey = false;
-
-    // Mouse Events
-    document.addEventListener("mousedown", (e) => {
-      // Only allow drag if not clicking on a card or interactive element
-      if ((e.target as HTMLElement).closest(".card, button, .slot")) return;
-
-      // Only allow drag if this player is the active viewer
-      const state = this.store.getState();
-      if (state.viewPerspective !== this.playerType) return;
-
-      isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      initialShiftKey = e.shiftKey;
-
-      selectionBox = document.createElement("div");
-      selectionBox.className = "selection-box";
-      selectionBox.style.left = `${startX}px`;
-      selectionBox.style.top = `${startY}px`;
-      document.body.appendChild(selectionBox);
-
-      if (!initialShiftKey) {
-        this.store.setState({ selectedCards: [] });
-      }
-    });
-
-    document.addEventListener("mousemove", (e) => {
-      if (!isDragging || !selectionBox) return;
-
-      const currentX = e.clientX;
-      const currentY = e.clientY;
-
-      const width = Math.abs(currentX - startX);
-      const height = Math.abs(currentY - startY);
-      const left = Math.min(currentX, startX);
-      const top = Math.min(currentY, startY);
-
-      selectionBox.style.width = `${width}px`;
-      selectionBox.style.height = `${height}px`;
-      selectionBox.style.left = `${left}px`;
-      selectionBox.style.top = `${top}px`;
-    });
-
-    document.addEventListener("mouseup", () => {
-      finishDrag();
-    });
-
-    // Touch Events
-    document.addEventListener(
-      "touchstart",
-      (e) => {
-        // Only allow drag if not clicking on a card or interactive element
-        if ((e.target as HTMLElement).closest(".card, button, .slot")) return;
-
-        // Only allow drag if this player is the active viewer
-        const state = this.store.getState();
-        if (state.viewPerspective !== this.playerType) return;
-
-        // Prevent default scrolling behavior if we are starting a drag
-        // But we need to be careful not to block scrolling entirely if not dragging
-        // For now, let's assume if we touch empty space, we want to select.
-        // e.preventDefault(); // This might be too aggressive
-
-        isDragging = true;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        initialShiftKey = false; // No shift key on touch usually
-
-        selectionBox = document.createElement("div");
-        selectionBox.className = "selection-box";
-        selectionBox.style.left = `${startX}px`;
-        selectionBox.style.top = `${startY}px`;
-        document.body.appendChild(selectionBox);
-
-        this.store.setState({ selectedCards: [] });
-      },
-      { passive: false }
+    // Initialize modules
+    this.dragSelection = new DragSelection(store, playerType);
+    this.expandedOverlay = new ExpandedOverlay(
+      store,
+      playerType,
+      this.attachCardEvents.bind(this),
+      this.moveCard.bind(this)
     );
-
-    document.addEventListener(
-      "touchmove",
-      (e) => {
-        if (!isDragging || !selectionBox) return;
-        e.preventDefault(); // Prevent scrolling while dragging selection
-
-        const currentX = e.touches[0].clientX;
-        const currentY = e.touches[0].clientY;
-
-        const width = Math.abs(currentX - startX);
-        const height = Math.abs(currentY - startY);
-        const left = Math.min(currentX, startX);
-        const top = Math.min(currentY, startY);
-
-        selectionBox.style.width = `${width}px`;
-        selectionBox.style.height = `${height}px`;
-        selectionBox.style.left = `${left}px`;
-        selectionBox.style.top = `${top}px`;
-      },
-      { passive: false }
-    );
-
-    document.addEventListener("touchend", () => {
-      finishDrag();
-    });
-
-    const finishDrag = () => {
-      if (!isDragging) return;
-      isDragging = false;
-
-      if (selectionBox) {
-        const boxRect = selectionBox.getBoundingClientRect();
-        selectionBox.remove();
-        selectionBox = null;
-
-        // Select cards intersecting with box
-        // We check ALL cards in the DOM that are relevant (Hand + Expanded View)
-        // We need to ensure they have data-instance-id
-        const cardEls = document.querySelectorAll(".card");
-        const state = this.store.getState();
-        const playerData = state[this.playerType];
-
-        // Combine all possible cards to search from
-        const allCards = [
-          ...playerData.hand,
-          ...playerData.field,
-          ...playerData.deck,
-          ...playerData.drop,
-          ...playerData.set,
-        ];
-
-        let newSelectedCards: Card[] = initialShiftKey
-          ? [...(state.selectedCards || [])]
-          : [];
-
-        cardEls.forEach((cardEl) => {
-          const rect = cardEl.getBoundingClientRect();
-          const instanceId = (cardEl as HTMLElement).dataset.instanceId;
-          if (!instanceId) return;
-
-          const cardObj = allCards.find((c) => c.instanceId === instanceId);
-          if (!cardObj) return;
-
-          if (
-            rect.left < boxRect.right &&
-            rect.right > boxRect.left &&
-            rect.top < boxRect.bottom &&
-            rect.bottom > boxRect.top
-          ) {
-            if (!newSelectedCards.find((c) => c.instanceId === instanceId)) {
-              newSelectedCards.push(cardObj);
-            }
-          }
-        });
-
-        this.store.setState({
-          selectedCards: newSelectedCards,
-          playingCard:
-            newSelectedCards.length === 1 ? newSelectedCards[0] : null,
-        });
-      }
-    };
   }
 
   private setupSubscription() {
@@ -199,12 +42,12 @@ export class PlayerZone {
         this.lastPerspective !== state.viewPerspective
       ) {
         this.expandedZone = null;
-        this.renderExpandedOverlay();
+        this.expandedOverlay.render(null);
       }
       this.lastPerspective = state.viewPerspective;
 
       if (this.expandedZone) {
-        this.renderExpandedOverlay();
+        this.expandedOverlay.render(this.expandedZone);
       }
     });
   }
@@ -954,7 +797,7 @@ export class PlayerZone {
             ].includes(pos)
           ) {
             this.expandedZone = pos;
-            this.renderExpandedOverlay();
+            this.expandedOverlay.render(pos);
           }
         }
       });
@@ -965,260 +808,6 @@ export class PlayerZone {
     deckSlot?.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       this.store.setState({ viewingDeckInfo: { player: this.playerType } });
-    });
-  }
-
-  private renderExpandedOverlay() {
-    let overlay = document.getElementById("global-expanded-overlay");
-
-    if (!this.expandedZone) {
-      if (overlay) {
-        overlay.style.display = "none";
-        overlay.innerHTML = "";
-      }
-      return;
-    }
-
-    if (!overlay) {
-      overlay = document.createElement("div");
-      overlay.id = "global-expanded-overlay";
-      document.body.appendChild(overlay);
-    }
-
-    const state = this.store.getState();
-    const playerData = state[this.playerType];
-    let cards: Card[] = [];
-
-    if (this.expandedZone === "drop") {
-      cards = playerData.drop;
-    } else {
-      cards = playerData.field.filter((c) => c.position === this.expandedZone);
-    }
-
-    // Determine Position based on Viewer
-    const isOwnerView = this.playerType === state.viewPerspective;
-
-    // Reset classes
-    overlay.className = "expanded-overlay"; // Reset to base class
-
-    if (isOwnerView) {
-      // Owner viewing own zone -> Overlay at TOP (Opposite side)
-      overlay.classList.add("overlay-top");
-    } else {
-      // Viewing Enemy zone -> Overlay at BOTTOM (My side)
-      overlay.classList.add("overlay-bottom");
-    }
-
-    // Separate Top Card and Guts
-    let topCard: Card | null = null;
-    let guts: Card[] = [];
-
-    if (cards.length > 0) {
-      topCard = cards[cards.length - 1];
-      guts = cards.slice(0, cards.length - 1);
-    }
-
-    overlay.style.display = "flex";
-    overlay.innerHTML = `
-        <div class="expanded-content">
-            <div class="expanded-header">
-                <h3>${this.expandedZone.toUpperCase()} Stack ${
-      !isOwnerView ? "(Read Only)" : ""
-    }</h3>
-                <div class="header-buttons">
-                    ${
-                      isOwnerView
-                        ? '<button class="btn move-to-hand-btn">Move to Hand</button>'
-                        : ""
-                    }
-                    <button class="close-btn">Close</button>
-                </div>
-            </div>
-            
-            <div class="stack-layout">
-                <div class="active-unit-section">
-                    <h4>Active Unit</h4>
-                    <div class="active-card-container"></div>
-                </div>
-                <div class="guts-section">
-                    <h4>Guts / Stack</h4>
-                    <div class="expanded-grid">
-                        <!-- Guts cards go here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-      `;
-
-    const activeContainer = overlay.querySelector(".active-card-container");
-    const grid = overlay.querySelector(".expanded-grid") as HTMLElement;
-    const closeBtn = overlay.querySelector(".close-btn");
-    const moveToHandBtn = overlay.querySelector(".move-to-hand-btn");
-
-    closeBtn?.addEventListener("click", () => {
-      this.expandedZone = null;
-      this.renderExpandedOverlay();
-    });
-
-    // Move to Hand button
-    moveToHandBtn?.addEventListener("click", () => {
-      const state = this.store.getState();
-      if (state.selectedCards && state.selectedCards.length > 0) {
-        this.moveCard(state.selectedCards[0], "hand");
-        this.expandedZone = null;
-        this.renderExpandedOverlay();
-      }
-    });
-
-    // Close on background click
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) {
-        this.expandedZone = null;
-        this.renderExpandedOverlay();
-      }
-    });
-
-    // Drag Selection Logic (Only if Interactive)
-    if (isOwnerView) {
-      let isDragging = false;
-      let startX = 0;
-      let startY = 0;
-      let selectionBox: HTMLElement | null = null;
-      let initialShiftKey = false;
-
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isDragging || !selectionBox) return;
-
-        const currentX = e.clientX;
-        const currentY = e.clientY;
-        const width = Math.abs(currentX - startX);
-        const height = Math.abs(currentY - startY);
-        const left = Math.min(currentX, startX);
-        const top = Math.min(currentY, startY);
-
-        selectionBox.style.width = `${width}px`;
-        selectionBox.style.height = `${height}px`;
-        selectionBox.style.left = `${left}px`;
-        selectionBox.style.top = `${top}px`;
-      };
-
-      const handleMouseUp = () => {
-        if (!isDragging) return;
-        isDragging = false;
-
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-
-        if (selectionBox) {
-          const boxRect = selectionBox.getBoundingClientRect();
-          selectionBox.remove();
-          selectionBox = null;
-
-          const cardEls = grid.querySelectorAll(".card");
-          let newSelectedCards: Card[] = initialShiftKey
-            ? [...(this.store.getState().selectedCards || [])]
-            : [];
-
-          cardEls.forEach((cardEl) => {
-            const rect = cardEl.getBoundingClientRect();
-            const instanceId = (cardEl as HTMLElement).dataset.instanceId;
-            if (!instanceId) return;
-
-            const cardObj = cards.find((c) => c.instanceId === instanceId);
-            if (!cardObj) return;
-
-            if (
-              rect.left < boxRect.right &&
-              rect.right > boxRect.left &&
-              rect.top < boxRect.bottom &&
-              rect.bottom > boxRect.top
-            ) {
-              if (!newSelectedCards.find((c) => c.instanceId === instanceId)) {
-                newSelectedCards.push(cardObj);
-              }
-            }
-          });
-
-          this.store.setState({
-            selectedCards: newSelectedCards,
-            playingCard:
-              newSelectedCards.length === 1 ? newSelectedCards[0] : null,
-          });
-        }
-      };
-
-      grid.addEventListener("mousedown", (e) => {
-        if ((e.target as HTMLElement).closest(".card")) return;
-
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        initialShiftKey = e.shiftKey;
-
-        selectionBox = document.createElement("div");
-        selectionBox.className = "selection-box";
-        selectionBox.style.left = `${startX}px`;
-        selectionBox.style.top = `${startY}px`;
-        document.body.appendChild(selectionBox);
-
-        if (!initialShiftKey) {
-          this.store.setState({ selectedCards: [] });
-        }
-
-        document.addEventListener("mousemove", handleMouseMove);
-        document.addEventListener("mouseup", handleMouseUp);
-      });
-
-      // Ensure listeners are removed when overlay is closed externally
-      const closeOverlayCleanup = () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-        if (selectionBox) selectionBox.remove();
-        isDragging = false;
-      };
-
-      closeBtn?.addEventListener("click", closeOverlayCleanup);
-      overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeOverlayCleanup();
-      });
-    }
-
-    // Render Top Card
-    if (topCard && activeContainer) {
-      const cardHtml = CardComponent.render(topCard, false, playerData.school);
-      const cardWrapper = document.createElement("div");
-      cardWrapper.innerHTML = cardHtml;
-      const cardEl = cardWrapper.firstElementChild as HTMLElement;
-      cardEl.dataset.instanceId = topCard.instanceId;
-
-      this.attachCardEvents(cardEl, topCard, isOwnerView);
-
-      if (
-        state.selectedCards?.find((c) => c.instanceId === topCard!.instanceId)
-      ) {
-        cardEl.classList.add("selected");
-        cardEl.style.border = "2px solid #00ff88";
-      }
-
-      activeContainer.appendChild(cardEl);
-    }
-
-    // Render Guts
-    guts.forEach((card) => {
-      const cardHtml = CardComponent.render(card, false, playerData.school);
-      const cardWrapper = document.createElement("div");
-      cardWrapper.innerHTML = cardHtml;
-      const cardEl = cardWrapper.firstElementChild as HTMLElement;
-      cardEl.dataset.instanceId = card.instanceId;
-
-      this.attachCardEvents(cardEl, card, isOwnerView);
-
-      if (state.selectedCards?.find((c) => c.instanceId === card.instanceId)) {
-        cardEl.classList.add("selected");
-        cardEl.style.border = "2px solid #00ff88";
-      }
-
-      grid?.appendChild(cardEl);
     });
   }
 
@@ -1435,6 +1024,17 @@ export class PlayerZone {
     });
 
     return stats;
+  }
+
+  /**
+   * Clean up resources when PlayerZone is destroyed
+   */
+  public cleanup() {
+    // Clean up drag selection event listeners
+    this.dragSelection.cleanup();
+
+    // Clean up expanded overlay
+    this.expandedOverlay.close();
   }
 
   getElement(): HTMLElement {

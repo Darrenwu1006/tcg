@@ -206,8 +206,8 @@ export class StatsPanel {
   private updateDisplay(player: string, type: string, value: number) {
     const el = this.element.querySelector(`#${player}-${type}-val`);
     if (el) {
-      // Ensure value doesn't go below 0 (optional, but good for UI)
-      el.textContent = Math.max(0, value).toString();
+      // Display value as-is, allowing negative numbers
+      el.textContent = value.toString();
     }
   }
 

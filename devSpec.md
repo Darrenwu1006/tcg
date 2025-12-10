@@ -1,6 +1,6 @@
 # devSpec - 開發規格文檔
 
-> 📅 **最後更新**: 2025-12-05  
+> 📅 **最後更新**: 2025-12-10  
 > 🎯 **目標**: 提升代碼質量、可維護性與性能
 
 ---
@@ -8,22 +8,6 @@
 ## 📋 待開發項目 (Pending Tasks)
 
 ### 🟡 中優先級 (Medium Priority)
-
-#### 4. **PlayerZone.ts 文件過大** 🔜 **下週處理**
-
-- **文件**: `src/components/PlayerZone.ts` (1444 行, 47KB)
-- **問題**:
-  - 單個文件包含太多職責
-  - `setupGlobalDragSelection` (150 行)
-  - `renderExpandedOverlay` (252 行)
-  - 多個更新函數
-- **影響**: 難以維護、測試和導航
-- **建議**: 拆分為多個文件:
-  - `PlayerZone.ts` (主邏輯)
-  - `DragSelection.ts` (拖拽選擇邏輯)
-  - `ExpandedOverlay.ts` (展開視圖)
-  - `CardUpdaters.ts` (卡片更新邏輯)
-- **工作量**: 3-4 小時
 
 #### 5. **未使用的狀態屬性** 🔜 **下週處理**
 
@@ -72,6 +56,25 @@
 ---
 
 ## ✅ 已完成項目 (Completed Tasks)
+
+### 代碼重構 (Code Refactoring) (2025-12-10)
+
+#### ~~4. PlayerZone.ts 文件過大~~ ✅
+
+- **文件**: `src/components/PlayerZone.ts`
+- **完成內容**:
+  - ✅ 創建 `DragSelection.ts` (220 行) - 提取全域拖拽選擇邏輯
+  - ✅ 創建 `ExpandedOverlay.ts` (312 行) - 提取卡片堆疊展開視圖
+  - ✅ 重構 `PlayerZone.ts` - 從 1444 行減少到 1043 行 (~28% 減少)
+  - ✅ 添加 `cleanup()` 方法用於資源清理
+  - ✅ 移除 `setupGlobalDragSelection()` 方法 (168 行)
+  - ✅ 移除 `renderExpandedOverlay()` 方法 (253 行)
+  - ✅ TypeScript 編譯無錯誤
+- **效益**:
+  - 提升可維護性：每個模組職責單一，易於理解和修改
+  - 防止內存洩漏：`DragSelection.cleanup()` 正確移除事件監聽器
+  - 改善代碼導航：較小的文件更容易瀏覽和搜索
+  - 提高可重用性：模組可在其他組件中重用
 
 ### TypeScript 代碼優化 (2025-12-05)
 

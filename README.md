@@ -4,6 +4,29 @@
 
 ## Development Progress Logs
 
+### Progress Log (2025-12-10)
+
+#### Completed (已完成)
+
+- **Code Refactoring (代碼重構)**:
+
+  - **PlayerZone.ts Module Extraction (PlayerZone.ts 模組提取)**:
+    - 創建 `src/components/DragSelection.ts` (220 行) - 提取全域拖拽選擇邏輯
+      - 支援滑鼠與觸控拖拽選取
+      - Shift 鍵多選支援
+      - 視角感知（僅對當前查看者啟用）
+      - 添加 `cleanup()` 方法防止記憶體洩漏
+    - 創建 `src/components/ExpandedOverlay.ts` (312 行) - 提取卡片堆疊展開視圖
+      - 分離"主力單位"(Active Unit) 與"耐久值"(Guts) 卡片
+      - 位置感知的 overlay 放置（擁有者在上方，對手在下方）
+      - Overlay 內互動式拖拽選擇
+      - "移至手牌"按鈕（擁有者視角）
+    - 重構 `src/components/PlayerZone.ts` - 從 1444 行減少到 1043 行 (**減少 ~28%**)
+      - 移除 `setupGlobalDragSelection()` 方法 (168 行)
+      - 移除 `renderExpandedOverlay()` 方法 (253 行)
+      - 添加 `cleanup()` 公開方法用於資源清理
+      - 使用模組化架構提升可維護性
+
 ### Progress Log (2025-12-05)
 
 #### Completed (已完成)
