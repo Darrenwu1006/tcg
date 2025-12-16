@@ -5,7 +5,7 @@
  * 獨立的遊戲狀態管理，不依賴 UI
  */
 
-import { Card, CardStats, PlayerState } from "../state/Store";
+import { Card } from "../state/Store";
 import { Player, GamePhase, DefenseChoice } from "./Actions";
 
 /**

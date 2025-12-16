@@ -5,14 +5,8 @@
  * 驗證動作是否合法（不實現技能系統）
  */
 
-import { Card } from "../state/Store";
-import { GameAction, Player, ActionResult } from "./Actions";
-import {
-  EngineGameState,
-  getPlayerState,
-  getOpponent,
-  addLog,
-} from "./GameState";
+import { GameAction, Player } from "./Actions";
+import { EngineGameState, getPlayerState } from "./GameState";
 
 /**
  * 規則驗證器
@@ -26,8 +20,6 @@ export class RuleValidator {
     action: GameAction,
     player: Player
   ): { legal: boolean; reason?: string } {
-    const playerState = getPlayerState(state, player);
-
     switch (action.type) {
       case "PLAY_SERVE":
         return this.validateServe(state, action.cardInstanceId, player);

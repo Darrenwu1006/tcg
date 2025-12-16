@@ -6,10 +6,9 @@
  */
 
 import { Card } from "../state/Store";
-import { GameAction, Player, ActionResult, GamePhase } from "./Actions";
+import { GameAction, Player, ActionResult } from "./Actions";
 import {
   EngineGameState,
-  EnginePlayerState,
   getPlayerState,
   getOpponent,
   addLog,
