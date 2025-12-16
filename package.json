@@ -15,5 +15,8 @@
     "gh-pages": "^6.3.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "ollama": "^0.6.3"
   }
 }

@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-12-16T09:38:18.274Z",
+  "totalCards": 21,
+  "issues": [
+    {
+      "cardId": "HV-P01-018",
+      "cardName": "孤爪 研磨",
+      "severity": "info",
+      "issue": "原文包含「最多」但effects中缺少optional",
+      "suggestion": "考虑添加 \"optional\": true"
+    },
+    {
+      "cardId": "HV-P01-018",
+      "cardName": "孤爪 研磨",
+      "severity": "info",
+      "issue": "原文包含「最多」但effects中缺少optional",
+      "suggestion": "考虑添加 \"optional\": true"
+    },
+    {
+      "cardId": "HV-P01-045",
+      "cardName": "赤葦 京治",
+      "severity": "info",
+      "issue": "原文包含「最多」但effects中缺少optional",
+      "suggestion": "考虑添加 \"optional\": true"
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "warnings": 0,
+    "info": 3
+  }
+}
