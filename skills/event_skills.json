@@ -1,0 +1,784 @@
+[
+  {
+    "cardId": "HV-P01-085",
+    "cardName": "入畑 伸照",
+    "school": "青葉城西",
+    "rarity": "N",
+    "timing": "抽牌",
+    "originalText": "技能：抽1張卡。 若從自己的場上支付合計8點Guts則可使用。 這個回合中，自己的<青葉城西>角色登場時，將該角色任意1個點數+1。",
+    "trigger": {
+      "timing": "draw",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "guts | discard",
+      "amount": "8",
+      "description": "從自己的場上支付合計8點Guts"
+    },
+    "effects": [
+      {
+        "type": "search",
+        "target": "self",
+        "value": "從區域加入2張相同所屬Guts到手牌",
+        "condition": "手牌<=4",
+        "order": 1,
+        "from": "deck",
+        "to": "hand"
+      },
+      {
+        "type": "stat_boost",
+        "target": "<青葉城西>",
+        "stat": "any",
+        "value": 1,
+        "condition": "登場時",
+        "order": 2,
+        "selector": "player",
+        "duration": "turn"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-086",
+    "cardName": "指揮者が代われば音が変わる",
+    "school": "青葉城西",
+    "rarity": "R",
+    "timing": "抽牌,接球",
+    "originalText": "技能：從自己的棄牌區將1枚<青葉城西>的角色卡加入手牌。",
+    "trigger": {
+      "timing": "receive",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": "1",
+      "description": "<青葉城西>"
+    },
+    "effects": [
+      {
+        "type": "retrieve",
+        "target": "self",
+        "value": "1 <青葉城西> character card",
+        "from": "discard pile",
+        "to": "hand"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-087",
+    "cardName": "俺も思った☆",
+    "school": "青葉城西",
+    "rarity": "N",
+    "timing": "發球,舉球",
+    "originalText": "技能：當自己的發球角色或托球角色是「及川 徹」時可以使用。 抽1張卡， 並將自己1名「及川 徹」角色的托球點數+1。 此外，在下一個對手的回合中，對手每次以「抽卡」以外的方式將卡片加入手牌時，對手必須從手牌棄掉1張卡。",
+    "trigger": {
+      "timing": "toss",
+      "condition": ""
+    },
+    "cost": {
+      "type": "",
+      "amount": "",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "amount": 1,
+        "order": 1
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 1,
+        "filter": "及川徹",
+        "order": 2
+      },
+      {
+        "type": "special",
+        "subtype": "restrict",
+        "value": "对手以抽卡以外方式加入手牌时必须丢1张",
+        "duration": "next_opponent_turn",
+        "order": 3
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-088",
+    "cardName": "お前達は 強いよ",
+    "school": "青葉城西",
+    "rarity": "N",
+    "timing": "接球",
+    "originalText": "技能：抽最多1張卡。 選擇自己1名<青葉城西>的角色，其接球點數+1。 若自己的手牌在3枚以下，則其接球點數再+1。",
+    "trigger": {
+      "timing": "receive",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "guts | discard | none",
+      "amount": "1",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "+1",
+        "condition": "手牌在3枚以下"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D01-011",
+    "cardName": "バレーは!!! 常に上を向くスポーツだ (排球是!!! 永遠向上看的運動)",
+    "school": "烏野",
+    "rarity": "D",
+    "timing": "接球",
+    "originalText": "[抽1張卡，自己的1名角色的接球點數+1。該角色的接球點數為4以下的場合，再+1。",
+    "trigger": {
+      "timing": "draw",
+      "condition": ""
+    },
+    "cost": {
+      "type": "guts | discard",
+      "amount": "1",
+      "description": "抽1張卡"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "+1",
+        "condition": "(自己接球點數為4以下)"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D01-012",
+    "cardName": "ブロード攻撃 (Broad Attack / 廣域攻擊)",
+    "school": "烏野",
+    "rarity": "D",
+    "timing": "攻擊",
+    "originalText": "抽1張卡，自己的1名烏野角色的攻擊點數+1。自己的舉球角色為「影山飛雄」且攻擊角色為「日向翔陽」的場合，下個對手回合中，對手最多只能登場1名攔網角色。",
+    "trigger": {
+      "timing": "attack",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "none",
+      "amount": "",
+      "description": "無"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": "+1",
+        "condition": "烏野角色的存在且持有影山飛雄"
+      },
+      {
+        "type": "special",
+        "target": "opponent",
+        "stat": "",
+        "value": "攔網角色最多只能登場1名",
+        "condition": "持有日向翔陽"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-074",
+    "cardName": "烏養 一繋",
+    "school": "烏野",
+    "rarity": "N",
+    "timing": "攻擊",
+    "originalText": "抽 1 張卡，自己的 1 名角色的攻擊點數+1。若對手的事件區中，可在 [=抽牌] 或 [=接球] 階段使用的卡片合計 5 張以上，則攻擊點數再+2。",
+    "trigger": {
+      "timing": "attack",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "none",
+      "amount": "",
+      "description": "無成本"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": "+1",
+        "condition": "對手事件區中有[=抽牌] 或 [=接球] 階段使用的卡片合計 5張以上"
+      },
+      {
+        "type": "special",
+        "target": "self",
+        "stat": "",
+        "value": "",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-075",
+    "cardName": "清水 潔子",
+    "school": "烏野",
+    "rarity": "N",
+    "timing": "接球, 攻擊",
+    "originalText": "自己的 1 名烏野角色的 1 項參數+1，若在接球階段中，則抽 1 張卡。",
+    "trigger": {
+      "timing": "receive",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": "1",
+      "description": "烏野角色的 1 項參數+1"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "2",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-076",
+    "cardName": "加油",
+    "school": "烏野",
+    "rarity": "N",
+    "timing": "抽牌",
+    "originalText": "自己的手牌在 4 張以下時，從自己的 1 個區域，將 2 張相同所屬的 Guts 加入手牌。",
+    "trigger": {
+      "timing": "draw",
+      "condition": "手牌在4張以下時"
+    },
+    "cost": {
+      "type": "guts | discard | none",
+      "amount": "none",
+      "description": "無成本"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "Guts",
+        "value": "2張",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-077",
+    "cardName": "拼命向前衝",
+    "school": "烏野",
+    "rarity": "N",
+    "timing": "接球, 回合1",
+    "originalText": "自己的 1 名烏野接球角色的接球點數+2，若該角色為「西谷 夕」，則抽 1 張卡。",
+    "trigger": {
+      "timing": "receive",
+      "condition": ""
+    },
+    "cost": {
+      "type": "guts",
+      "amount": "none",
+      "description": "無"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "+2",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-078",
+    "cardName": "開放式進攻",
+    "school": "烏野",
+    "rarity": "S",
+    "timing": "攻擊",
+    "originalText": "抽 2 張卡，從自己的手牌丟棄 1 張卡。若自己的事件區中的「開放式進攻」在 2 張以下，則從自己的棄牌區將 1 張「日向 翔陽」登場到攻擊區，並使該角色的攻擊點數+1。",
+    "trigger": {
+      "timing": "attack",
+      "condition": ""
+    },
+    "cost": {
+      "type": "discard | none",
+      "amount": "1",
+      "description": "丟棄 1張牌"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "amount": 2,
+        "order": 1
+      },
+      {
+        "type": "discard",
+        "target": "self",
+        "amount": 1,
+        "selector": "player",
+        "from": "hand",
+        "order": 2
+      },
+      {
+        "type": "special",
+        "subtype": "summon",
+        "value": "从弃牌区登场日向翔陽到攻击区",
+        "from": "discard",
+        "to": "attack",
+        "filter": "日向翔陽",
+        "amount": 1,
+        "selector": "player",
+        "condition": "事件區開放式進攻<=2",
+        "order": 3
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 1,
+        "order": 4
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-078",
+    "cardName": "開放式進攻",
+    "school": "烏野",
+    "rarity": "SP",
+    "timing": "攻擊",
+    "originalText": "抽 2 張卡，從自己的手牌丟棄 1 張卡。若自己的事件區中的「開放式進攻」在 2 張以下，則從自己的棄牌區將 1 張「日向 翔陽」登場到攻擊區，並使該角色的攻擊點數+1。",
+    "trigger": {
+      "timing": "attack",
+      "condition": ""
+    },
+    "cost": {
+      "type": "discard 1",
+      "amount": "1",
+      "description": "丟棄一張牌"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "amount": 2,
+        "order": 1
+      },
+      {
+        "type": "discard",
+        "target": "self",
+        "amount": 1,
+        "selector": "player",
+        "from": "hand",
+        "order": 2
+      },
+      {
+        "type": "special",
+        "subtype": "summon",
+        "value": "从弃牌区登场日向翔陽到攻击区",
+        "from": "discard",
+        "to": "attack",
+        "filter": "日向翔陽",
+        "amount": 1,
+        "selector": "player",
+        "condition": "事件區開放式進攻<=2",
+        "order": 3
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 1,
+        "order": 4
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-079",
+    "cardName": "我可沒有 1mm 認為光靠我一人就能獲勝",
+    "school": "烏野",
+    "rarity": "N",
+    "timing": "攔網",
+    "originalText": "抽 1 張卡，自己的 1 名烏野攔網角色的攔網點數+1。若該角色為「月島 螢」，則從自己的發球區將最多 1 名「山口 忠」角色加入手牌，在下一個對手的回合中，對方的接球角色每登場 1 次，該角色的接球點數-2。",
+    "trigger": {
+      "timing": "block",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": null,
+      "description": "無"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "+1",
+        "condition": ""
+      },
+      {
+        "type": "special",
+        "target": "self",
+        "stat": "",
+        "value": "(月島 螢時候，將山口 忠加入手牌)",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-079",
+    "cardName": "我可沒有 1mm 認為光靠我一人就能獲勝",
+    "school": "烏野",
+    "rarity": "NP",
+    "timing": "攔網",
+    "originalText": "抽 1 張卡，自己的 1 名烏野攔網角色的攔網點數+1。若該角色為「月島 螢」，則從自己的發球區將最多 1 名「山口 忠」角色加入手牌，在下一個對手的回合中，對方的接球角色每登場 1 次，該角色的接球點數-2。",
+    "trigger": {
+      "timing": "block",
+      "condition": ""
+    },
+    "cost": {
+      "type": "guts | discard | none",
+      "amount": "1",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "block",
+        "value": "+1"
+      },
+      {
+        "type": "draw",
+        "target": "self",
+        "stat": "",
+        "value": "抽 1張卡"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D02-011",
+    "cardName": "手は前っつったでしょう ノブカツくん (我不是說了手要往前嗎，信勝同學)",
+    "school": "音駒",
+    "rarity": "D",
+    "timing": "攔網, 接球",
+    "originalText": "抽1張卡。從以下選擇1個使用。 ▶將自己1位攔網角色的「黑尾 鐵朗」的攔網點數+1。 ▶將自己1位角色的接球點數+1。",
+    "trigger": {
+      "timing": "block",
+      "condition": ""
+    },
+    "cost": {
+      "type": "guts",
+      "amount": "1",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "block",
+        "value": "1",
+        "condition": ""
+      },
+      {
+        "type": "draw",
+        "target": "",
+        "stat": "",
+        "value": "",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D02-012",
+    "cardName": "物理攻撃でブッ倒ればいいんだよね (用物理攻擊打倒就好了吧)",
+    "school": "音駒",
+    "rarity": "D",
+    "timing": "抽牌",
+    "originalText": "抽1張卡。查看自己牌庫頂3張卡，將其中最多1張「灰羽 列夫」或「犬岡 走」公開並加入手牌。未加入的卡片以喜歡的順序放回牌庫底。",
+    "trigger": {
+      "timing": "draw",
+      "condition": ""
+    },
+    "cost": {
+      "type": "none",
+      "amount": "",
+      "description": "抽1張卡"
+    },
+    "effects": [
+      {
+        "type": "special",
+        "target": "self",
+        "stat": "",
+        "value": "查看自己牌庫頂3張卡,將其中最多1張「灰羽 列夫」或「犬岡 走」公開並加入手牌。未加入的卡片以喜歡的順序放回牌庫底.",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-080",
+    "cardName": "猫又 育史",
+    "school": "音駒",
+    "rarity": "N",
+    "timing": "接球",
+    "originalText": "抽1張卡，自己的1名角色的接球點數+1。若對手的事件區域中，可於[托球]或[攻擊]時機發動的卡片合計有5張以上，則接球點數再+2。",
+    "trigger": {
+      "timing": "receive",
+      "condition": ""
+    },
+    "cost": {
+      "type": "none",
+      "amount": "",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "+1",
+        "condition": "[托球]或[攻擊]時機發動的卡片合計有5張以上"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-081",
+    "cardName": "山本 あかね",
+    "school": "音駒",
+    "rarity": "N",
+    "timing": "攻擊",
+    "originalText": "抽1張卡，自己的1名音駒角色的攻擊點數+1。若自己所有角色皆為音駒，可從自己的接球區域支付3點毅力(Guts)使用。攻擊點數再+1。",
+    "trigger": {
+      "timing": "attack",
+      "condition": ""
+    },
+    "cost": {
+      "type": "",
+      "amount": "",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": "+1",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-082",
+    "cardName": "これが繋ぐということだ",
+    "school": "音駒",
+    "rarity": "S",
+    "timing": "接球",
+    "originalText": "抽1張卡。可選擇以下1個效果發動。▶自己的1名音駒角色的接球點數+1。▶將自己1名接球點數為5以上的音駒角色的接球點數變為7。",
+    "trigger": {
+      "timing": "draw",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "none",
+      "amount": "",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "+1",
+        "condition": "音駒角色的接球點數為5以上"
+      },
+      {
+        "type": "draw",
+        "target": "none",
+        "stat": "",
+        "value": "",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-083",
+    "cardName": "1stテンポの同時多発位置差攻撃",
+    "school": "音駒",
+    "rarity": "R",
+    "timing": "攻擊",
+    "originalText": "抽1張卡。若自己所有角色皆為音駒，可從自己的場上支付合計5點毅力(Guts)使用。自己的1名角色的攻擊點數+3。",
+    "trigger": {
+      "timing": "attack",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "guts | none",
+      "amount": "5",
+      "description": "使用毅力"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": "+3",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-084",
+    "cardName": "助走は 翔陽の翼だね",
+    "school": "音駒",
+    "rarity": "N",
+    "timing": "舉球",
+    "originalText": "僅當自己的托球角色為「孤爪 研磨」時可使用。抽1張卡，自己的1名托球角色的托球點數+1。此外，下一個對手回合中，對手無法從手牌將MB的攻擊角色登場。",
+    "trigger": {
+      "timing": "toss",
+      "condition": "自己托球角色的托球點數>0"
+    },
+    "cost": {
+      "type": "guts | discard | none",
+      "amount": "1",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": "+1",
+        "condition": "自己的托球角色的托球點數+1"
+      },
+      {
+        "type": "special",
+        "target": "opponent",
+        "condition": "下一個對手回合中，對手無法從手牌將MB的攻擊角色登場"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-089",
+    "cardName": "闇路 建行",
+    "school": "梟谷",
+    "rarity": "N",
+    "timing": "抽牌, 接球",
+    "originalText": "查看自己牌組上方的3張卡，將其中最多1枚<梟谷>的卡片公開並加入手牌。 將未加入手牌的卡片以任意順序放回牌組最下方。",
+    "trigger": {
+      "timing": "receive",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "none",
+      "amount": "",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "discard",
+        "target": "hand",
+        "stat": "",
+        "value": "",
+        "condition": "有<梟谷>"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-090",
+    "cardName": "その瞬間が有るか、無いかだ",
+    "school": "梟谷",
+    "rarity": "S",
+    "timing": "攻擊",
+    "originalText": "抽一張卡，讓自己的一名梟谷角色攻擊點數+1。如果自己所有角色都是梟谷角色，在對手的下一個回合中，當對手失敗時，抽牌使你的手牌數量達到7張。",
+    "trigger": {
+      "timing": "attack",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "none",
+      "amount": "",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": "+1",
+        "condition": "所有角色都是梟谷角色"
+      },
+      {
+        "type": "draw",
+        "target": "opponent",
+        "stat": "none",
+        "value": "",
+        "condition": "對手的下一個回合中，當對手失敗時"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-091",
+    "cardName": "音駒の専売特許じゃねえぞ！",
+    "school": "梟谷",
+    "rarity": "R",
+    "timing": "接球",
+    "originalText": "抽1張卡， 將自己1名<梟谷>角色的接球點數+1。 若從自己的攔網區域棄掉1枚<梟谷>的角色卡則可使用，將對手的攻擊的進攻點數-1。",
+    "trigger": {
+      "timing": "receive",
+      "condition": "無"
+    },
+    "cost": {
+      "type": "none | discard",
+      "amount": "1",
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": "+1",
+        "condition": "無"
+      },
+      {
+        "type": "discard",
+        "target": "opponent",
+        "stat": "attack",
+        "value": "-1",
+        "condition": "<梟谷>的角色卡棄掉"
+      }
+    ],
+    "parsed": true
+  }
+]
