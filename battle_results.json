@@ -3,36 +3,36 @@
     "deck1Name": "青葉城西「快攻軸」",
     "deck2Name": "烏野「日影攻擊軸」",
     "totalGames": 1000,
-    "deck1Wins": 0,
-    "deck2Wins": 0,
-    "draws": 1000,
-    "winRate": 0
+    "deck1Wins": 398,
+    "deck2Wins": 602,
+    "draws": 0,
+    "winRate": 39.800000000000004
   },
   {
     "deck1Name": "青葉城西「快攻軸」",
     "deck2Name": "烏野「山月攔網軸」",
     "totalGames": 1000,
-    "deck1Wins": 0,
-    "deck2Wins": 0,
-    "draws": 1000,
-    "winRate": 0
+    "deck1Wins": 522,
+    "deck2Wins": 478,
+    "draws": 0,
+    "winRate": 52.2
   },
   {
     "deck1Name": "青葉城西「快攻軸」",
     "deck2Name": "音駒「預組」",
     "totalGames": 1000,
-    "deck1Wins": 0,
-    "deck2Wins": 0,
-    "draws": 1000,
-    "winRate": 0
+    "deck1Wins": 458,
+    "deck2Wins": 542,
+    "draws": 0,
+    "winRate": 45.800000000000004
   },
   {
     "deck1Name": "青葉城西「快攻軸」",
     "deck2Name": "梟谷「高爆發軸」",
     "totalGames": 1000,
-    "deck1Wins": 0,
-    "deck2Wins": 0,
-    "draws": 1000,
-    "winRate": 0
+    "deck1Wins": 570,
+    "deck2Wins": 430,
+    "draws": 0,
+    "winRate": 56.99999999999999
   }
 ]

@@ -1,0 +1,148 @@
+[
+  {
+    "cardId": "HV-P01-043",
+    "cardName": "木兎 光太郎",
+    "school": "梟谷",
+    "rarity": "頂",
+    "role": "WS",
+    "timing": "登場, 攻擊",
+    "originalText": "當此角色從你的手牌中出現，你所有角色均為梟谷，且你攻擊區域中的Guts數量為奇數時，可以使用此技能。此角色的攻擊點數 +5。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "all_characters_school:梟谷,guts_is_odd"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 5,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-045",
+    "cardName": "赤葦 京治",
+    "school": "梟谷",
+    "rarity": "S",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "從自己的托球區域和攻擊區域合計支付4 Guts則可使用。 這名角色的托球點數+2， 並從自己的棄牌區將最多1枚「木兎 光太郎」加入手牌。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 4,
+      "description": "從自己的托球區域和攻擊區域合計支付"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 2,
+        "condition": ""
+      },
+      {
+        "type": "search",
+        "source": "discard_pile",
+        "destination": "hand",
+        "target_card_name": "木兎 光太郎",
+        "max_amount": 1
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-047",
+    "cardName": "木葉 秋紀",
+    "school": "梟谷",
+    "rarity": "R",
+    "role": "WS",
+    "timing": "攻擊",
+    "originalText": "在這名攻擊角色的上方有<梟谷>的角色登場時，若從自己的手牌棄掉1張卡則可使用。 讓上方登場的角色攻擊+1。",
+    "trigger": {
+      "timing": "attack",
+      "condition": "stack_on_self, character_is:梟谷"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "stacked_character",
+        "stat": "attack",
+        "value": 1,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-051",
+    "cardName": "鷲尾 辰生",
+    "school": "梟谷",
+    "rarity": "N",
+    "role": "MB",
+    "timing": "登場, 攔網",
+    "originalText": "對手的進攻點數在4以上時，若從自己的牌組上方棄掉1張卡則可使用。 若該卡為<梟谷>的卡片，則 [=ワンタッチ(3)] する。(執行 [=One Touch(3)])",
+    "trigger": {
+      "timing": "on_play,block",
+      "condition": "op_over:4"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "從自己的牌組上方棄掉1張卡"
+    },
+    "effects": [
+      {
+        "type": "special",
+        "target": "self",
+        "description": "One Touch",
+        "value": 3,
+        "condition": "discarded_card_school:梟谷"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-PR-013",
+    "cardName": "木兎・赤葦",
+    "school": "梟谷",
+    "rarity": "P",
+    "role": "WS/S",
+    "timing": "登場",
+    "originalText": "當這張卡登場時，將這張卡的卡名變為「木兎 光太郎」或「赤葦 京治」。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "description": "將這張卡的卡名變為「木兎 光太郎」或「赤葦 京治」",
+        "target": "self",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  }
+]

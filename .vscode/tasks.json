@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Update Card Pool (Skills)",
+      "type": "shell",
+      "command": "npx tsx scripts/automation/update-card-pool.ts",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "detail": "Automatically parse CSV updates and regenerate skill JSONs"
+    }
+  ]
+}

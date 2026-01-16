@@ -26,9 +26,17 @@ export class GameEngine {
   constructor(
     meDeck: Card[],
     opponentDeck: Card[],
-    firstPlayer: Player = "me"
+    firstPlayer: Player = "me",
+    meSchool: string = "烏野",
+    opponentSchool: string = "音駒"
   ) {
-    this.state = createInitialGameState(meDeck, opponentDeck, firstPlayer);
+    this.state = createInitialGameState(
+      meDeck,
+      opponentDeck,
+      firstPlayer,
+      meSchool,
+      opponentSchool
+    );
     this.setupGame();
   }
 
@@ -196,9 +204,17 @@ export class GameEngine {
   reset(
     meDeck: Card[],
     opponentDeck: Card[],
-    firstPlayer: Player = "me"
+    firstPlayer: Player = "me",
+    meSchool: string = "烏野",
+    opponentSchool: string = "音駒"
   ): void {
-    this.state = createInitialGameState(meDeck, opponentDeck, firstPlayer);
+    this.state = createInitialGameState(
+      meDeck,
+      opponentDeck,
+      firstPlayer,
+      meSchool,
+      opponentSchool
+    );
     this.setupGame();
   }
 

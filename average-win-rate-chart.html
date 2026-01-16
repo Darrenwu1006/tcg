@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Battle Average Win Rate Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      .chart-container {
+        position: relative;
+        height: 500px;
+        width: 100%;
+      }
+      .stats {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #eef;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Average Win Rate (100 Games)</h1>
+      <p style="text-align: center; color: #666">
+        Aoba Johsai (Teal) vs Fukurodani (Red)
+      </p>
+
+      <div class="chart-container">
+        <canvas id="winRateChart"></canvas>
+      </div>
+
+      <div class="stats" id="statsPanel">
+        <!-- Stats will be inserted here -->
+      </div>
+
+      <div style="margin-top: 20px">
+        <textarea
+          id="jsonInput"
+          placeholder="Paste average_win_rate_data.json content here if chart doesn't load..."
+          style="width: 100%; height: 100px"
+        ></textarea>
+        <button onclick="parseAndRender()">Render</button>
+      </div>
+    </div>
+
+    <script>
+      // Aoba Johsai Color (Teal/Greenish)
+      const seijohColor = "rgba(75, 192, 192, 0.6)";
+      const seijohBorder = "rgba(75, 192, 192, 1)";
+
+      // Fukurodani Color (Red/Grayish)
+      const fukurodaniColor = "rgba(255, 99, 132, 0.6)";
+      const fukurodaniBorder = "rgba(255, 99, 132, 1)";
+
+      async function loadData() {
+        try {
+          const response = await fetch("average_win_rate_data.json");
+          if (!response.ok) throw new Error("Failed to load data");
+          const data = await response.json();
+          renderChart(data);
+        } catch (e) {
+          console.error(e);
+          // Try to auto-load if pasted
+        }
+      }
+
+      function parseAndRender() {
+        try {
+          const input = document.getElementById("jsonInput").value;
+          const data = JSON.parse(input);
+          renderChart(data);
+        } catch (e) {
+          alert("Invalid JSON");
+        }
+      }
+
+      function renderChart(data) {
+        const ctx = document.getElementById("winRateChart").getContext("2d");
+
+        const labels = data.map((d) => d.turn);
+        const winRates = data.map((d) => d.avgWinRate * 100);
+
+        // To create the "Two Color Area" effect in a single chart:
+        // We can use two datasets stacked.
+        // Dataset 1: "Me Win Rate" (0 to WinRate) -> Color Me
+        // Dataset 2: "Opponent Win Rate" (WinRate to 100) -> Color Opponent
+        // Actually, simpler: Dataset 1 is Me Win Rate, fill: 'start'.
+        // Dataset 2 is always 100, fill: '-1' (fill to dataset 1), color Opponent.
+
+        const meData = winRates;
+        const oppData = winRates.map(() => 100); // Top line always 100%
+
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Aoba Johsai (Me) Win %",
+                data: meData,
+                borderColor: seijohBorder,
+                backgroundColor: seijohColor,
+                borderWidth: 2,
+                fill: "origin", // Fill to bottom
+                pointRadius: 0,
+                pointHoverRadius: 5,
+              },
+              {
+                label: "Fukurodani (Opp) Win %",
+                data: oppData,
+                borderColor: "transparent",
+                backgroundColor: fukurodaniColor,
+                borderWidth: 0,
+                fill: "-1", // Fill to previous dataset (Me Data)
+                pointRadius: 0,
+                pointHoverRadius: 0,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: "index",
+              intersect: false,
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                  display: true,
+                  text: "Win Probability (%)",
+                },
+                stacked: false, // Important: We are layering, not stacking values
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Game Turn",
+                },
+              },
+            },
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    if (context.datasetIndex === 0) {
+                      return `Aoba Johsai: ${context.parsed.y.toFixed(1)}%`;
+                    } else {
+                      // Calculate Opponent %
+                      const meVal =
+                        context.chart.data.datasets[0].data[context.dataIndex];
+                      return `Fukurodani: ${(100 - meVal).toFixed(1)}%`;
+                    }
+                  },
+                },
+              },
+              legend: {
+                reverse: true, // Show Opponent on top in legend to match visual? Maybe not needed.
+              },
+            },
+          },
+        });
+
+        // Stats
+        const finalRate = winRates[winRates.length - 1];
+
+        document.getElementById("statsPanel").innerHTML = `
+                <h3>Average Match Analysis (100 Games)</h3>
+                <p><strong>Total Turns (Max):</strong> ${data.length}</p>
+                <p><strong>Final Average Win Rate:</strong> ${finalRate.toFixed(
+                  1
+                )}%</p>
+                <p>This chart shows the average win probability at each turn across 100 simulated games.</p>
+            `;
+      }
+
+      loadData();
+    </script>
+  </body>
+</html>

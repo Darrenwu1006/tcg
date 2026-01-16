@@ -1,13 +1,14 @@
 /**
  * 角色卡技能批量处理脚本（按学校）
- * 使用 Ollama 解析指定学校的角色卡技能
+ * 使用 Google Gemini 解析指定学校的角色卡技能
  */
 
-import { Ollama } from "ollama";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import "dotenv/config"; // Load environment variables
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -100,10 +101,10 @@ function loadCharacterCards(targetSchool: string): any[] {
 }
 
 /**
- * 使用 Ollama 解析技能
+ * 使用 Gemini 解析技能
  */
-async function parseSkillWithOllama(
-  ollama: Ollama,
+async function parseSkillWithGemini(
+  model: any,
   card: any
 ): Promise<ParsedSkill> {
   const prompt = `請將以下排球Break遊戲角色卡技能解析為結構化的JSON格式。
@@ -138,7 +139,22 @@ async function parseSkillWithOllama(
    - "discard" (棄牌)
    - "none" (無成本)
 
-4. effects 類型：
+4. trigger.condition 必須轉換為以下代碼 (若無條件則填 "none")：
+   - 手牌數小於 X: "hand_count_under:X"
+   - 手牌數大於 X: "hand_count_over:X"
+   - 對手 OP 小於 X: "op_under:X"
+   - 對手 OP 大於 X: "op_over:X"
+   - 場上角色皆為某學校: "all_characters_school:學校名"
+   - 毅力區總和為奇數: "guts_is_odd"
+   - 場上有某角色: "character_is:角色名"
+   - 疊在某角色上方: "stack_on:角色名"
+   - 疊在自己上方: "stack_on_self"
+   - 托球點數大於 X: "toss_point_over:X"
+   - 必須是第一回合: "is_first_turn"
+   - 必須是發球回合: "is_serve_turn"
+   - 複合條件用逗號分隔
+
+5. effects 類型：
    - "stat_boost" (點數增加)
    - "draw" (抽卡)
    - "discard" (棄牌)
@@ -170,12 +186,9 @@ async function parseSkillWithOllama(
 只輸出JSON，不要其他說明。`;
 
   try {
-    const response = await ollama.chat({
-      model: "llama3.2:3b",
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = response.message.content.trim();
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const content = response.text().trim();
 
     // 提取 JSON
     let jsonText = content;
@@ -225,11 +238,43 @@ async function main() {
   const targetSchool = process.argv[2] || "烏野";
 
   console.log("╔════════════════════════════════════════════════════════╗");
-  console.log(`║        ${targetSchool} 角色卡技能批量處理系統              ║`);
+  console.log(
+    `║        ${targetSchool} 角色卡技能批量處理系統 (Gemini)      ║`
+  );
   console.log("╚════════════════════════════════════════════════════════╝\n");
 
-  // 连接 Ollama
-  const ollama = new Ollama({ host: "http://localhost:11434" });
+  // 检查 API Key
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("❌ 錯誤：找不到 GEMINI_API_KEY 環境變數");
+    console.error("請在專案根目錄建立 .env 檔案並設定 GEMINI_API_KEY");
+    process.exit(1);
+  }
+
+  // 初始化 Gemini
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+  try {
+    if (!process.argv.includes("--quiet")) {
+      console.log("🔌 測試 Gemini 連線...");
+    }
+    // 簡單測試
+    await model.generateContent("Test connection");
+    if (!process.argv.includes("--quiet")) {
+      console.log("✓ Gemini 連線成功");
+    }
+  } catch (error) {
+    console.error("\n❌ 無法連接到 Gemini API！");
+    console.error("請確認：");
+    console.error("1. 您的 API Key 是否正確？");
+    console.error("2. 網路連線是否正常？");
+    console.error(
+      "3. 錯誤訊息:",
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  }
 
   // 载入角色卡
   console.log(`📋 載入 ${targetSchool} 角色卡...`);
@@ -241,20 +286,76 @@ async function main() {
     return;
   }
 
-  // 处理每张卡
+  // 處理每张卡
   const results: ParsedSkill[] = [];
   let successCount = 0;
   let failCount = 0;
+  let skippedCount = 0;
+
+  const isQuiet = process.argv.includes("--quiet");
+
+  // 1. 嘗試讀取現有的 JSON 檔案
+  const outputDir = path.join(__dirname, "../public/skills");
+  const outputPath = path.join(
+    outputDir,
+    `character_skills_${targetSchool}.json`
+  );
+
+  const existingSkillsMap = new Map<string, ParsedSkill>();
+  if (fs.existsSync(outputPath)) {
+    try {
+      const existingContent = fs.readFileSync(outputPath, "utf-8");
+      const existingSkills = JSON.parse(existingContent) as ParsedSkill[];
+      for (const skill of existingSkills) {
+        existingSkillsMap.set(skill.cardId, skill);
+      }
+      if (!isQuiet) {
+        console.log(
+          `ℹ️  已讀取現有 ${existingSkills.length} 筆技能資料用於比對`
+        );
+      }
+    } catch (e) {
+      console.warn("⚠️  讀取現有檔案失敗，將重新建立所有資料");
+    }
+  }
 
   console.log("🔄 開始處理...\n");
 
   for (let i = 0; i < cards.length; i++) {
     const card = cards[i];
-    console.log(
-      `[${i + 1}/${cards.length}] 處理: ${card.name} (${card.cardId})`
-    );
 
-    const result = await parseSkillWithOllama(ollama, card);
+    // 檢查是否已存在且未變更
+    const existingSkill = existingSkillsMap.get(card.cardId);
+
+    // 判斷是否需要重新解析
+    // 條件：存在 + 已解析成功 + 原始文字相同
+    if (
+      existingSkill &&
+      existingSkill.parsed &&
+      existingSkill.originalText === card.skill
+    ) {
+      if (!isQuiet) {
+        console.log(
+          `[${i + 1}/${cards.length}] 跳過: ${card.name} (${
+            card.cardId
+          }) - 無變更`
+        );
+      }
+      results.push(existingSkill);
+      skippedCount++;
+      successCount++; // 視為成功
+      continue;
+    }
+
+    if (!isQuiet) {
+      console.log(
+        `[${i + 1}/${cards.length}] 處理: ${card.name} (${card.cardId}) ${
+          existingSkill ? "(更新)" : "(新增)"
+        }`
+      );
+    }
+
+    const result = await parseSkillWithGemini(model, card);
     results.push(result);
 
     if (result.parsed) {
@@ -265,22 +366,18 @@ async function main() {
       failCount++;
     }
 
-    // 防止过载
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // 防止 API Rate Limit (Gemini 限制較寬鬆，但稍微延遲較安全)
+    await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
   // 保存结果
   console.log("\n💾 保存結果...");
 
-  const outputDir = path.join(__dirname, "../public/skills");
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  const outputPath = path.join(
-    outputDir,
-    `character_skills_${targetSchool}.json`
-  );
+  // outputPath 已經在前面定義過
   fs.writeFileSync(outputPath, JSON.stringify(results, null, 2), "utf-8");
 
   console.log(`✓ 結果已保存到: ${outputPath}\n`);
@@ -297,6 +394,7 @@ async function main() {
       100
     ).toFixed(1)}%)`
   );
+  console.log(`跳過處理: ${skippedCount} 張 (未變更)`);
   console.log(
     `解析失敗: ${failCount} 張 (${((failCount / cards.length) * 100).toFixed(
       1
@@ -314,6 +412,58 @@ async function main() {
   }
 
   console.log("\n✨ 處理完成！");
+
+  // 更新 Master Skill File
+  console.log("\n🔄 更新 Master Skill File (character_skills.json)...");
+  updateMasterSkillFile();
+}
+
+/**
+ * 更新主技能檔案 (合併所有學校的技能)
+ */
+function updateMasterSkillFile() {
+  const outputDir = path.join(__dirname, "../public/skills");
+  const masterPath = path.join(outputDir, "character_skills.json");
+  const allSkills: ParsedSkill[] = [];
+  const cardIdSet = new Set<string>();
+
+  // 讀取所有 character_skills_*.json 檔案
+  if (fs.existsSync(outputDir)) {
+    const files = fs.readdirSync(outputDir);
+
+    for (const file of files) {
+      // 匹配 pattern: character_skills_*.json，排除 character_skills.json
+      if (
+        file.startsWith("character_skills_") &&
+        file !== "character_skills.json" &&
+        file.endsWith(".json")
+      ) {
+        try {
+          const filePath = path.join(outputDir, file);
+          const content = fs.readFileSync(filePath, "utf-8");
+          const skills = JSON.parse(content) as ParsedSkill[];
+
+          console.log(`  - 合併: ${file} (${skills.length} 技能)`);
+
+          for (const skill of skills) {
+            // 避免重複 (以 cardId 為準)
+            if (!cardIdSet.has(skill.cardId)) {
+              allSkills.push(skill);
+              cardIdSet.add(skill.cardId);
+            }
+          }
+        } catch (e) {
+          console.warn(`  ⚠️ 無法解析 ${file}:`, e);
+        }
+      }
+    }
+  }
+
+  // 寫入主檔案
+  fs.writeFileSync(masterPath, JSON.stringify(allSkills, null, 2), "utf-8");
+  console.log(
+    `✓ Master skill file updated: ${masterPath} (總計 ${allSkills.length} 技能)`
+  );
 }
 
 main().catch(console.error);

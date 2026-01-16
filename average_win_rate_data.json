@@ -1,0 +1,458 @@
+[
+  {
+    "turn": 0,
+    "avgWinRate": 0.5
+  },
+  {
+    "turn": 1,
+    "avgWinRate": 0.4779003894524508
+  },
+  {
+    "turn": 2,
+    "avgWinRate": 0.47512983190917374
+  },
+  {
+    "turn": 3,
+    "avgWinRate": 0.47563899991123476
+  },
+  {
+    "turn": 4,
+    "avgWinRate": 0.5054385138065104
+  },
+  {
+    "turn": 5,
+    "avgWinRate": 0.5
+  },
+  {
+    "turn": 6,
+    "avgWinRate": 0.4816755615795123
+  },
+  {
+    "turn": 7,
+    "avgWinRate": 0.4759867421487125
+  },
+  {
+    "turn": 8,
+    "avgWinRate": 0.49375769457697577
+  },
+  {
+    "turn": 9,
+    "avgWinRate": 0.47807426449010065
+  },
+  {
+    "turn": 10,
+    "avgWinRate": 0.5088303960780195
+  },
+  {
+    "turn": 11,
+    "avgWinRate": 0.47860533062660243
+  },
+  {
+    "turn": 12,
+    "avgWinRate": 0.522862101903931
+  },
+  {
+    "turn": 13,
+    "avgWinRate": 0.5347933559151999
+  },
+  {
+    "turn": 14,
+    "avgWinRate": 0.5321719015507309
+  },
+  {
+    "turn": 15,
+    "avgWinRate": 0.529937398449002
+  },
+  {
+    "turn": 16,
+    "avgWinRate": 0.4923781241225381
+  },
+  {
+    "turn": 17,
+    "avgWinRate": 0.49023338790244325
+  },
+  {
+    "turn": 18,
+    "avgWinRate": 0.5024536368905115
+  },
+  {
+    "turn": 19,
+    "avgWinRate": 0.5085551793770466
+  },
+  {
+    "turn": 20,
+    "avgWinRate": 0.47846997989606604
+  },
+  {
+    "turn": 21,
+    "avgWinRate": 0.4846956769914862
+  },
+  {
+    "turn": 22,
+    "avgWinRate": 0.4569876817654399
+  },
+  {
+    "turn": 23,
+    "avgWinRate": 0.4940698239779289
+  },
+  {
+    "turn": 24,
+    "avgWinRate": 0.5007372788895053
+  },
+  {
+    "turn": 25,
+    "avgWinRate": 0.4887917828851024
+  },
+  {
+    "turn": 26,
+    "avgWinRate": 0.5156895262676724
+  },
+  {
+    "turn": 27,
+    "avgWinRate": 0.49396178746949615
+  },
+  {
+    "turn": 28,
+    "avgWinRate": 0.5196095805321311
+  },
+  {
+    "turn": 29,
+    "avgWinRate": 0.5362487296441848
+  },
+  {
+    "turn": 30,
+    "avgWinRate": 0.505712049963282
+  },
+  {
+    "turn": 31,
+    "avgWinRate": 0.4862223468383846
+  },
+  {
+    "turn": 32,
+    "avgWinRate": 0.5105497134657565
+  },
+  {
+    "turn": 33,
+    "avgWinRate": 0.5309503253808855
+  },
+  {
+    "turn": 34,
+    "avgWinRate": 0.5412131669940712
+  },
+  {
+    "turn": 35,
+    "avgWinRate": 0.5295457123017521
+  },
+  {
+    "turn": 36,
+    "avgWinRate": 0.5363506330339614
+  },
+  {
+    "turn": 37,
+    "avgWinRate": 0.5249789413685881
+  },
+  {
+    "turn": 38,
+    "avgWinRate": 0.517603407088538
+  },
+  {
+    "turn": 39,
+    "avgWinRate": 0.49375509803130835
+  },
+  {
+    "turn": 40,
+    "avgWinRate": 0.49543321567070353
+  },
+  {
+    "turn": 41,
+    "avgWinRate": 0.5008871731062942
+  },
+  {
+    "turn": 42,
+    "avgWinRate": 0.45652195363962284
+  },
+  {
+    "turn": 43,
+    "avgWinRate": 0.48160554231470987
+  },
+  {
+    "turn": 44,
+    "avgWinRate": 0.45669018462466404
+  },
+  {
+    "turn": 45,
+    "avgWinRate": 0.5023783189866167
+  },
+  {
+    "turn": 46,
+    "avgWinRate": 0.4432812083416804
+  },
+  {
+    "turn": 47,
+    "avgWinRate": 0.4588042352312483
+  },
+  {
+    "turn": 48,
+    "avgWinRate": 0.48191560799024136
+  },
+  {
+    "turn": 49,
+    "avgWinRate": 0.4814311315762787
+  },
+  {
+    "turn": 50,
+    "avgWinRate": 0.4928980010925907
+  },
+  {
+    "turn": 51,
+    "avgWinRate": 0.4926768215677965
+  },
+  {
+    "turn": 52,
+    "avgWinRate": 0.4822394884124602
+  },
+  {
+    "turn": 53,
+    "avgWinRate": 0.4744919628720665
+  },
+  {
+    "turn": 54,
+    "avgWinRate": 0.48907332225990885
+  },
+  {
+    "turn": 55,
+    "avgWinRate": 0.4903335079140399
+  },
+  {
+    "turn": 56,
+    "avgWinRate": 0.4917811538445408
+  },
+  {
+    "turn": 57,
+    "avgWinRate": 0.4972760654274554
+  },
+  {
+    "turn": 58,
+    "avgWinRate": 0.484664433337222
+  },
+  {
+    "turn": 59,
+    "avgWinRate": 0.4726690428031922
+  },
+  {
+    "turn": 60,
+    "avgWinRate": 0.4843084457164552
+  },
+  {
+    "turn": 61,
+    "avgWinRate": 0.4657064632978114
+  },
+  {
+    "turn": 62,
+    "avgWinRate": 0.47578934631974645
+  },
+  {
+    "turn": 63,
+    "avgWinRate": 0.4602283024004345
+  },
+  {
+    "turn": 64,
+    "avgWinRate": 0.4527651953651654
+  },
+  {
+    "turn": 65,
+    "avgWinRate": 0.46143110967638223
+  },
+  {
+    "turn": 66,
+    "avgWinRate": 0.4372045766065791
+  },
+  {
+    "turn": 67,
+    "avgWinRate": 0.4503112470214235
+  },
+  {
+    "turn": 68,
+    "avgWinRate": 0.45833915681427945
+  },
+  {
+    "turn": 69,
+    "avgWinRate": 0.4598186757048826
+  },
+  {
+    "turn": 70,
+    "avgWinRate": 0.4492299206260518
+  },
+  {
+    "turn": 71,
+    "avgWinRate": 0.43912438535019177
+  },
+  {
+    "turn": 72,
+    "avgWinRate": 0.4433601407118031
+  },
+  {
+    "turn": 73,
+    "avgWinRate": 0.43606088803592385
+  },
+  {
+    "turn": 74,
+    "avgWinRate": 0.4473355629877369
+  },
+  {
+    "turn": 75,
+    "avgWinRate": 0.4340375857945517
+  },
+  {
+    "turn": 76,
+    "avgWinRate": 0.42412295838453096
+  },
+  {
+    "turn": 77,
+    "avgWinRate": 0.42497115384615386
+  },
+  {
+    "turn": 78,
+    "avgWinRate": 0.4157619047619048
+  },
+  {
+    "turn": 79,
+    "avgWinRate": 0.4301195016526825
+  },
+  {
+    "turn": 80,
+    "avgWinRate": 0.4315204013377927
+  },
+  {
+    "turn": 81,
+    "avgWinRate": 0.4256818181818182
+  },
+  {
+    "turn": 82,
+    "avgWinRate": 0.42919180063546264
+  },
+  {
+    "turn": 83,
+    "avgWinRate": 0.4332512733446519
+  },
+  {
+    "turn": 84,
+    "avgWinRate": 0.43881158198046244
+  },
+  {
+    "turn": 85,
+    "avgWinRate": 0.44232303348124247
+  },
+  {
+    "turn": 86,
+    "avgWinRate": 0.4389423728813559
+  },
+  {
+    "turn": 87,
+    "avgWinRate": 0.4380639097744361
+  },
+  {
+    "turn": 88,
+    "avgWinRate": 0.43961666666666666
+  },
+  {
+    "turn": 89,
+    "avgWinRate": 0.43222478238607265
+  },
+  {
+    "turn": 90,
+    "avgWinRate": 0.4403114478114478
+  },
+  {
+    "turn": 91,
+    "avgWinRate": 0.4384782608695652
+  },
+  {
+    "turn": 92,
+    "avgWinRate": 0.435
+  },
+  {
+    "turn": 93,
+    "avgWinRate": 0.4378205128205128
+  },
+  {
+    "turn": 94,
+    "avgWinRate": 0.43785714285714283
+  },
+  {
+    "turn": 95,
+    "avgWinRate": 0.43824175824175826
+  },
+  {
+    "turn": 96,
+    "avgWinRate": 0.44
+  },
+  {
+    "turn": 97,
+    "avgWinRate": 0.435
+  },
+  {
+    "turn": 98,
+    "avgWinRate": 0.44
+  },
+  {
+    "turn": 99,
+    "avgWinRate": 0.435
+  },
+  {
+    "turn": 100,
+    "avgWinRate": 0.437962962962963
+  },
+  {
+    "turn": 101,
+    "avgWinRate": 0.435
+  },
+  {
+    "turn": 102,
+    "avgWinRate": 0.43625
+  },
+  {
+    "turn": 103,
+    "avgWinRate": 0.4376190476190476
+  },
+  {
+    "turn": 104,
+    "avgWinRate": 0.44
+  },
+  {
+    "turn": 105,
+    "avgWinRate": 0.435
+  },
+  {
+    "turn": 106,
+    "avgWinRate": 0.435
+  },
+  {
+    "turn": 107,
+    "avgWinRate": 0.435625
+  },
+  {
+    "turn": 108,
+    "avgWinRate": 0.431875
+  },
+  {
+    "turn": 109,
+    "avgWinRate": 0.43
+  },
+  {
+    "turn": 110,
+    "avgWinRate": 0.435
+  },
+  {
+    "turn": 111,
+    "avgWinRate": 0.43
+  },
+  {
+    "turn": 112,
+    "avgWinRate": 0.43
+  },
+  {
+    "turn": 113,
+    "avgWinRate": 0.43
+  }
+]

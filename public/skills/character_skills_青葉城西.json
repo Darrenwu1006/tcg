@@ -1,0 +1,233 @@
+[
+  {
+    "cardId": "HV-P01-034",
+    "cardName": "及川 徹",
+    "school": "青葉城西",
+    "rarity": "R",
+    "role": "S",
+    "timing": "登場,發球,舉球",
+    "originalText": "支付1點Guts來使用。若支付的卡是青葉城西，則對手將手牌全部收回牌組、洗牌，然後抽6張卡。",
+    "trigger": {
+      "timing": "on_play,serve,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 1,
+      "description": "支付1點Guts來使用"
+    },
+    "effects": [
+      {
+        "type": "special",
+        "description": "若支付的卡是青葉城西，則對手將手牌全部收回牌組、洗牌，然後抽6張卡。",
+        "condition": "all_characters_school:青葉城西"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-033",
+    "cardName": "及川 徹",
+    "school": "青葉城西",
+    "rarity": "頂",
+    "role": "S",
+    "timing": "登場,發球,舉球",
+    "originalText": "從自己的手牌將1枚<青葉城西>的卡片棄掉則可使用。 這名角色的任意1個點數+1， 若對手的手牌在4枚以上，對手從手牌棄掉1張卡。",
+    "trigger": {
+      "timing": "on_play,serve,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "從自己的手牌將1枚<青葉城西>的卡片棄掉"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "any",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "discard",
+        "target": "opponent",
+        "amount": 1,
+        "condition": "hand_count_over:4"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-035",
+    "cardName": "岩泉 一",
+    "school": "青葉城西",
+    "rarity": "S",
+    "role": "WS",
+    "timing": "登場,攻擊",
+    "originalText": "從自己的手牌將1枚<青葉城西>的卡片棄掉則可使用。 這名角色的攻擊點數+2， 若對手的手牌在4枚以下，在下一個對手的回合中，對手無法透過技能將卡片加入手牌。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "棄掉1枚<青葉城西>的卡片"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 2,
+        "condition": ""
+      },
+      {
+        "type": "special",
+        "description": "若對手的手牌在4枚以下，在下一個對手的回合中，對手無法透過技能將卡片加入手牌。",
+        "condition": "hand_count_under:4"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-037",
+    "cardName": "松川 一静",
+    "school": "青葉城西",
+    "rarity": "N",
+    "role": "MB",
+    "timing": "登場,攔網",
+    "originalText": "對手的進攻點數在8以上時，若支付1 Guts則可使用。 立即結束攔網階段，進入自己的抽牌階段。 此外，在這個回合中，自己的<青葉城西>接球角色每次登場時，該角色的接球點數+3。",
+    "trigger": {
+      "timing": "on_play,block",
+      "condition": "op_over:8"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 1,
+      "description": "支付1 Guts"
+    },
+    "effects": [
+      {
+        "type": "special",
+        "description": "立即結束攔網階段，進入自己的抽牌階段"
+      },
+      {
+        "type": "special",
+        "description": "在這個回合中，自己的<青葉城西>接球角色每次登場時，該角色的接球點數+3。",
+        "condition": "on_play,receive"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-039",
+    "cardName": "渡 親治",
+    "school": "青葉城西",
+    "rarity": "N",
+    "role": "Li",
+    "timing": "登場,接球",
+    "originalText": "對手的進攻點數在6以上時，若從自己的手牌將1枚<青葉城西>的卡片棄掉則可使用。 這名角色的接球點數+1， 若自己所有的角色皆為<青葉城西>，則抽1張卡。",
+    "trigger": {
+      "timing": "on_play,receive",
+      "condition": "op_over:6"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "<青葉城西>"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "draw",
+        "amount": 1,
+        "condition": "all_characters_school:青葉城西"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-041",
+    "cardName": "国見 英",
+    "school": "青葉城西",
+    "rarity": "R",
+    "role": "WS",
+    "timing": "登場,攻擊",
+    "originalText": "若自己所有的角色皆為<青葉城西>，且對手的手牌在3枚以下，支付1 Guts則可使用。[=虛攻(4)]する。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "all_characters_school:青葉城西,hand_count_under:3"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 1,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "description": "虛攻(4)"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-PR-015",
+    "cardName": "及川・岩泉",
+    "school": "青葉城西",
+    "rarity": "P",
+    "role": "S/WS",
+    "timing": "登場",
+    "originalText": "將這張卡的卡名變為「及川 徹」或「岩泉 一」。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "description": "將這張卡的卡名變為「及川 徹」或「岩泉 一」。"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-PR-009",
+    "cardName": "及川・岩泉",
+    "school": "青葉城西",
+    "rarity": "P",
+    "role": "S/WS",
+    "timing": "登場",
+    "originalText": "將這張卡的卡名變為「及川 徹」或「岩泉 一」。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "description": "將這張卡的卡名變為「及川 徹」或「岩泉 一」."
+      }
+    ],
+    "parsed": true
+  }
+]

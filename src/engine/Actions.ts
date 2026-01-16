@@ -14,9 +14,11 @@ export type Player = "me" | "opponent";
  * 遊戲階段
  */
 export type GamePhase =
+  | "setup" // 遊戲準備（調整手牌）
   | "serve" // 發球階段
+  | "start" // 開始階段（選擇防守）
   | "block" // 攔網階段
-  | "draw" // 抽牌階段
+  | "draw" // 抽牌階段（接球軸）
   | "receive" // 接球階段
   | "toss" // 托球階段
   | "attack" // 攻擊階段
@@ -49,11 +51,12 @@ export type GameAction =
   // 攻擊階段
   | { type: "PLAY_ATTACK"; cardInstanceId: string }
 
-  // 技能相關（暫時保留，未來實現）
+  // 技能相關
   | { type: "ACTIVATE_SKILL"; cardInstanceId: string; skillIndex?: number }
   | { type: "USE_EVENT"; cardInstanceId: string }
 
   // 特殊動作
+  | { type: "MULLIGAN"; cardInstanceIds: string[] } // 調整手牌
   | { type: "DECLARE_LOST" } // 宣告 Lost
   | { type: "PASS" }; // 跳過（自由步驟）
 
@@ -76,4 +79,11 @@ export interface LegalActionsQuery {
   player: Player;
   phase: GamePhase;
   actions: GameAction[];
+}
+
+/**
+ * 獲取對手玩家
+ */
+export function getOpponent(player: Player): Player {
+  return player === "me" ? "opponent" : "me";
 }

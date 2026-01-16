@@ -1,0 +1,660 @@
+/**
+ * AI Battle Styles (v2)
+ * AI 對戰專屬樣式 - 蓋板式設定 + 優化版面
+ */
+
+/* =========================================
+   AI Battle App Layout
+   ========================================= */
+
+.ai-battle-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-dark, #1a1a2e);
+  overflow: hidden;
+  position: relative;
+}
+
+/* =========================================
+   Setup Overlay (蓋板式設定面板)
+   ========================================= */
+
+.ai-battle-setup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.ai-battle-setup-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.setup-overlay-content {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px 40px;
+  max-width: 700px;
+  width: 90%;
+  backdrop-filter: blur(10px);
+}
+
+.setup-title {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #e0e0e0;
+  text-align: center;
+}
+
+.setup-subtitle {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: #808080;
+  text-align: center;
+}
+
+.setup-start-container {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.setup-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 48px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(78, 205, 196, 0.3);
+}
+
+.setup-start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(78, 205, 196, 0.5);
+}
+
+.setup-start-btn:active {
+  transform: translateY(0);
+}
+
+.setup-start-btn .btn-icon {
+  font-size: 20px;
+}
+
+/* =========================================
+   AI Battle Setup Panel (內嵌在蓋板中)
+   ========================================= */
+
+.ai-battle-setup {
+  margin-top: 16px;
+}
+
+.ai-battle-setup .setup-header h2 {
+  display: none; /* 隱藏，因為蓋板有標題了 */
+}
+
+.ai-battle-setup .setup-grid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.ai-battle-setup .setup-column {
+  flex: 1;
+  min-width: 180px;
+}
+
+.ai-battle-setup .setup-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff6b6b;
+  padding: 20px 12px 0;
+}
+
+.ai-battle-setup .column-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #b0b0b0;
+}
+
+.ai-battle-setup .team-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.ai-battle-setup .me-indicator {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+}
+
+.ai-battle-setup .opponent-indicator {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+}
+
+.ai-battle-setup .setup-field {
+  margin-bottom: 12px;
+}
+
+.ai-battle-setup .setup-field label {
+  display: block;
+  font-size: 11px;
+  color: #808080;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ai-battle-setup select {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #e0e0e0;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-battle-setup select:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.ai-battle-setup select:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+}
+
+.ai-battle-setup optgroup {
+  background: #2a2a4e;
+  color: #b0b0b0;
+  font-weight: 600;
+}
+
+.ai-battle-setup option {
+  background: #1a1a2e;
+  color: #e0e0e0;
+  padding: 4px;
+}
+
+.ai-battle-setup .first-player-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ai-battle-setup .section-label {
+  font-size: 13px;
+  color: #808080;
+}
+
+.ai-battle-setup .radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.ai-battle-setup .radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #c0c0c0;
+}
+
+.ai-battle-setup .radio-label input[type="radio"] {
+  accent-color: #4ecdc4;
+  width: 16px;
+  height: 16px;
+}
+
+/* =========================================
+   Game Container (對戰進行時的主容器)
+   ========================================= */
+
+.ai-battle-game-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 220px 1fr 280px;
+  gap: 12px;
+  padding: 12px;
+  min-height: 0;
+  transition: opacity 0.3s;
+}
+
+.ai-battle-game-container.hidden {
+  display: none;
+}
+
+/* =========================================
+   Left Panel (OP/DP + Game Log)
+   ========================================= */
+
+.ai-battle-left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+/* OP/DP Panel */
+.op-dp-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.op-dp-header {
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  font-weight: 600;
+  color: #b0b0b0;
+}
+
+.op-dp-content {
+  padding: 12px;
+}
+
+.op-dp-row {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
+}
+
+.op-dp-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.op-dp-row .player-label {
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 40px;
+}
+
+.op-dp-row.me-row .player-label {
+  color: #4ecdc4;
+}
+
+.op-dp-row.opponent-row .player-label {
+  color: #ff6b6b;
+}
+
+.op-dp-row .op-value,
+.op-dp-row .dp-value {
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+.op-dp-row .op-value strong,
+.op-dp-row .dp-value strong {
+  color: #e0e0e0;
+  font-size: 16px;
+  margin-left: 4px;
+}
+
+/* Game Log Panel */
+.game-log-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.game-log-header {
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  font-weight: 600;
+  color: #b0b0b0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.game-log-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-family: "SF Mono", "Monaco", "Menlo", monospace;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.game-log-content .log-entry {
+  padding: 4px 0;
+  color: #a0a0a0;
+}
+
+.game-log-content .log-entry.me-log {
+  color: #4ecdc4;
+}
+
+.game-log-content .log-entry.opponent-log {
+  color: #ff6b6b;
+}
+
+.game-log-content .log-entry.system-log {
+  color: #808080;
+  font-style: italic;
+}
+
+/* =========================================
+   Right Panel (Detail + Controls)
+   ========================================= */
+
+.ai-battle-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+/* =========================================
+   AI Battle Controls (精簡版)
+   ========================================= */
+
+.ai-battle-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px;
+}
+
+.ai-battle-controls .controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-battle-controls .control-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.ai-battle-controls .control-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-battle-controls .control-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.ai-battle-controls .control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ai-battle-controls .control-btn .btn-icon {
+  font-size: 16px;
+}
+
+.ai-battle-controls .control-btn .btn-label {
+  font-size: 9px;
+  color: #909090;
+}
+
+.ai-battle-controls .start-btn:not(:disabled) {
+  background: rgba(78, 205, 196, 0.2);
+  border-color: rgba(78, 205, 196, 0.5);
+}
+
+.ai-battle-controls .reset-btn:not(:disabled) {
+  background: rgba(255, 107, 107, 0.15);
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.ai-battle-controls .speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ai-battle-controls .speed-label {
+  font-size: 11px;
+  color: #707070;
+}
+
+.ai-battle-controls .speed-buttons {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.ai-battle-controls .speed-btn {
+  flex: 1;
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #909090;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-battle-controls .speed-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ai-battle-controls .speed-btn.active {
+  background: rgba(78, 205, 196, 0.25);
+  border-color: rgba(78, 205, 196, 0.5);
+  color: #4ecdc4;
+}
+
+/* Status Section */
+.ai-battle-controls .status-section {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.ai-battle-controls .status-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ai-battle-controls .status-item {
+  text-align: center;
+}
+
+.ai-battle-controls .status-label {
+  display: block;
+  font-size: 9px;
+  color: #606060;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.ai-battle-controls .status-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #d0d0d0;
+}
+
+.ai-battle-controls .phase-display.winner-display {
+  font-size: 14px;
+}
+
+.ai-battle-controls .phase-display.me-win {
+  color: #4ecdc4;
+}
+
+.ai-battle-controls .phase-display.opponent-win {
+  color: #ff6b6b;
+}
+
+/* Win Rate Display */
+.ai-battle-controls .win-rate-container {
+  margin-top: 6px;
+}
+
+.ai-battle-controls .win-rate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.ai-battle-controls .team-label {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ai-battle-controls .me-label {
+  color: #4ecdc4;
+}
+
+.ai-battle-controls .opponent-label {
+  color: #ff6b6b;
+}
+
+.ai-battle-controls .win-rate-text {
+  font-size: 12px;
+  font-weight: bold;
+  color: #e0e0e0;
+}
+
+.ai-battle-controls .win-rate-bar-container {
+  height: 6px;
+  background: linear-gradient(90deg, #ff6b6b, #ff6b6b);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ai-battle-controls .win-rate-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4ecdc4, #44a08d);
+  transition: width 0.3s ease;
+}
+
+.ai-battle-controls .win-rate-bar.winning {
+  background: linear-gradient(90deg, #4ecdc4, #2ecc71);
+}
+
+.ai-battle-controls .win-rate-bar.losing {
+  background: linear-gradient(90deg, #f39c12, #e74c3c);
+}
+
+/* =========================================
+   Scrollbar Styling
+   ========================================= */
+
+.game-log-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.game-log-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.game-log-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.game-log-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* =========================================
+   Responsive Adjustments
+   ========================================= */
+
+@media (max-width: 1200px) {
+  .ai-battle-game-container {
+    grid-template-columns: 180px 1fr 250px;
+  }
+}
+
+@media (max-width: 992px) {
+  .ai-battle-game-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .ai-battle-left-panel {
+    flex-direction: row;
+    height: auto;
+  }
+
+  .op-dp-panel {
+    flex: 0 0 auto;
+  }
+
+  .game-log-panel {
+    max-height: 150px;
+  }
+
+  .ai-battle-right-panel {
+    flex-direction: row;
+    height: auto;
+  }
+}
+
+/* =========================================
+   Hide unused elements from old layout
+   ========================================= */
+
+/* 隱藏 StatsPanel 中不需要的元素（在 AI 對戰模式） */
+.ai-battle-app .stats-panel .deck-counter,
+.ai-battle-app .stats-panel .stats-calculator {
+  display: none !important;
+}

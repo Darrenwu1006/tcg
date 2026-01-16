@@ -20,7 +20,7 @@
 
 ---
 
-### Phase 2: 遊戲引擎開發 ✅ **基本完成**
+### Phase 2: 遊戲引擎開發 ✅ **已完成**
 
 - [x] 創建 `src/engine/` 目錄結構
 - [x] 定義動作類型系統
@@ -29,17 +29,18 @@
 - [x] 實現動作執行器
 - [x] 實現主遊戲引擎
 - [x] 建立測試系統
-- [ ] **待辦**: 運行測試並驗證（需用戶執行）
+- [x] 修正階段轉換邏輯 (2025-12-26)
+- [x] 驗證對戰測試 (4000 局，0% 平手)
 
 **預計工作量**: 2-3 週  
-**實際工作量**: 1 個下午（~4 小時）  
-**狀態**: 基礎版本完成，待測試
+**實際工作量**: 1 個下午 + 半天修正  
+**狀態**: ✅ 完成，可進行有意義的對戰測試
 
 > ⚠️ **注意**: 技能系統未實現，保留到 Phase 3 LLM 處理
 
 ---
 
-### Phase 3: LLM 技能處理系統 ✅ **已完成**
+### Phase 3: LLM 技能處理系統 ✅ **完成**
 
 - [x] 安裝 Ollama（本地 LLM 運行環境）
 - [x] 下載語言模型（Llama 3.2 3B）
@@ -49,30 +50,84 @@
 - [x] 設計增強格式規範 v1.0
 - [x] 驗證關鍵卡片（15 張）
 - [x] 修正問題（28 處修正）
-- [ ] 實現技能執行引擎
-- [ ] 整合到遊戲引擎
+- [x] 實現技能執行引擎 (2025-12-26)
+  - [x] SkillTypes.ts - 類型定義
+  - [x] SkillLoader.ts - 技能載入器
+  - [x] CostChecker.ts - 費用檢查器
+  - [x] SkillExecutor.ts - 效果執行器
+- [x] 整合到遊戲引擎 (ActionExecutor.ts)
+  - [x] ACTIVATE_SKILL - 角色技能發動
+  - [x] USE_EVENT - 事件卡使用
+  - [x] MULLIGAN - 調整手牌
+- [x] 調整手牌（引き直し）機制 (2025-12-26)
+- [x] 持續效果追蹤（activeEffects）
+- [x] 回合結束清理（cleanupTurnEffects）
+- [x] 技能觸發時機 (2025-12-26)
+  - [x] SkillTriggerSystem.ts - 觸發系統
+  - [x] triggerOnPlaySkill - 登場時自動觸發
+  - [x] triggerPhaseSkills - 階段開始時觸發
 
 **預計工作量**: 2-3 週  
-**實際工作量**: 1 天（~5 小時）
-**狀態**: 技能解析完成，執行引擎待開發
+**實際工作量**: 2 天
+**狀態**: ✅ 核心完成，AI 沙盒環境已就緒
 
 **成果**:
 
-- ✅ 75 張卡片 100%成功解析
-- ✅ 零成本（Ollama 本地運行）
-- ✅ 增強格式規範 v1.0（7 個核心字段）
-- ✅ 質量驗證與修正系統
+- ✅ 75 張卡片 100% 解析
+- ✅ 6 種效果類型實作 (stat_boost, draw, discard, search, retrieve, special)
+- ✅ 費用系統 (Guts, 棄牌)
+- ✅ 遊戲引擎整合
 
 ---
 
-### Phase 4: AI 實現 ⏳ **未開始**
+### Phase 4: AI 實現 🚧 **進行中**
 
-- [ ] 實現啟發式 AI（基於規則的智能決策）
-- [ ] 實現 MCTS（蒙地卡羅樹搜索）
+- [x] 建立 Debug 測試（遊戲流程驗證）
+- [x] 實現啟發式 AI（基於規則的智能決策）
+- [x] 實現 MCTS（蒙地卡羅樹搜索）
+- [x] AI Battle Viewer（視覺化 AI 對戰）(2025-12-29) ✅
+  - [x] 蓋板式設定面板（選擇牌組、AI 強度）
+  - [x] 控制面板（播放、暫停、步進、重賽）
+  - [x] 自動視角切換（跟隨當前玩家）
+  - [x] OP/DP 顯示面板
+  - [x] 戰績累計與 Rematch 功能
+  - [x] Match End 面板直接觸發重賽
+- [/] 調試技能/事件卡發動問題（最優先）
+- [ ] 實現動作模式記錄（學習功能）
+- [ ] AI 即時對戰功能
 - [ ] （可選）實現強化學習訓練
 
+#### 📋 待調查問題
+
+1. **為什麼 AI 沒有發動技能和事件卡？**
+
+   程式碼分析結果：`RuleValidator.getLegalActions()` **已經實作**技能和事件卡邏輯：
+
+   - `addEventCardActions()` (L567-598)：遍歷手牌事件卡，檢查時機和可用性
+   - `addSkillActions()` (L600-632)：遍歷場上角色卡，檢查技能時機和可用性
+
+   **可能原因**：
+
+   - 技能資料未載入 - `getEventSkill(card.id)` 返回 null
+   - 時機不匹配 - `matchesTiming(skill.timing, state.phase)` 返回 false
+   - 可用性條件不滿足 - `isSkillAvailable()` 返回 false
+
+   **下一步**：添加調試日誌確認問題所在
+
+2. **AI 動作邏輯是否可以存起來？**
+
+   目前每次模擬都是重新開始。MCTS 搜索樹不會保存。
+
+   **解決方案選項**：
+   | 方案 | 複雜度 | 說明 |
+   |------|--------|------|
+   | A. 動作模式記錄 | 低 | 記錄「狀態特徵 → 動作」對應，用查表加速 |
+   | B. 開局書 | 低 | 預計算最佳開局策略，硬編碼前 N 步 |
+   | C. 價值函數學習 | 高 | 用神經網路學習局面評估，類似 AlphaGo |
+   | D. 棋譜資料庫 | 中 | 記錄歷史對局，用於分析和參考 |
+
 **預計工作量**: 4-6 週  
-**狀態**: 等待 Phase 3 技能執行引擎完成
+**狀態**: AI Battle Viewer 完成，待調試技能發動問題
 
 ---
 
@@ -304,6 +359,214 @@
 
 - 測試腳本：`scripts/test-deck-battle.ts`
 - 測試結果：`battle_results.json`
+
+---
+
+### 2025-12-26 - 修正階段轉換邏輯 ✅
+
+**問題描述**：
+
+對戰測試中 4000 局 **100% 平手**，因為遊戲引擎的階段轉換邏輯不完整。
+
+**問題診斷**：
+
+1. `RuleValidator.getLegalActions()` 缺少 `start`、`toss`、`attack`、`end` 階段處理
+2. `PASS` 無條件被加入合法動作，導致遊戲卡住
+3. `validateDefenseChoice` 使用 `turnCount === 0` 但 `turnCount` 要到 end 階段才遞增
+4. 發球後進入 `draw` 階段而非 `start` 階段
+
+**修正內容**：
+
+1. **Actions.ts**：新增 `"start"` 階段
+2. **GameState.ts**：新增 `isFirstTurn: boolean` 欄位
+3. **RuleValidator.ts**：
+   - 補全所有階段處理
+   - 修正 `validateDefenseChoice` 使用 `isFirstTurn`
+   - 移除無條件 PASS
+4. **ActionExecutor.ts**：
+   - 發球後進入 `start` 階段
+   - 攔網成功後 `opponentState.currentOP = 0`
+   - PASS 根據階段處理（`draw` 抽牌、`end` 切換玩家）
+
+**測試結果**：
+
+| 測試               | 結果        |
+| ------------------ | ----------- |
+| 單元測試           | 5/5 通過 ✅ |
+| 對戰測試 (4000 局) | 0% 平手 ✅  |
+
+**對戰勝率**：
+
+| 對局              | 青葉城西「快攻軸」 | 對手  |
+| ----------------- | ------------------ | ----- |
+| vs 烏野日影攻擊軸 | 45.1%              | 54.9% |
+| vs 烏野山月攔網軸 | 46.5%              | 53.5% |
+| vs 音駒預組       | 39.9%              | 60.1% |
+| vs 梟谷高爆發軸   | **60.5%**          | 39.5% |
+
+**關鍵發現**：
+
+- 青葉城西快攻軸對梟谷高爆發軸最有利 (60.5%)
+- 對音駒預組最不利 (39.9%)
+- 平均勝率 48.0%
+
+---
+
+### 2025-12-26 下午 - 修正 RuleValidator 與 Mulligan 機制 ✅
+
+**問題發現**：
+AI 對戰測試出現 "Unknown action type" 錯誤，`ACTIVATE_SKILL` 和 `USE_EVENT` 動作無法執行。
+
+**問題分析**：
+
+1. `RuleValidator.isActionLegal()` 缺少 `ACTIVATE_SKILL` 和 `USE_EVENT` 的 case
+2. 這導致動作被判定為非法，ActionExecutor 無法執行
+3. 費用未被支付，AI 不斷重試相同技能，造成無限循環
+
+**修正內容**：
+
+1. **RuleValidator.ts**：
+
+   - 新增 `validateActivateSkill()` 驗證角色技能
+   - 新增 `validateUseEvent()` 驗證事件卡
+   - 新增 `validateMulligan()` 驗證調整手牌
+   - 在 `isActionLegal()` 添加對應 case
+   - 在 `getLegalActions()` 添加 `setup` 階段處理
+
+2. **GameState.ts**：
+   - 初始階段從 `serve` 改為 `setup`
+3. **ActionExecutor.ts**：
+
+   - `executeMulligan()` 完成後切換 turnPlayer
+   - `executePass()` 在 `setup` 階段標記 hasMulligan
+   - 雙方完成後轉換到 `serve` 階段
+
+4. **debug-game-sampler.ts**：
+   - 添加詳細技能日誌（技能名稱、時機、費用、效果）
+   - 顯示技能執行前後的狀態變化（OP/DP/手牌數）
+
+**測試結果**：
+
+| 測試項目      | 結果                        |
+| ------------- | --------------------------- |
+| Mulligan 測試 | ✅ 通過                     |
+| AI 對戰測試   | ✅ 通過 (75% 勝率)          |
+| 技能執行      | ✅ 無 "Unknown action type" |
+| 技能費用支付  | ✅ 手牌正確減少             |
+
+**MCTS 實戰測試 (青葉城西快攻軸)**：
+
+- vs 烏野月島攔網軸: **勝利** (42 回合)
+- vs 音駒預組: **勝利** (50 回合)
+- vs 梟谷高爆發軸: **勝利** (56 回合)
+- vs 混合垃圾場: **勝利** (68 回合)
+
+**MCTS vs MCTS 巔峰對決 (雙方皆 200 sims)**：
+
+- vs 烏野月島攔網軸: **勝利** (46 回合)
+- vs 音駒預組: **勝利** (50 回合)
+- vs 梟谷高爆發軸: **勝利** (56 回合)
+- vs 混合垃圾場: **勝利** (66 回合)
+
+**平衡先後手測試 (MCTS vs MCTS)**：
+
+- **先手 (Me First)**：全勝 (4-0)
+- **後手 (Opponent First)**：
+  - vs 混合垃圾場: **敗北** (90 回合) ⚠️
+  - _快攻軸在後手面對持久型牌組時顯露疲態_
+
+**新增檔案**：
+
+- `scripts/test-mcts.ts` - MCTS 測試腳本
+- `scripts/test-deck-matchups.ts` - 多牌組對戰測試腳本
+
+**修復的調整手牌流程**：
+
+1. 遊戲開始於 `setup` 階段
+2. 雙方依序選擇 MULLIGAN 或 PASS
+3. 選擇後切換 turnPlayer
+4. 雙方都完成後進入 `serve` 階段
+
+---
+
+### 2025-12-26 - Phase 4 進度總結
+
+**已完成**：
+
+- [x] 啟發式 AI 實現 (HeuristicAI.ts)
+- [x] 技能系統整合 (ACTIVATE_SKILL, USE_EVENT)
+- [x] 調整手牌機制 (Mulligan)
+- [x] AI 對戰測試腳本 (test-ai-battle.ts)
+- [x] Debug 日誌採樣器 (debug-game-sampler.ts)
+- [x] 詳細技能效果日誌
+
+**測試數據**：
+
+- 啟發式 AI vs 隨機 AI: 75% 勝率 ✅
+- 平均每場技能使用: 2.05 次
+- 無無限循環或錯誤
+
+**下一步選項**：
+
+1. **MCTS AI** - 蒙地卡羅樹搜索，更強的決策能力
+2. **完整驗證** - 100 場以上的統計顯著性測試
+3. **組牌優化器** - 使用遺傳算法找最優牌組
+
+---
+
+### 2025-12-29 - AI Battle Viewer 開發 ✅
+
+**完成事項**：
+
+- ✅ 創建獨立的 AI Battle 頁面 (`ai-battle.html`)
+- ✅ 實現 `AIBattleService.ts` 封裝 MCTS AI 對戰邏輯
+- ✅ 實現 `AIBattleSetup.ts` 蓋板式設定面板
+- ✅ 實現 `AIBattleControls.ts` 控制面板（播放/暫停/步進/重賽）
+- ✅ 自動視角切換（跟隨當前回合玩家）
+- ✅ OP/DP 顯示面板
+- ✅ 修復學校資訊傳遞問題（卡背顏色）
+- ✅ 實現 Rematch 功能（從 Match End 面板直接重賽）
+- ✅ 修復戰績累計顯示問題
+
+**技術細節**：
+
+1. **學校資訊修復**：
+
+   - `GameState.createInitialGameState()` 新增學校參數
+   - `GameEngine` 構造函數傳遞學校參數
+   - `AIBattleService` 從牌組讀取並保存學校資訊
+
+2. **Rematch 機制**：
+
+   - `AIBattleService.reset()` 使用保存的 `originalDecks` 重新初始化
+   - 監聽 `MatchEndOverlay` 的 rematch 按鈕事件
+   - 使用 `isResetting` 標誌防止遞歸調用
+
+3. **戰績累計修復**：
+   - `executeStep()` 中先更新 `winCount` 再更新 `uiState`
+   - 避免 `engineToAppState` 的 `setWins` 覆蓋累計戰績
+
+**發現的問題**：
+
+- ⚠️ AI 似乎沒有發動技能和事件卡
+- **程式碼分析**：`RuleValidator.getLegalActions()` 已實作技能邏輯
+- **可能原因**：技能資料未載入、時機不匹配、可用性條件不滿足
+- **下一步**：添加調試日誌確認問題
+
+**新增檔案**：
+
+- `src/ai-battle-main.ts` - AI Battle 主入口
+- `src/ai-battle.css` - AI Battle 樣式
+- `ai-battle.html` - AI Battle HTML 頁面
+- `src/services/AIBattleService.ts` - AI 對戰服務
+- `src/components/AIBattleSetup.ts` - 設定面板組件
+- `src/components/AIBattleControls.ts` - 控制面板組件
+
+**下一步計劃**：
+
+1. **最優先**：調試技能/事件卡發動問題
+2. **次優先**：實現動作模式記錄（學習功能）
+3. **可選**：討論更詳細的 AI 架構
 
 ---
 
@@ -1001,5 +1264,68 @@ src/ai/          ← 新增：AI 系統（獨立）
 
 ---
 
-**最後更新**: 2025-12-16 16:21  
-**目前狀態**: 規劃完成，等待開始實施
+**最後更新**: 2025-12-26 16:58  
+**目前狀態**: Phase 4 進行中，啟發式 AI 完成
+
+### Future Development: AI Battle Sandbox Integration (Plan B) 🚧
+
+**目標**: 在現有的 UI 沙盒環境中直接觀看 MCTS AI 之間的對戰，以視覺化方式驗證 AI 決策。
+
+**執行計劃**:
+
+1.  **建立 AI 對戰運行器 (`AIBattleRunner`)**:
+
+    - 負責管理 `GameEngine` 和兩個 `MCTSAI` 實例。
+    - 提供 `nextTurn()` 或 `autoPlay()` 方法來執行單步或自動對戰。
+    - 控制對戰速度（例如每秒一回合），避免 UI 卡死。
+
+2.  **狀態映射 (State Mapping)**:
+
+    - 開發 `mapEngineToAppState(engineState: EngineGameState): Partial<AppState>` 工具函數。
+    - 將引擎的 `EnginePlayerState` (deck, hand, field, etc.) 轉換為 UI Store 的 `PlayerState`。
+    - 處理 `Card` 物件的轉換（確保 `instanceId` 和 `stats` 正確對應）。
+    - 同步 `phase`, `turnPlayer`, `logs` 等核心狀態。
+
+3.  **UI 整合**:
+
+    - 在 `SetupOverlay` 中新增「觀看 AI 對戰」按鈕。
+    - 點擊後初始化 `AIBattleRunner` 並隱藏設定介面。
+    - 可能需要一個簡單的控制面板（暫停、繼續、單步執行）。
+
+4.  **遊戲迴圈控制**:
+
+    - 使用 `setInterval` 或 `requestAnimationFrame` 實現非阻塞的遊戲迴圈。
+    - 在每次 AI 思考和行動後，調用 `store.setState(mappedState)` 更新畫面。
+
+    * 考慮使用 Web Workers 進行 MCTS 計算，以保持 UI 流暢（進階優化）。
+
+5.  **AI 思考視覺化 (AI Insight UI)**:
+    - **即時對話框**: 當 AI 做出關鍵決策（如使用技能、棄牌）時，顯示氣泡對話框解釋原因（例如：「勝率預估 65% -> 決定進攻」）。
+    - **決策數據面板**: 顯示 MCTS 的數據，如「當前勝率預估」、「主要變體 (Principal Variation)」、「被否決的候選動作」。
+    - **互動式詢問**: 允許點擊 AI 的動作紀錄，查看當時的決策權重分佈，幫助開發者理解「為什麼 AI 覺得這步是錯的」。
+
+**預期效益**:
+
+- 直觀地觀察 AI 策略和技能使用。
+- 更容易發現邏輯錯誤或不合理的 AI 行為。
+- 為未來的人機對戰功能奠定基礎。
+
+---
+
+### 2025-12-29 - 持續修正工作清單 (Continuous Fix List) 🛠️
+
+此清單用於記錄並追蹤發現的技能資料錯誤或邏輯缺陷，作為持續改進的參考。
+
+#### 待修正項目
+
+- [ ] **檢查其他事件卡**：檢查是否有類似「入畑 伸照」的複製貼上錯誤（如錯誤的 search 效果）。
+- [ ] **檢查角色卡描述**：確認 `originalText` 與實際 `effects` 是否一致。
+
+#### 已修正項目
+
+- [x] **入畑 伸照 (HV-P01-085)** (2025-12-29)
+  - 錯誤：效果被錯誤配置為搜尋 Guts。
+  - 修正：改為抽 1 張卡 + 數值加成。
+- [x] **技能條件標準化** (2025-12-29)
+  - 錯誤：混合了中文、英文和自然語言條件。
+  - 修正：全盤標準化為英文鍵值格式 (e.g., `hand_count_under:3`)。
