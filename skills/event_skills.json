@@ -8,7 +8,7 @@
     "originalText": "技能：抽1張卡。 若從自己的場上支付合計8點Guts則可使用。 這個回合中，自己的<青葉城西>角色登場時，將該角色任意1個點數+1。",
     "trigger": {
       "timing": "draw",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "guts | discard",
@@ -17,23 +17,20 @@
     },
     "effects": [
       {
-        "type": "search",
-        "target": "self",
-        "value": "從區域加入2張相同所屬Guts到手牌",
-        "condition": "手牌<=4",
-        "order": 1,
-        "from": "deck",
-        "to": "hand"
+        "type": "draw",
+        "value": 1,
+        "order": 1
       },
       {
         "type": "stat_boost",
-        "target": "<青葉城西>",
+        "target": "self",
+        "filter": "school:青葉城西",
         "stat": "any",
         "value": 1,
-        "condition": "登場時",
+        "condition": "on_play",
+        "duration": "turn",
         "order": 2,
-        "selector": "player",
-        "duration": "turn"
+        "description": "這個回合中，自己的<青葉城西>角色登場時，將該角色任意1個點數+1"
       }
     ],
     "parsed": true
@@ -47,7 +44,7 @@
     "originalText": "技能：從自己的棄牌區將1枚<青葉城西>的角色卡加入手牌。",
     "trigger": {
       "timing": "receive",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "discard",
@@ -74,7 +71,7 @@
     "originalText": "技能：當自己的發球角色或托球角色是「及川 徹」時可以使用。 抽1張卡， 並將自己1名「及川 徹」角色的托球點數+1。 此外，在下一個對手的回合中，對手每次以「抽卡」以外的方式將卡片加入手牌時，對手必須從手牌棄掉1張卡。",
     "trigger": {
       "timing": "toss",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "",
@@ -114,7 +111,7 @@
     "originalText": "技能：抽最多1張卡。 選擇自己1名<青葉城西>的角色，其接球點數+1。 若自己的手牌在3枚以下，則其接球點數再+1。",
     "trigger": {
       "timing": "receive",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "guts | discard | none",
@@ -141,7 +138,7 @@
     "originalText": "[抽1張卡，自己的1名角色的接球點數+1。該角色的接球點數為4以下的場合，再+1。",
     "trigger": {
       "timing": "draw",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "guts | discard",
@@ -168,7 +165,7 @@
     "originalText": "抽1張卡，自己的1名烏野角色的攻擊點數+1。自己的舉球角色為「影山飛雄」且攻擊角色為「日向翔陽」的場合，下個對手回合中，對手最多只能登場1名攔網角色。",
     "trigger": {
       "timing": "attack",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "none",
@@ -202,7 +199,7 @@
     "originalText": "抽 1 張卡，自己的 1 名角色的攻擊點數+1。若對手的事件區中，可在 [=抽牌] 或 [=接球] 階段使用的卡片合計 5 張以上，則攻擊點數再+2。",
     "trigger": {
       "timing": "attack",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "none",
@@ -236,7 +233,7 @@
     "originalText": "自己的 1 名烏野角色的 1 項參數+1，若在接球階段中，則抽 1 張卡。",
     "trigger": {
       "timing": "receive",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "guts",
@@ -263,7 +260,7 @@
     "originalText": "自己的手牌在 4 張以下時，從自己的 1 個區域，將 2 張相同所屬的 Guts 加入手牌。",
     "trigger": {
       "timing": "draw",
-      "condition": "手牌在4張以下時"
+      "condition": "hand_count_under:4"
     },
     "cost": {
       "type": "guts | discard | none",
@@ -290,7 +287,7 @@
     "originalText": "自己的 1 名烏野接球角色的接球點數+2，若該角色為「西谷 夕」，則抽 1 張卡。",
     "trigger": {
       "timing": "receive",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "guts",
@@ -317,7 +314,7 @@
     "originalText": "抽 2 張卡，從自己的手牌丟棄 1 張卡。若自己的事件區中的「開放式進攻」在 2 張以下，則從自己的棄牌區將 1 張「日向 翔陽」登場到攻擊區，並使該角色的攻擊點數+1。",
     "trigger": {
       "timing": "attack",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "discard | none",
@@ -369,7 +366,7 @@
     "originalText": "抽 2 張卡，從自己的手牌丟棄 1 張卡。若自己的事件區中的「開放式進攻」在 2 張以下，則從自己的棄牌區將 1 張「日向 翔陽」登場到攻擊區，並使該角色的攻擊點數+1。",
     "trigger": {
       "timing": "attack",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "discard 1",
@@ -421,7 +418,7 @@
     "originalText": "抽 1 張卡，自己的 1 名烏野攔網角色的攔網點數+1。若該角色為「月島 螢」，則從自己的發球區將最多 1 名「山口 忠」角色加入手牌，在下一個對手的回合中，對方的接球角色每登場 1 次，該角色的接球點數-2。",
     "trigger": {
       "timing": "block",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "guts",
@@ -455,7 +452,7 @@
     "originalText": "抽 1 張卡，自己的 1 名烏野攔網角色的攔網點數+1。若該角色為「月島 螢」，則從自己的發球區將最多 1 名「山口 忠」角色加入手牌，在下一個對手的回合中，對方的接球角色每登場 1 次，該角色的接球點數-2。",
     "trigger": {
       "timing": "block",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "guts | discard | none",
@@ -487,7 +484,7 @@
     "originalText": "抽1張卡。從以下選擇1個使用。 ▶將自己1位攔網角色的「黑尾 鐵朗」的攔網點數+1。 ▶將自己1位角色的接球點數+1。",
     "trigger": {
       "timing": "block",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "guts",
@@ -521,7 +518,7 @@
     "originalText": "抽1張卡。查看自己牌庫頂3張卡，將其中最多1張「灰羽 列夫」或「犬岡 走」公開並加入手牌。未加入的卡片以喜歡的順序放回牌庫底。",
     "trigger": {
       "timing": "draw",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "none",
@@ -548,7 +545,7 @@
     "originalText": "抽1張卡，自己的1名角色的接球點數+1。若對手的事件區域中，可於[托球]或[攻擊]時機發動的卡片合計有5張以上，則接球點數再+2。",
     "trigger": {
       "timing": "receive",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "none",
@@ -575,7 +572,7 @@
     "originalText": "抽1張卡，自己的1名音駒角色的攻擊點數+1。若自己所有角色皆為音駒，可從自己的接球區域支付3點毅力(Guts)使用。攻擊點數再+1。",
     "trigger": {
       "timing": "attack",
-      "condition": ""
+      "condition": "none"
     },
     "cost": {
       "type": "",
@@ -602,7 +599,7 @@
     "originalText": "抽1張卡。可選擇以下1個效果發動。▶自己的1名音駒角色的接球點數+1。▶將自己1名接球點數為5以上的音駒角色的接球點數變為7。",
     "trigger": {
       "timing": "draw",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "none",
@@ -636,7 +633,7 @@
     "originalText": "抽1張卡。若自己所有角色皆為音駒，可從自己的場上支付合計5點毅力(Guts)使用。自己的1名角色的攻擊點數+3。",
     "trigger": {
       "timing": "attack",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "guts | none",
@@ -663,7 +660,7 @@
     "originalText": "僅當自己的托球角色為「孤爪 研磨」時可使用。抽1張卡，自己的1名托球角色的托球點數+1。此外，下一個對手回合中，對手無法從手牌將MB的攻擊角色登場。",
     "trigger": {
       "timing": "toss",
-      "condition": "自己托球角色的托球點數>0"
+      "condition": "toss_point_over:0"
     },
     "cost": {
       "type": "guts | discard | none",
@@ -695,7 +692,7 @@
     "originalText": "查看自己牌組上方的3張卡，將其中最多1枚<梟谷>的卡片公開並加入手牌。 將未加入手牌的卡片以任意順序放回牌組最下方。",
     "trigger": {
       "timing": "receive",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "none",
@@ -722,7 +719,7 @@
     "originalText": "抽一張卡，讓自己的一名梟谷角色攻擊點數+1。如果自己所有角色都是梟谷角色，在對手的下一個回合中，當對手失敗時，抽牌使你的手牌數量達到7張。",
     "trigger": {
       "timing": "attack",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "none",
@@ -756,7 +753,7 @@
     "originalText": "抽1張卡， 將自己1名<梟谷>角色的接球點數+1。 若從自己的攔網區域棄掉1枚<梟谷>的角色卡則可使用，將對手的攻擊的進攻點數-1。",
     "trigger": {
       "timing": "receive",
-      "condition": "無"
+      "condition": "none"
     },
     "cost": {
       "type": "none | discard",

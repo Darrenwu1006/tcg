@@ -1,0 +1,675 @@
+[
+  {
+    "cardId": "HV-D01-001",
+    "cardName": "日向 翔陽",
+    "school": "烏野",
+    "rarity": "D",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "支付2 Guts即可使用。此角色的攻擊點數+2。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付2 Guts"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D01-002",
+    "cardName": "影山 飛雄",
+    "school": "烏野",
+    "rarity": "D",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付2 Guts即可使用。此角色的舉球點數+2。",
+    "trigger": {
+      "timing": "toss,on_play",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付2 Guts即可使用。"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D01-003",
+    "cardName": "月島 蛍",
+    "school": "烏野",
+    "rarity": "D",
+    "role": "MB",
+    "timing": "登場, 攔網",
+    "originalText": "對手的進攻點數為4以下時，支付1 Guts即可使用。抽1張卡。",
+    "trigger": {
+      "timing": "on_play,block",
+      "condition": "op_under:4"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 1,
+      "description": "支付1 Guts"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "amount": 1,
+        "description": "抽1張卡"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D01-005",
+    "cardName": "西谷 夕",
+    "school": "烏野",
+    "rarity": "D",
+    "role": "Li",
+    "timing": "登場, 接球",
+    "originalText": "支付3 Guts即可使用。抽1張卡，此角色的接球點數+2。",
+    "trigger": {
+      "timing": "on_play,receive",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 3,
+      "description": "支付3 Guts即可使用"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "target": "player",
+        "amount": 1,
+        "condition": ""
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D01-007",
+    "cardName": "縁下 力",
+    "school": "烏野",
+    "rarity": "D",
+    "role": "WS",
+    "timing": "登場, 接球",
+    "originalText": "從自己手牌將1張卡丟棄即可使用。此角色的接球點數+3。",
+    "trigger": {
+      "timing": "on_play,receive",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "從自己手牌將1張卡丟棄"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": 3,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-002",
+    "cardName": "日向 翔陽",
+    "school": "烏野",
+    "rarity": "頂P",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "支付 3 Guts 即可使用。此角色的攻擊點數+4，在下一個對手的回合中，對手不能讓基礎接球點數 6 以上的接球角色登場。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 3,
+      "description": "支付 3 Guts 即可使用。"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 4,
+        "condition": ""
+      },
+      {
+        "type": "special",
+        "target": "opponent",
+        "description": "在下一個對手的回合中，對手不能讓基礎接球點數 6 以上的接球角色登場。",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-002",
+    "cardName": "日向 翔陽",
+    "school": "烏野",
+    "rarity": "頂P",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "支付 3 Guts 即可使用。此角色的攻擊點數+4，在下一個對手的回合中，對手不能讓基礎接球點數 6 以上的接球角色登場。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 3,
+      "description": "支付 3 Guts 即可使用。"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 4,
+        "condition": ""
+      },
+      {
+        "type": "special",
+        "target": "opponent",
+        "description": "在下一個對手的回合中，對手不能讓基礎接球點數 6 以上的接球角色登場。",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-003",
+    "cardName": "日向 翔陽",
+    "school": "烏野",
+    "rarity": "S",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "此角色從手牌登場，且自己的手牌在 3 張以下，且自己的托球角色為「影山 飛雄」時可使用。此角色的攻擊點數+2，在下一個對手的回合中，對手最多只能登場 2 名攔網角色。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "hand_count_under:3,character_is:影山 飛雄"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 2,
+        "condition": ""
+      },
+      {
+        "type": "special",
+        "target": "opponent",
+        "stat": "block_limit",
+        "value": 2,
+        "condition": "next_opponent_turn"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-PR-003",
+    "cardName": "日向 翔陽",
+    "school": "烏野",
+    "rarity": "P",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "從自己的手牌丟棄 1 張卡即可使用。此角色的攻擊點數+2。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "從自己的手牌丟棄 1 張卡"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-006",
+    "cardName": "影山 飛雄",
+    "school": "烏野",
+    "rarity": "頂P",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付 2 Guts 即可使用。公開自己牌組最上方的 1 張卡，可將其中 1 張「日向 翔陽」或「開放式進攻」加入手牌，未加入的卡片放到牌組最下方。此外，此回合中，自己的「日向 翔陽」每登場 1 次，該角色的攻擊點數+2。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付 2 Guts 即可使用。"
+    },
+    "effects": [
+      {
+        "type": "search",
+        "target": "deck",
+        "stat": "card",
+        "value": 1,
+        "condition": "none",
+        "description": "公開自己牌組最上方的 1 張卡，可將其中 1 張「日向 翔陽」或「開放式進攻」加入手牌，未加入的卡片放到牌組最下方。"
+      },
+      {
+        "type": "stat_boost",
+        "target": "character",
+        "stat": "attack",
+        "value": 2,
+        "condition": "character_is:日向 翔陽",
+        "description": "此外，此回合中，自己的「日向 翔陽」每登場 1 次，該角色的攻擊點數+2。"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-006",
+    "cardName": "影山 飛雄",
+    "school": "烏野",
+    "rarity": "頂P",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付 2 Guts 即可使用。公開自己牌組最上方的 1 張卡，可將其中 1 張「日向 翔陽」或「開放式進攻」加入手牌，未加入的卡片放到牌組最下方。此外，此回合中，自己的「日向 翔陽」每登場 1 次，該角色的攻擊點數+2。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付 2 Guts 即可使用。"
+    },
+    "effects": [
+      {
+        "type": "search",
+        "target": "deck",
+        "stat": "card",
+        "value": 1,
+        "condition": "none",
+        "description": "公開自己牌組最上方的 1 張卡，可將其中 1 張「日向 翔陽」或「開放式進攻」加入手牌，未加入的卡片放到牌組最下方。"
+      },
+      {
+        "type": "stat_boost",
+        "target": "character",
+        "stat": "attack",
+        "value": 2,
+        "condition": "character_is:日向 翔陽",
+        "description": "此外，此回合中，自己的「日向 翔陽」每登場 1 次，該角色的攻擊點數+2。"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-PR-004",
+    "cardName": "影山 飛雄",
+    "school": "烏野",
+    "rarity": "P",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付 2 Guts 即可使用。抽 1 張卡。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付 2 Guts"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "amount": 1,
+        "description": "抽 1 張卡"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-008",
+    "cardName": "月島 螢",
+    "school": "烏野",
+    "rarity": "SP",
+    "role": "MB",
+    "timing": "登場, 攔網",
+    "originalText": "支付 2 Guts 即可使用以下 2 種效果。▶若自己的場上有「山口 忠」角色，此角色的攔網點數+2。▶此回合中，攔網成功時，執行 [=銅牆鐵壁(6)]。",
+    "trigger": {
+      "timing": "on_play,block",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付 2 Guts"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "block",
+        "value": 2,
+        "condition": "character_is:山口 忠"
+      },
+      {
+        "type": "special",
+        "description": "此回合中，攔網成功時，執行 [=銅牆鐵壁(6)]",
+        "condition": "none"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-008",
+    "cardName": "月島 螢",
+    "school": "烏野",
+    "rarity": "SP",
+    "role": "MB",
+    "timing": "登場, 攔網",
+    "originalText": "支付 2 Guts 即可使用以下 2 種效果。▶若自己的場上有「山口 忠」角色，此角色的攔網點數+2。▶此回合中，攔網成功時，執行 [=銅牆鐵壁(6)]。",
+    "trigger": {
+      "timing": "on_play,block",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付 2 Guts"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "block",
+        "value": 2,
+        "condition": "character_is:山口 忠"
+      },
+      {
+        "type": "special",
+        "description": "此回合中，攔網成功時，執行 [=銅牆鐵壁(6)]",
+        "condition": "none"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-010",
+    "cardName": "山口 忠",
+    "school": "烏野",
+    "rarity": "S",
+    "role": "MB",
+    "timing": "登場, 發球",
+    "originalText": "公開自己牌組最上方的 1 張卡，若該卡為烏野卡片，在下一個對手的回合中，對手的托球角色每登場 1 次，該角色的托球點數-2。將公開的卡片放到牌組最下方。",
+    "trigger": {
+      "timing": "on_play,serve",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "description": "公開自己牌組最上方的 1 張卡，若該卡為烏野卡片，在下一個對手的回合中，對手的托球角色每登場 1 次，該角色的托球點數-2。將公開的卡片放到牌組最下方。"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-013",
+    "cardName": "緣下 力",
+    "school": "烏野",
+    "rarity": "N",
+    "role": "WS",
+    "timing": "接球, 手牌",
+    "originalText": "從手牌將此卡丟棄，自己的 1 名烏野角色的接球點數+2。",
+    "trigger": {
+      "timing": "receive",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "從手牌將此卡丟棄"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "character_school",
+        "school": "烏野",
+        "stat": "receive",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-015",
+    "cardName": "菅原 孝支",
+    "school": "烏野",
+    "rarity": "NP",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付 2 Guts 即可使用。抽 1 張卡，此角色的托球點數+1。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付 2 Guts 即可使用。"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "amount": 1,
+        "description": "抽 1 張卡"
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 1,
+        "description": "此角色的托球點數+1。"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-015",
+    "cardName": "菅原 孝支",
+    "school": "烏野",
+    "rarity": "NP",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付 2 Guts 即可使用。抽 1 張卡，此角色的托球點數+1。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付 2 Guts 即可使用。"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "amount": 1,
+        "description": "抽 1 張卡"
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 1,
+        "description": "此角色的托球點數+1。"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-016",
+    "cardName": "東峰 旭",
+    "school": "烏野",
+    "rarity": "N",
+    "role": "WS",
+    "timing": "登場, 攻擊",
+    "originalText": "自己的托球角色為烏野的 S (舉球員) 時，支付 4 Guts 即可使用。此角色的攻擊點數+2。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "character_is:烏野的 S"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 4,
+      "description": "支付 4 Guts"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-PR-001",
+    "cardName": "日向 翔陽",
+    "school": "烏野",
+    "rarity": "P",
+    "role": "OP",
+    "timing": "登場",
+    "originalText": "此角色登場於「日向 翔陽」之上時，此角色的 1 項參數+1。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "stack_on:日向 翔陽"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "any",
+        "value": 1,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-PR-002",
+    "cardName": "影山 飛雄",
+    "school": "烏野",
+    "rarity": "P",
+    "role": "S",
+    "timing": "登場",
+    "originalText": "此角色登場於「影山 飛雄」之上時，此角色的 1 項參數+1。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "stack_on:影山 飛雄"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "serve",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "block",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 1,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  }
+]

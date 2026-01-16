@@ -1,0 +1,526 @@
+[
+  {
+    "cardId": "HV-D02-001",
+    "cardName": "孤爪 研磨",
+    "school": "音駒",
+    "rarity": "D",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付2 Guts即可使用。此角色的托球點數+1，在對手的下一個回合中，每次對手的攻擊角色登場時，該角色的攻擊點數-2。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付2 Guts"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss_point",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "stat_boost",
+        "target": "opponent_played_attacking_character",
+        "stat": "attack_point",
+        "value": -2,
+        "condition": "next_opponent_turn,opponent_attack_character_on_play"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D02-002",
+    "cardName": "黑尾 鐵朗",
+    "school": "音駒",
+    "rarity": "D",
+    "role": "MB",
+    "timing": "登場, 攔網",
+    "originalText": "支付1 Guts即可使用。此回合中，攔網成功時，發動【ドシャット(5)】(Do-Shatto / 攔死 5)。",
+    "trigger": {
+      "timing": "on_play, block",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 1
+    },
+    "effects": [
+      {
+        "type": "special",
+        "target": "self",
+        "stat": "",
+        "value": 5,
+        "condition": "block_successful",
+        "description": "此回合中，攔網成功時，發動【ドシャット(5)】"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D02-003",
+    "cardName": "夜久 衛輔",
+    "school": "音駒",
+    "rarity": "D",
+    "role": "Li",
+    "timing": "登場, 接球",
+    "originalText": "從自己的手牌中棄1張卡即可使用。此角色的接球點數+2。",
+    "trigger": {
+      "timing": "on_play,receive",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "receive",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D02-004",
+    "cardName": "灰羽 列夫",
+    "school": "音駒",
+    "rarity": "D",
+    "role": "MB",
+    "timing": "-",
+    "originalText": "當自己的攔網角色登場時，若此角色為攻擊角色，可支付2 Guts使用。將此角色作為側邊攔網者登場到自己的攔網區。（若攔網區已有「灰羽列夫」，或攔網角色已有3人，則此角色無法登場至攔網區）",
+    "trigger": {
+      "timing": "block",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "target": "self",
+        "condition": "",
+        "description": "If this character is an attacking character, deploy this character as a side blocker to your block zone. Cannot be deployed if '灰羽列夫' is already in the block zone or if there are already 3 blocking characters."
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-D02-009",
+    "cardName": "芝山 優生",
+    "school": "音駒",
+    "rarity": "D",
+    "role": "Li",
+    "timing": "登場, 接球",
+    "originalText": "支付2 Guts即可使用。抽1張卡。",
+    "trigger": {
+      "timing": "on_play,receive",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付2 Guts"
+    },
+    "effects": [
+      {
+        "type": "draw",
+        "target": "self",
+        "value": 1,
+        "condition": "none"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-021",
+    "cardName": "黑尾 鐵朗",
+    "school": "音駒",
+    "rarity": "頂",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "支付3點毅力(Guts)即可使用。此角色的攻擊點數+3，並從自己的一個區域中，將2張卡片名不同的音駒毅力卡加入手牌。",
+    "trigger": {
+      "timing": "on_play,attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 3,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 3,
+        "condition": ""
+      },
+      {
+        "type": "special",
+        "description": "從自己的一個區域中，將2張卡片名不同的音駒毅力卡加入手牌。",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-021",
+    "cardName": "黑尾 鐵朗",
+    "school": "音駒",
+    "rarity": "頂P",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "支付3點毅力(Guts)即可使用。此角色的攻擊點數+3，並從自己的一個區域中，將2張卡片名不同的音駒毅力卡加入手牌。",
+    "trigger": {
+      "timing": "on_play, attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 3,
+      "description": "支付3點毅力"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 3,
+        "condition": "",
+        "description": "此角色的攻擊點數+3"
+      },
+      {
+        "type": "search",
+        "target": "hand",
+        "amount": 2,
+        "condition": "",
+        "description": "從自己的一個區域中，將2張卡片名不同的音駒毅力卡加入手牌",
+        "search_criteria": {
+          "card_type": "guts",
+          "school": "音駒",
+          "unique_names_required": true,
+          "source_area": "any_own_area"
+        }
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-018",
+    "cardName": "孤爪 研磨",
+    "school": "音駒",
+    "rarity": "頂P",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付3點毅力(Guts)即可使用。此角色的托球點數+1，若自己所有角色皆為音駒，可從自己的事件區域將最多1張卡片加入手牌。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 3,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "search",
+        "target": "player",
+        "amount": 1,
+        "source": "event_area",
+        "destination": "hand",
+        "condition": "all_characters_school:音駒"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-018",
+    "cardName": "孤爪 研磨",
+    "school": "音駒",
+    "rarity": "頂",
+    "role": "S",
+    "timing": "登場, 舉球",
+    "originalText": "支付3點毅力(Guts)即可使用。此角色的托球點數+1，若自己所有角色皆為音駒，可從自己的事件區域將最多1張卡片加入手牌。",
+    "trigger": {
+      "timing": "on_play,toss",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 3,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "toss",
+        "value": 1,
+        "condition": ""
+      },
+      {
+        "type": "search",
+        "target": "hand",
+        "zone": "event_area",
+        "amount": 1,
+        "condition": "all_characters_school:音駒"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-019",
+    "cardName": "孤爪 研磨",
+    "school": "音駒",
+    "rarity": "R",
+    "role": "S",
+    "timing": "-",
+    "originalText": "當自己原本攻擊點數為3的攻擊角色登場時，若此角色為托球角色，支付2點毅力(Guts)即可使用。將自己攻擊區域的1張音駒毅力卡移至攻擊區域登場，該角色的攻擊點數+2。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "target": "player_field",
+        "description": "Play 1 Nekoma Guts card from your Guts Zone into Attack Area.",
+        "condition": ""
+      },
+      {
+        "type": "stat_boost",
+        "target": "triggering_character",
+        "stat": "attack",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-072",
+    "cardName": "日向・孤爪",
+    "school": "音駒",
+    "rarity": "N",
+    "role": "MB, S",
+    "timing": "登場",
+    "originalText": "登場此卡時，將此卡的卡片名稱變更為「日向 翔陽」或「孤爪 研磨」。（登場此卡時所選擇的卡片名稱，將有效至該回合結束。此卡在計算場上角色數量時，視為1人）",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "target": "self",
+        "description": "將此卡的卡片名稱變更為「日向 翔陽」或「孤爪 研磨」（有效至該回合結束）。",
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-023",
+    "cardName": "夜久 衛輔",
+    "school": "音駒",
+    "rarity": "S",
+    "role": "LI",
+    "timing": "-",
+    "originalText": "在此接球角色卡之上，登場「夜久 衛輔」以外的音駒角色卡時，可將此卡丟棄。該角色的接球點數+2。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "stack_on_self"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "triggering_character",
+        "stat": "receive",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-023",
+    "cardName": "夜久 衛輔",
+    "school": "音駒",
+    "rarity": "SP",
+    "role": "LI",
+    "timing": "-",
+    "originalText": "在此接球角色卡之上，登場「夜久 衛輔」以外的音駒角色卡時，可將此卡丟棄。該角色的接球點數+2。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "stack_on_self"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "Discard this card"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "triggering_character",
+        "stat": "receive",
+        "value": 2,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-025",
+    "cardName": "灰羽 列夫",
+    "school": "音駒",
+    "rarity": "S",
+    "role": "MB",
+    "timing": "登場, 攻擊",
+    "originalText": "支付2點Guts即可使用以下2種效果。▶若此角色是因「孤爪 研磨」的技能登場，此角色的攻擊點數+2。▶下一個對手回合中，每當對手的中央攔網手登場時，該角色的攔網點數-3。",
+    "trigger": {
+      "timing": "on_play, attack",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "guts",
+      "amount": 2,
+      "description": "支付2點Guts"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "self",
+        "stat": "attack",
+        "value": 2,
+        "condition": "stack_on:孤爪 研磨"
+      },
+      {
+        "type": "special",
+        "description": "下一個對手回合中，每當對手的中央攔網手登場時，該角色的攔網點數-3。"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-028",
+    "cardName": "山本 猛虎",
+    "school": "音駒",
+    "rarity": "N",
+    "role": "WS",
+    "timing": "-",
+    "originalText": "在此攻擊角色卡之上，「灰羽 列夫」登場時，可從自己手牌丟棄1張音駒卡片。該角色的攻擊點數+1。",
+    "trigger": {
+      "timing": "on_play",
+      "condition": "stack_on:灰羽 列夫"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "音駒卡片"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "character:灰羽 列夫",
+        "stat": "attack",
+        "value": 1,
+        "condition": ""
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-031",
+    "cardName": "芝山 優生",
+    "school": "音駒",
+    "rarity": "N",
+    "role": "LI",
+    "timing": "接球, 手牌",
+    "originalText": "從手牌丟棄此卡：自己的1名音駒角色的接球點數+2。",
+    "trigger": {
+      "timing": "receive",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "discard",
+      "amount": 1,
+      "description": "此卡"
+    },
+    "effects": [
+      {
+        "type": "stat_boost",
+        "target": "ally",
+        "stat": "receive",
+        "value": 2,
+        "condition": "school_is:音駒"
+      }
+    ],
+    "parsed": true
+  },
+  {
+    "cardId": "HV-P01-032",
+    "cardName": "手白 球彥",
+    "school": "音駒",
+    "rarity": "R",
+    "role": "S",
+    "timing": "登場, 發球",
+    "originalText": "下一個對手回合中，對手的接球角色和托球角色的技能無效化。",
+    "trigger": {
+      "timing": "on_play,serve",
+      "condition": "none"
+    },
+    "cost": {
+      "type": "none",
+      "amount": 0,
+      "description": ""
+    },
+    "effects": [
+      {
+        "type": "special",
+        "target": "opponent_characters",
+        "stat": "skill_nullification",
+        "value": 1,
+        "condition": "target_roles:receive,toss;duration:next_opponent_turn"
+      }
+    ],
+    "parsed": true
+  }
+]
