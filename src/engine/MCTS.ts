@@ -4,8 +4,7 @@
  */
 
 import { EngineGameState, cloneGameState } from "./GameState";
-import { GameAction, Player, ActionResult } from "./Actions";
-import { GameEngine } from "./GameEngine";
+import { GameAction, Player } from "./Actions";
 import { RuleValidator } from "./RuleValidator";
 import { ActionExecutor } from "./ActionExecutor";
 
@@ -133,10 +132,8 @@ export class MCTSNode {
 export class MCTS {
   private root: MCTSNode | null = null;
   private logger: MCTSLogger;
-  private player: Player; // The AI player ("me" or "opponent")
 
-  constructor(player: Player, logLevel: MCTSLogLevel = MCTSLogLevel.DETAILED) {
-    this.player = player;
+  constructor(logLevel: MCTSLogLevel = MCTSLogLevel.DETAILED) {
     this.logger = new MCTSLogger(logLevel);
   }
 

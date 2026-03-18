@@ -100,12 +100,8 @@ export class AIBattleService {
 
     // 創建 AI
     const logLevel = config.logLevel ?? MCTSLogLevel.NONE;
-    this.meAI = new MCTSAI("me", config.meSimulations, logLevel);
-    this.opponentAI = new MCTSAI(
-      "opponent",
-      config.opponentSimulations,
-      logLevel
-    );
+    this.meAI = new MCTSAI(config.meSimulations, logLevel);
+    this.opponentAI = new MCTSAI(config.opponentSimulations, logLevel);
   }
 
   /**

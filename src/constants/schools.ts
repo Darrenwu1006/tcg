@@ -6,7 +6,7 @@
 /**
  * 學校名稱類型（中文）
  */
-export type SchoolNameZh = "青葉城西" | "烏野" | "音駒" | "梟谷" | "混合學校";
+export type SchoolNameZh = "青葉城西" | "烏野" | "音駒" | "梟谷" | "混合學校" | "稲荷崎" | "白鳥沢" | "伊達工業";
 
 /**
  * 學校 CSS Class 類型
@@ -16,7 +16,10 @@ export type SchoolClass =
   | "karasuno"
   | "nekoma"
   | "fukurodani"
-  | "mixed";
+  | "mixed"
+  | "inarizaki"
+  | "shiratorizawa"
+  | "datekou";
 
 /**
  * 學校名稱（中文）到 CSS Class 的映射表
@@ -37,6 +40,9 @@ export const SCHOOL_CLASS_MAP: Record<SchoolNameZh, SchoolClass> = {
   音駒: "nekoma",
   梟谷: "fukurodani",
   混合學校: "mixed",
+  稲荷崎: "inarizaki",
+  白鳥沢: "shiratorizawa",
+  伊達工業: "datekou",
 } as const;
 
 /**
@@ -49,6 +55,9 @@ export const SCHOOL_NAME_MAP: Record<SchoolClass, SchoolNameZh> = {
   nekoma: "音駒",
   fukurodani: "梟谷",
   mixed: "混合學校",
+  inarizaki: "稲荷崎",
+  shiratorizawa: "白鳥沢",
+  datekou: "伊達工業",
 } as const;
 
 /**
@@ -68,6 +77,9 @@ export const SUPPORTED_SCHOOLS: readonly SchoolNameZh[] = [
   "音駒",
   "梟谷",
   "混合學校",
+  "稲荷崎",
+  "白鳥沢",
+  "伊達工業",
 ] as const;
 
 /**
@@ -80,6 +92,9 @@ export const SUPPORTED_SCHOOL_CLASSES: readonly SchoolClass[] = [
   "nekoma",
   "fukurodani",
   "mixed",
+  "inarizaki",
+  "shiratorizawa",
+  "datekou",
 ] as const;
 
 /**

@@ -543,22 +543,6 @@ export class ActionExecutor {
   }
 
   /**
-   * 幫助方法：清空場地
-   */
-  private static clearField(state: EngineGameState, player: Player): void {
-    const playerState = getPlayerState(state, player);
-
-    // 將場地上的卡片移到棄牌區
-    while (playerState.field.length > 0) {
-      const card = playerState.field.pop();
-      if (card) {
-        card.position = undefined;
-        playerState.drop.push(card);
-      }
-    }
-  }
-
-  /**
    * 執行角色技能
    */
   private static executeActivateSkill(

@@ -4,7 +4,7 @@
  */
 
 import { EngineGameState } from "./GameState";
-import { GameAction, Player } from "./Actions";
+import { GameAction } from "./Actions";
 import { MCTS, MCTSLogLevel } from "./MCTS";
 
 export class MCTSAI {
@@ -12,11 +12,10 @@ export class MCTSAI {
   private simulations: number;
 
   constructor(
-    player: Player,
     simulations: number = 1000,
     logLevel: MCTSLogLevel = MCTSLogLevel.DETAILED
   ) {
-    this.mcts = new MCTS(player, logLevel);
+    this.mcts = new MCTS(logLevel);
     this.simulations = simulations;
   }
 

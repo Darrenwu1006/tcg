@@ -89,7 +89,6 @@ export function payGutsCost(
 
   // 簡化版：每 2 Guts 需要移除一張卡
   // 實際遊戲中 Guts 應該是累積的，但這裡簡化處理
-  const cardsNeeded = Math.ceil(amount / 2);
   const playerState = getPlayerState(state, player);
 
   // 檢查是否有足夠的場上卡片
@@ -110,8 +109,7 @@ export function payGutsCost(
 export function payDiscardCost(
   state: EngineGameState,
   player: Player,
-  amount: number,
-  condition?: string
+  amount: number
 ): Card[] {
   if (amount <= 0) return [];
 
@@ -161,7 +159,7 @@ export function payCost(
   if (costTypes.includes("discard")) {
     const playerState = getPlayerState(state, player);
     if (playerState.hand.length >= amount) {
-      payDiscardCost(state, player, amount, cost.description);
+      payDiscardCost(state, player, amount);
       return true;
     }
   }

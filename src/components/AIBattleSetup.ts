@@ -80,6 +80,12 @@ const DECK_OPTIONS: DeckOption[] = [
     school: "混合學校",
     path: "src/assets/decks/混合學校/垃圾場.csv",
   },
+  {
+    id: "inarizaki-six",
+    name: "六名軸",
+    school: "稲荷崎",
+    path: "src/assets/decks/稲荷崎/稲荷崎 - 六名.csv",
+  },
 ];
 
 const SIMULATION_OPTIONS = [50, 100, 200, 500, 1000];

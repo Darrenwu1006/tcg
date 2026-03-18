@@ -930,6 +930,47 @@ body {
   color: #fff;
 }
 
+/* 稲荷崎 - 棗紅/黑色系 */
+.card.inarizaki.character .card-header {
+  background: #800000; /* Maroon */
+  color: #e0e0e0; /* 淺灰 */
+}
+
+.card.inarizaki.event .card-header {
+  background: #4d0000; /* Dark Maroon */
+  color: #e0e0e0; /* 淺灰 */
+}
+
+.card.inarizaki .card-header .card-name {
+  color: #e0e0e0; /* 淺灰 */
+}
+
+/* 白鳥沢 - 紫色系 */
+.card.shiratorizawa.character .card-header {
+  background: #8a2be2; /* BlueViolet */
+  color: #e0e0e0; /* 淺灰 */
+}
+
+.card.shiratorizawa.event .card-header {
+  background: #4b0082; /* Indigo */
+  color: #e0e0e0; /* 淺灰 */
+}
+
+.card.shiratorizawa .card-header .card-name {
+  color: #e0e0e0; /* 淺灰 */
+}
+
+/* 伊達工業 - 藍綠色系 */
+.card.datekou.character .card-header {
+  background: #2e8b57; /* SeaGreen */
+  color: #fff;
+}
+
+.card.datekou.event .card-header {
+  background: #006400; /* DarkGreen */
+  color: #fff;
+}
+
 .card-name {
   font-weight: bold;
   font-size: 10px;
@@ -1493,6 +1534,35 @@ body {
   /* 降低彩度、飽和度和曝光 */
   filter: saturate(0.1) brightness(0.7) contrast(1);
 }
+
+/* 稲荷崎 - 棗紅色 */
+.card.back.inarizaki .card-back-design {
+  background-color: #800000; /* Fallback color */
+  background-image: url("/src/assets/decks/稲荷崎/稲荷崎.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: saturate(1) brightness(0.7) contrast(1);
+}
+
+/* 白鳥沢 - 紫色 */
+.card.back.shiratorizawa .card-back-design {
+  background-color: #8a2be2; /* Fallback color */
+  background-image: url("/src/assets/decks/白鳥沢/白鳥沢.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 伊達工業 - 綠色 */
+.card.back.datekou .card-back-design {
+  background-color: #2e8b57; /* Fallback color */
+  background-image: url("/src/assets/decks/伊達工業/伊達工業.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 
 /* Card Back - GB 遊戲卡帶風格 🎮 */
 .card.back {
