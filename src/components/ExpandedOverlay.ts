@@ -17,6 +17,7 @@ export class ExpandedOverlay {
     isInteractive: boolean
   ) => void;
   private moveCardCallback: (card: Card, targetPos: string) => void;
+  private onCloseCallback?: () => void;
 
   constructor(
     store: Store<AppState>,
@@ -26,12 +27,14 @@ export class ExpandedOverlay {
       card: Card,
       isInteractive: boolean
     ) => void,
-    moveCardCallback: (card: Card, targetPos: string) => void
+    moveCardCallback: (card: Card, targetPos: string) => void,
+    onCloseCallback?: () => void
   ) {
     this.store = store;
     this.playerType = playerType;
     this.attachCardEventsCallback = attachCardEventsCallback;
     this.moveCardCallback = moveCardCallback;
+    this.onCloseCallback = onCloseCallback;
   }
 
   /**
@@ -307,6 +310,9 @@ export class ExpandedOverlay {
     if (this.overlay) {
       this.overlay.style.display = "none";
       this.overlay.innerHTML = "";
+    }
+    if (this.onCloseCallback) {
+      this.onCloseCallback();
     }
   }
 }

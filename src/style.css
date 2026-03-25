@@ -1038,59 +1038,103 @@ body {
   -webkit-font-smoothing: none;
 }
 
-.stats-panel h2 {
-  /* Retro 主標題 */
-  font-family: var(--font-retro-game);
-  font-size: 10px;
-  margin-top: 0;
-  border-bottom: var(--retro-border-style);
-  padding-bottom: 8px;
-  padding-top: 8px;
-  margin-bottom: 0;
-  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.1);
+/* Removed h2 styling as the title is removed */
+
+.stats-section {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.8), 2px 2px 0px rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
 }
 
 .stats-section h3 {
   font-family: var(--font-retro-pixel);
   font-size: 14px;
   color: var(--retro-border);
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
   text-transform: uppercase;
   letter-spacing: 1px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  padding-bottom: 6px;
+}
+
+.me-stats h3 {
+  color: #ffffff;
+}
+
+.op-stats h3 {
+  color: #ff3366;
+}
+
+.stat-group {
+  margin-bottom: 12px;
+}
+
+.stat-group-title {
+  font-family: var(--font-retro-pixel);
+  font-size: 10px;
+  background: rgba(44, 44, 44, 0.8);
+  color: #fff;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  border-radius: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 1px;
+}
+
+.stat-group-total {
+  font-family: var(--font-retro-game);
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
 }
 
 .stat-placeholder {
   background: var(--retro-input-bg);
   border: var(--retro-border-style);
-  padding: 8px;
-  margin-bottom: 8px;
+  padding: 4px 8px;
+  margin-bottom: 6px;
   border-radius: 4px;
   box-shadow: var(--retro-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .stat-placeholder label {
-  display: block;
-  color: #888;
+  color: #000;
   font-size: 12px;
-  margin-bottom: 5px;
-  text-align: center;
+  margin: 0;
+  text-align: left;
+  flex: 1;
+  font-weight: bold;
 }
 
 .stat-placeholder .value {
   font-family: var(--font-retro-game);
-  font-size: 24px;
+  font-size: 16px;
   font-weight: bold;
-  color: #00ff88;
-  min-width: 50px;
+  color: #000;
+  min-width: 30px;
   text-align: center;
-  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  text-shadow: none;
 }
+
+/* 特定數值顏色 */
+[id$="-receive-val"] { color: #17609c !important; } /* 藍色 */
+[id$="-toss-val"] { color: #275529 !important; } /* 綠色 */
+[id$="-attack-val"] { color: #852a23 !important; } /* 紅色 */
+[id$="-serve-val"] { color: #7c7321 !important; } /* 黃色 */
+[id$="-block-val"] { color: #484848 !important; } /* 灰色 */
 
 .stat-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .stat-btn {
@@ -1098,22 +1142,22 @@ body {
   background: var(--retro-border);
   border: var(--retro-border-style);
   color: var(--retro-highlight-text);
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 14px;
   font-family: var(--font-retro-pixel);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--retro-shadow);
+  box-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.8);
   transition: all 0.1s ease;
 }
 
 /* 按鈕下沉效果 */
 .stat-btn:active {
-  transform: translate(2px, 2px);
+  transform: translate(0.5px, 0.5px);
   box-shadow: none;
 }
 
@@ -1725,6 +1769,19 @@ body {
   /* 字體抗鋸齒 */
   font-smooth: never;
   -webkit-font-smoothing: none;
+  
+  /* Hover effect adjustments */
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transform-origin: center center;
+}
+
+.stack-count:hover {
+  transform: scale(1.3);
+  background-color: #00ff88; /* Highlight color */
+  color: #000000;
+  border-color: #000000;
+  /* Adjust shadow to maintain the retro feel even when scaled up */
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.9);
 }
 
 /* Expanded overlay 中的 stack count - 使用相同樣式但可能有不同 z-index */

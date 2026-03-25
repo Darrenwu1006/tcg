@@ -5,6 +5,8 @@
  * 設計與現有 SetupOverlay 風格一致
  */
 
+import { CardDatabase } from "../data/CardDatabase";
+
 export interface DeckOption {
   id: string;
   name: string;
@@ -23,70 +25,6 @@ export interface AIBattleConfig {
 export interface AIBattleSetupCallbacks {
   onConfigChange: (config: AIBattleConfig) => void;
 }
-
-// 預定義的牌組選項
-const DECK_OPTIONS: DeckOption[] = [
-  {
-    id: "seijoh-fast",
-    name: "快攻軸",
-    school: "青葉城西",
-    path: "src/assets/decks/青葉城西/快攻軸.csv",
-  },
-  {
-    id: "seijoh-mid",
-    name: "中速軸",
-    school: "青葉城西",
-    path: "src/assets/decks/青葉城西/中速軸.csv",
-  },
-  {
-    id: "karasuno-block",
-    name: "山月攔網軸",
-    school: "烏野",
-    path: "src/assets/decks/烏野/山月攔網軸.csv",
-  },
-  {
-    id: "karasuno-attack",
-    name: "日影攻擊軸",
-    school: "烏野",
-    path: "src/assets/decks/烏野/日影攻擊軸.csv",
-  },
-  {
-    id: "karasuno-starter",
-    name: "預組",
-    school: "烏野",
-    path: "src/assets/decks/烏野/預組.csv",
-  },
-  {
-    id: "nekoma-starter",
-    name: "預組",
-    school: "音駒",
-    path: "src/assets/decks/音駒/預組.csv",
-  },
-  {
-    id: "fukurodani-burst",
-    name: "高爆發軸",
-    school: "梟谷",
-    path: "src/assets/decks/梟谷/高爆發軸.csv",
-  },
-  {
-    id: "fukurodani-burst2",
-    name: "爆發軸二",
-    school: "梟谷",
-    path: "src/assets/decks/梟谷/爆發軸二.csv",
-  },
-  {
-    id: "mixed-dump",
-    name: "垃圾場",
-    school: "混合學校",
-    path: "src/assets/decks/混合學校/垃圾場.csv",
-  },
-  {
-    id: "inarizaki-six",
-    name: "六名軸",
-    school: "稲荷崎",
-    path: "src/assets/decks/稲荷崎/稲荷崎 - 六名.csv",
-  },
-];
 
 const SIMULATION_OPTIONS = [50, 100, 200, 500, 1000];
 
@@ -109,8 +47,8 @@ export class AIBattleSetup {
 
     // 預設配置
     this.config = {
-      meDeckPath: DECK_OPTIONS[0].path,
-      opponentDeckPath: DECK_OPTIONS[6].path, // 梟谷高爆發軸
+      meDeckPath: "",
+      opponentDeckPath: "", 
       meSimulations: 100,
       opponentSimulations: 100,
       firstPlayer: "me",
@@ -197,11 +135,22 @@ export class AIBattleSetup {
     this.setupEventListeners();
   }
 
-  private populateSelects(): void {
-    // 牌組選擇
-    const deckOptionsBySchool = this.groupBySchool(DECK_OPTIONS);
+  private async populateSelects(): Promise<void> {
+    const db = CardDatabase.getInstance();
+    await db.loadAll();
+    const loadedDecks = await db.getAvailableDecks();
 
-    [this.meDeckSelect, this.opponentDeckSelect].forEach((select, idx) => {
+    const deckOptions: DeckOption[] = loadedDecks.map((d) => ({
+      id: d.path,
+      name: d.name,
+      school: d.school,
+      path: d.path
+    }));
+    
+    // 牌組選擇
+    const deckOptionsBySchool = this.groupBySchool(deckOptions);
+
+    [this.meDeckSelect, this.opponentDeckSelect].forEach((select) => {
       select.innerHTML = "";
 
       for (const [school, decks] of Object.entries(deckOptionsBySchool)) {
@@ -217,11 +166,19 @@ export class AIBattleSetup {
 
         select.appendChild(optgroup);
       }
-
-      // 設置預設值
-      select.value =
-        idx === 0 ? this.config.meDeckPath : this.config.opponentDeckPath;
     });
+
+    if (deckOptions.length > 0) {
+      if (!this.config.meDeckPath) {
+        this.config.meDeckPath = deckOptions[0].path;
+      }
+      if (!this.config.opponentDeckPath) {
+        this.config.opponentDeckPath = deckOptions.length > 1 ? deckOptions[1].path : deckOptions[0].path;
+      }
+      
+      this.meDeckSelect.value = this.config.meDeckPath;
+      this.opponentDeckSelect.value = this.config.opponentDeckPath;
+    }
 
     // 模擬次數選擇
     [this.meSimSelect, this.opponentSimSelect].forEach((select, idx) => {

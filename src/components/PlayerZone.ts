@@ -29,7 +29,8 @@ export class PlayerZone {
       store,
       playerType,
       this.attachCardEvents.bind(this),
-      this.moveCard.bind(this)
+      this.moveCard.bind(this),
+      () => { this.expandedZone = null; }
     );
   }
 
@@ -281,6 +282,13 @@ export class PlayerZone {
         const countBadge = document.createElement("div");
         countBadge.className = "stack-count";
         countBadge.textContent = drop.length.toString();
+        countBadge.style.cursor = "pointer";
+        countBadge.addEventListener("click", (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.expandedZone = "drop";
+          this.expandedOverlay.render("drop");
+        });
         dropSlot.appendChild(countBadge);
       }
     } else {
@@ -593,6 +601,13 @@ export class PlayerZone {
             const countBadge = document.createElement("div");
             countBadge.className = "stack-count";
             countBadge.textContent = cardsInPos.length.toString();
+            countBadge.style.cursor = "pointer";
+            countBadge.addEventListener("click", (e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              this.expandedZone = pos;
+              this.expandedOverlay.render(pos);
+            });
             slot.appendChild(countBadge);
           }
         } else {
@@ -772,34 +787,9 @@ export class PlayerZone {
             // Or if playingCard is set but not selected (e.g. right click?), usually playingCard == selectedCards[0]
           }
         }
-
-        // Expansion - Allow for BOTH Owner and Enemy
-        // Open if:
-        // 1. No cards selected (pure click on empty slot)
-        // 2. OR Cards selected but they are already HERE (clicked on stack to open it)
-        const isStackOpenAction =
-          !playingCard ||
-          (selectedCards.length > 0 &&
-            selectedCards.every((sc) => sc.position === pos));
-
-        if (isStackOpenAction && pos) {
-          if (
-            [
-              "serve",
-              "event",
-              "receive",
-              "toss",
-              "attack",
-              "block-left",
-              "block-center",
-              "block-right",
-              "drop",
-            ].includes(pos)
-          ) {
-            this.expandedZone = pos;
-            this.expandedOverlay.render(pos);
-          }
-        }
+        
+        // We removed the automatic stack expansion here.
+        // Stack expansion is now handled by clicking the .stack-count badge specifically.
       });
     });
 
@@ -987,7 +977,6 @@ export class PlayerZone {
       logMsg = `移動了 ${movedCount} 張卡片 到 ${targetPos}`;
     }
 
-    const currentStats = this.calculateStats(newField);
 
     this.store.setState({
       [this.playerType]: {
@@ -996,7 +985,6 @@ export class PlayerZone {
         field: newField,
         deck: newDeck,
         drop: newDrop,
-        currentStats: currentStats,
       },
       playingCard: null,
       selectedCards: [], // Clear selection
@@ -1006,25 +994,6 @@ export class PlayerZone {
     } as any);
   }
 
-  private calculateStats(field: Card[]) {
-    const stats = { serve: 0, block: 0, receive: 0, toss: 0, attack: 0 };
-
-    field.forEach((card) => {
-      if (!card.stats || !card.position) {
-        return;
-      }
-
-      // Map position to stat
-      if (card.position === "serve") stats.serve += card.stats.serve || 0;
-      if (card.position.startsWith("block"))
-        stats.block += card.stats.block || 0;
-      if (card.position === "receive") stats.receive += card.stats.receive || 0;
-      if (card.position === "toss") stats.toss += card.stats.toss || 0;
-      if (card.position === "attack") stats.attack += card.stats.attack || 0;
-    });
-
-    return stats;
-  }
 
   /**
    * Clean up resources when PlayerZone is destroyed

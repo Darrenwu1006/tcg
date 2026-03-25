@@ -211,7 +211,8 @@ export class CardDatabase {
   // New method to get available decks using import.meta.glob
   async getAvailableDecks() {
     const deckFiles = import.meta.glob("/src/assets/decks/**/*.csv", {
-      as: "raw",
+      query: "?raw",
+      import: "default",
     });
     const decks = [];
 
@@ -223,7 +224,7 @@ export class CardDatabase {
 
       // Load the deck content to check card count
       try {
-        const content = await deckFiles[path]();
+        const content = (await deckFiles[path]()) as string;
         const cardCount = this.getTotalCardCount(content);
 
         // Only include decks with exactly 40 cards
