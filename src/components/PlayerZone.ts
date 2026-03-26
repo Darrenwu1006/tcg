@@ -275,7 +275,8 @@ export class PlayerZone {
     }
 
     // 2. Update Count
-    if (drop.length > 1) {
+    // 2. Update Count
+    if (drop.length > 0) {
       if (existingCountEl) {
         existingCountEl.textContent = drop.length.toString();
       } else {
@@ -594,13 +595,14 @@ export class PlayerZone {
         }
 
         // 2. Update Stack Count
-        if (cardsInPos.length > 1) {
+        if (cardsInPos.length > 0) {
+          const gutCount = cardsInPos.length - 1;
           if (existingCountEl) {
-            existingCountEl.textContent = cardsInPos.length.toString();
+            existingCountEl.textContent = gutCount.toString();
           } else {
             const countBadge = document.createElement("div");
             countBadge.className = "stack-count";
-            countBadge.textContent = cardsInPos.length.toString();
+            countBadge.textContent = gutCount.toString();
             countBadge.style.cursor = "pointer";
             countBadge.addEventListener("click", (e) => {
               e.stopPropagation();
