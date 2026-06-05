@@ -50,6 +50,7 @@ typings/
 
 # Optional npm cache directory
 .npm
+.npm-cache/
 
 # Optional eslint cache
 .eslintcache
@@ -119,6 +120,15 @@ dist
 
 # Mac
 .DS_Store
+
+# Local tooling
+.venv/
+.codex/
+.agents/
+
+# Local/private project documentation
+docs/
+doc/
 
 # Vite
 dist/

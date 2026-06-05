@@ -9,6 +9,7 @@ import { Card, AppState } from "../state/Store";
 import { GameEngine } from "../engine/GameEngine";
 import { MCTSAI } from "../engine/MCTSAI";
 import { MCTSLogLevel } from "../engine/MCTS";
+import { HeuristicAI } from "../engine/HeuristicAI";
 import { GameAction, Player } from "../engine/Actions";
 import { EngineGameState } from "../engine/GameState";
 import {
@@ -42,6 +43,8 @@ export interface BattleStep {
   engineLogs?: string[];
 }
 
+export type AIMode = "mcts" | "heuristic";
+
 /**
  * 對戰配置
  */
@@ -54,15 +57,19 @@ export interface BattleConfig {
   meSchool?: string;
   opponentSchool?: string;
   logLevel?: MCTSLogLevel;
+  aiMode?: AIMode;
+  heuristicRandomness?: number;
 }
+
+type BattleAI = MCTSAI | HeuristicAI;
 
 /**
  * AI 對戰服務
  */
 export class AIBattleService {
   private engine: GameEngine | null = null;
-  private meAI: MCTSAI | null = null;
-  private opponentAI: MCTSAI | null = null;
+  private meAI: BattleAI | null = null;
+  private opponentAI: BattleAI | null = null;
   private stepCount: number = 0;
   private config: BattleConfig | null = null;
   private lastWinRate: number = 0.5;
@@ -98,10 +105,18 @@ export class AIBattleService {
       opponentSchool
     );
 
-    // 創建 AI
+    // 創建 AI。Default keeps current behavior; heuristic mode is a baseline
+    // hook for testing more human-readable rule-based choices.
     const logLevel = config.logLevel ?? MCTSLogLevel.NONE;
-    this.meAI = new MCTSAI(config.meSimulations, logLevel);
-    this.opponentAI = new MCTSAI(config.opponentSimulations, logLevel);
+    const aiMode = config.aiMode ?? "mcts";
+    if (aiMode === "heuristic") {
+      const randomness = config.heuristicRandomness ?? 0.1;
+      this.meAI = new HeuristicAI("me", randomness);
+      this.opponentAI = new HeuristicAI("opponent", randomness);
+    } else {
+      this.meAI = new MCTSAI(config.meSimulations, logLevel);
+      this.opponentAI = new MCTSAI(config.opponentSimulations, logLevel);
+    }
   }
 
   /**
@@ -130,7 +145,7 @@ export class AIBattleService {
     };
 
     // 獲取 AI 決策和勝率
-    const result = ai.selectActionWithStats(state as EngineGameState);
+    const result = this.selectActionWithStats(ai, state as EngineGameState);
     const action = result.action;
     const winRate =
       currentPlayer === "me" ? result.winRate : 1 - result.winRate;
@@ -175,6 +190,20 @@ export class AIBattleService {
       winner: this.engine.getWinner(),
       opDpChange,
       engineLogs,
+    };
+  }
+
+  private selectActionWithStats(
+    ai: BattleAI,
+    state: EngineGameState
+  ): { action: GameAction; winRate: number } {
+    if (ai instanceof MCTSAI) {
+      return ai.selectActionWithStats(state);
+    }
+
+    return {
+      action: ai.selectAction(state),
+      winRate: 0.5,
     };
   }
 
