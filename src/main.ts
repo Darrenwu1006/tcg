@@ -4,11 +4,14 @@ import { GameBoard } from "./components/GameBoard";
 import { SetupOverlay } from "./components/SetupOverlay";
 import { CardDetailPanel } from "./components/CardDetailPanel";
 import { StatsPanel } from "./components/StatsPanel";
+import { HumanActionPanel } from "./components/HumanActionPanel";
+import { HumanVsAIController } from "./services/HumanVsAIController";
 
 // Initialize Store
 const initialState: AppState = {
   viewPerspective: "me",
   gamePhase: "setup",
+  playMode: "manual",
   firstPlayer: null,
   selectedCard: null,
   playingCard: null,
@@ -45,12 +48,20 @@ if (app) {
   const statsPanel = new StatsPanel(store);
   const gameBoard = new GameBoard(store);
   const detailPanel = new CardDetailPanel(store);
-  const setupOverlay = new SetupOverlay(store);
+  const humanVsAIController = new HumanVsAIController(store);
+  const humanActionPanel = new HumanActionPanel(store, humanVsAIController);
+  const setupOverlay = new SetupOverlay(store, {
+    onStartVsComputer: (config) => humanVsAIController.start(config),
+  });
 
   // Append columns
   app.appendChild(statsPanel.getElement());
   app.appendChild(gameBoard.getElement());
-  app.appendChild(detailPanel.getElement());
+  const rightColumn = document.createElement("div");
+  rightColumn.className = "right-tool-column";
+  rightColumn.appendChild(humanActionPanel.getElement());
+  rightColumn.appendChild(detailPanel.getElement());
+  app.appendChild(rightColumn);
 
   // Overlay is absolute, so order doesn't strictly matter for layout flow,
   // but usually last to be on top (z-index handles it too)

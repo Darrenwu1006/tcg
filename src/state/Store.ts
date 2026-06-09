@@ -54,6 +54,7 @@ export interface PlayerState {
 export interface AppState {
   viewPerspective: "me" | "opponent";
   gamePhase: "setup" | "playing";
+  playMode?: "manual" | "vsComputer";
 
   // Battle Flow State
   turnPlayer: "me" | "opponent";
@@ -89,6 +90,7 @@ export class Store<T extends AppState> {
       ...initialState,
       logs: [],
       selectedCards: [],
+      playMode: initialState.playMode ?? "manual",
       turnPlayer: "me", // Default, should be set by setup
       phase: "draw",
       battleState: {

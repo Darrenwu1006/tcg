@@ -533,6 +533,21 @@ body {
   box-shadow: none;
 }
 
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.45;
+  filter: grayscale(0.8);
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:disabled:hover,
+.btn[aria-disabled="true"]:hover {
+  background-color: var(--retro-input-bg);
+  color: var(--retro-border);
+}
+
 .draw-btn {
   width: 100%;
   background-color: #045045;
@@ -559,6 +574,10 @@ body {
 
 .back-btn {
   width: 100%;
+}
+
+.player-zone.formal-play .slot {
+  cursor: default;
 }
 
 .reset-btn {
@@ -1343,6 +1362,105 @@ body {
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
 
   position: relative;
+}
+
+.right-tool-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.human-action-panel {
+  background: var(--retro-bg);
+  border: 2px solid var(--retro-border);
+  box-shadow: var(--retro-shadow);
+  padding: 12px;
+  color: var(--retro-border);
+  font-family: var(--font-retro-pixel);
+}
+
+.human-action-panel.hidden {
+  display: none;
+}
+
+.human-action-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.human-turn-summary {
+  display: grid;
+  gap: 4px;
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: var(--retro-input-bg);
+  border: var(--retro-border-style);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.human-action-status,
+.human-action-empty,
+.human-selected-card {
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: var(--retro-border);
+  line-height: 1.45;
+}
+
+.human-selected-card {
+  padding: 6px 8px;
+  background-color: rgba(0, 255, 136, 0.12);
+  border-left: 4px solid #00ff88;
+}
+
+.human-action-content {
+  display: grid;
+  gap: 10px;
+}
+
+.human-action-group {
+  display: grid;
+  gap: 6px;
+}
+
+.human-action-group h3 {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.2;
+  color: rgba(44, 44, 44, 0.78);
+  border-bottom: 1px solid rgba(44, 44, 44, 0.35);
+  padding-bottom: 4px;
+}
+
+.human-action-list {
+  display: grid;
+  gap: 8px;
+}
+
+.human-action-btn {
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.35;
+  display: grid;
+  gap: 4px;
+  align-items: start;
+}
+
+.human-action-label {
+  display: block;
+}
+
+.human-action-meta {
+  display: block;
+  font-size: 10px;
+  opacity: 0.75;
 }
 
 /* 頂部彩色漸層條 */

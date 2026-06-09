@@ -6,7 +6,7 @@
  */
 
 import { EngineGameState, EnginePlayerState } from "../engine/GameState";
-import { GamePhase } from "../engine/Actions";
+import { GameAction, GamePhase } from "../engine/Actions";
 import { AppState, PlayerState, Card } from "../state/Store";
 
 /**
@@ -98,6 +98,79 @@ export function getPhaseDescription(phase: GamePhase): string {
     end: "結束",
   };
   return phaseMap[phase] || phase;
+}
+
+function findCardByInstanceId(
+  engineState: EngineGameState,
+  instanceId: string
+): Card | undefined {
+  const zones = [
+    engineState.me.hand,
+    engineState.me.field,
+    engineState.me.drop,
+    engineState.me.set,
+    engineState.me.deck,
+    engineState.opponent.hand,
+    engineState.opponent.field,
+    engineState.opponent.drop,
+    engineState.opponent.set,
+    engineState.opponent.deck,
+  ];
+
+  for (const zone of zones) {
+    const card = zone.find((candidate) => candidate.instanceId === instanceId);
+    if (card) return card;
+  }
+
+  return undefined;
+}
+
+export function describeGameAction(
+  action: GameAction,
+  engineState: EngineGameState
+): string {
+  switch (action.type) {
+    case "PLAY_SERVE": {
+      const card = findCardByInstanceId(engineState, action.cardInstanceId);
+      return `發球：${card?.name || "卡片"}`;
+    }
+    case "CHOOSE_DEFENSE":
+      return `選擇${action.choice === "block" ? "攔網" : "接球"}`;
+    case "PLAY_BLOCK": {
+      const names = action.cardInstanceIds.map(
+        (id) => findCardByInstanceId(engineState, id)?.name || "卡片"
+      );
+      return `攔網：${names.join(" + ")}`;
+    }
+    case "PLAY_RECEIVE": {
+      const card = findCardByInstanceId(engineState, action.cardInstanceId);
+      return `接球：${card?.name || "卡片"}`;
+    }
+    case "PLAY_TOSS": {
+      const card = findCardByInstanceId(engineState, action.cardInstanceId);
+      return `托球：${card?.name || "卡片"}`;
+    }
+    case "PLAY_ATTACK": {
+      const card = findCardByInstanceId(engineState, action.cardInstanceId);
+      return `攻擊：${card?.name || "卡片"}`;
+    }
+    case "ACTIVATE_SKILL": {
+      const card = findCardByInstanceId(engineState, action.cardInstanceId);
+      return `發動技能：${card?.name || "卡片"}`;
+    }
+    case "USE_EVENT": {
+      const card = findCardByInstanceId(engineState, action.cardInstanceId);
+      return `使用事件：${card?.name || "卡片"}`;
+    }
+    case "MULLIGAN":
+      return `調整手牌：${action.cardInstanceIds.length} 張`;
+    case "DECLARE_LOST":
+      return "宣告 Lost";
+    case "PASS":
+      return "Pass";
+    default:
+      return action satisfies never;
+  }
 }
 
 /**

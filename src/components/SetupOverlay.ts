@@ -1,16 +1,24 @@
 import { Store, AppState } from "../state/Store";
 import { CardDatabase } from "../data/CardDatabase";
+import { HumanVsAIConfig } from "../services/HumanVsAIController";
+
+interface SetupOverlayOptions {
+  onStartVsComputer?: (config: HumanVsAIConfig) => void;
+}
 
 export class SetupOverlay {
   private element: HTMLElement;
   private store: Store<AppState>;
+  private options: SetupOverlayOptions;
   private meDeckLoaded = false;
   private opDeckLoaded = false;
   private firstPlayerDecided = false;
   private availableDecks: any[] = [];
+  private playMode: "manual" | "vsComputer" = "manual";
 
-  constructor(store: Store<AppState>) {
+  constructor(store: Store<AppState>, options: SetupOverlayOptions = {}) {
     this.store = store;
+    this.options = options;
     this.element = document.createElement("div");
     this.element.className = "setup-overlay";
 
@@ -45,6 +53,21 @@ export class SetupOverlay {
           <h2 class="retro-title-zh">遊戲設定</h2>
         </div>
         
+        <div class="setup-section">
+          <h3 class="retro-subtitle-en">Mode</h3>
+          <h4 class="retro-subtitle-zh">對戰模式</h4>
+          <div class="mode-select">
+            <label>
+              <input type="radio" name="play-mode" value="manual" checked />
+              Manual Sandbox
+            </label>
+            <label>
+              <input type="radio" name="play-mode" value="vsComputer" />
+              Vs Computer
+            </label>
+          </div>
+        </div>
+
         <div class="setup-section">
           <div class="player-setup">
             <h3 class="retro-subtitle-en">Me (Player)</h3>
@@ -96,6 +119,15 @@ export class SetupOverlay {
     const opSelect = this.element.querySelector("#op-deck-select");
     const tossBtn = this.element.querySelector("#coin-toss-btn");
     const startBtn = this.element.querySelector("#start-game-btn");
+    const modeInputs =
+      this.element.querySelectorAll<HTMLInputElement>("input[name='play-mode']");
+
+    modeInputs.forEach((input) => {
+      input.addEventListener("change", () => {
+        this.playMode = input.value as "manual" | "vsComputer";
+        this.store.setState({ playMode: this.playMode }, false);
+      });
+    });
 
     meSelect?.addEventListener("change", (e) =>
       this.handleDeckSelection(e, "me")
@@ -262,6 +294,11 @@ export class SetupOverlay {
   }
 
   private startGame() {
+    if (this.playMode === "vsComputer" && this.options.onStartVsComputer) {
+      this.startVsComputerGame();
+      return;
+    }
+
     // 1. Shuffle Decks
     const state = this.store.getState();
     const meDeck = this.shuffle([...state.me.deck]);
@@ -280,6 +317,21 @@ export class SetupOverlay {
       gamePhase: "playing",
       me: { ...state.me, deck: meDeck, hand: meHand, set: meSet },
       opponent: { ...state.opponent, deck: opDeck, hand: opHand, set: opSet },
+    });
+
+    this.element.style.display = "none";
+  }
+
+  private startVsComputerGame() {
+    const state = this.store.getState();
+    const firstPlayer = state.firstPlayer || "me";
+
+    this.options.onStartVsComputer?.({
+      meDeck: [...state.me.deck],
+      opponentDeck: [...state.opponent.deck],
+      firstPlayer,
+      meSchool: state.me.school,
+      opponentSchool: state.opponent.school,
     });
 
     this.element.style.display = "none";

@@ -57,16 +57,27 @@ export class PlayerZone {
     const playerData = this.playerType === "me" ? state.me : state.opponent;
     const school =
       this.playerType === "me" ? state.me.school : state.opponent.school;
+    const isFormalPlay = state.playMode === "vsComputer";
 
-    this.updateSetArea(playerData.set, school, state.viewPerspective);
+    this.element.classList.toggle("formal-play", isFormalPlay);
+    this.updateManualControlState(isFormalPlay);
+
+    this.updateSetArea(
+      playerData.set,
+      school,
+      state.viewPerspective,
+      isFormalPlay
+    );
     this.updateDeckArea(playerData.deck, school);
     this.updateDropArea(playerData.drop, school);
 
     const setEl = this.element.querySelector(".set-area .count");
     const deckEl = this.element.querySelector(".deck-area .count");
+    const dropEl = this.element.querySelector(".drop-area .count");
 
     if (setEl) setEl.textContent = playerData.set.length.toString();
     if (deckEl) deckEl.textContent = playerData.deck.length.toString();
+    if (dropEl) dropEl.textContent = playerData.drop.length.toString();
 
     this.updateHand(playerData.hand);
     this.updateField(playerData.field);
@@ -75,7 +86,8 @@ export class PlayerZone {
   private updateSetArea(
     setCards: Card[],
     school: string,
-    viewPerspective: "me" | "opponent"
+    viewPerspective: "me" | "opponent",
+    isFormalPlay: boolean
   ) {
     const setArea = this.element.querySelector(".set-area");
     if (!setArea) return;
@@ -103,7 +115,8 @@ export class PlayerZone {
 
       if (existingCard) {
         // Card exists, check if interaction needs to be updated
-        const shouldBeInteractive = this.playerType === viewPerspective;
+        const shouldBeInteractive =
+          this.playerType === viewPerspective && !isFormalPlay;
         const hasClickListener = existingCard.style.cursor === "pointer";
 
         if (shouldBeInteractive !== hasClickListener) {
@@ -135,7 +148,7 @@ export class PlayerZone {
         cardEl.classList.add("set-card");
         cardEl.dataset.instanceId = card.instanceId;
 
-        if (this.playerType === viewPerspective) {
+        if (this.playerType === viewPerspective && !isFormalPlay) {
           cardEl.addEventListener("click", () => {
             if (confirm("Add this card to your hand?")) {
               this.moveSetCardToHand(card);
@@ -166,7 +179,11 @@ export class PlayerZone {
     const existingSurrenderBtn =
       setCardsContainer.querySelector<HTMLElement>(".surrender-btn");
 
-    if (setCards.length === 0 && this.playerType === viewPerspective) {
+    if (
+      setCards.length === 0 &&
+      this.playerType === viewPerspective &&
+      !isFormalPlay
+    ) {
       // Show surrender button
       if (!existingSurrenderBtn) {
         const surrenderBtn = document.createElement("button");
@@ -297,8 +314,23 @@ export class PlayerZone {
     }
   }
 
+  private updateManualControlState(isFormalPlay: boolean) {
+    const manualButtons = this.element.querySelectorAll<HTMLButtonElement>(
+      ".back-btn, .draw-btn, .shuffle-btn"
+    );
+    manualButtons.forEach((button) => {
+      button.disabled = isFormalPlay;
+      button.setAttribute(
+        "aria-disabled",
+        isFormalPlay ? "true" : "false"
+      );
+    });
+  }
+
   private moveSetCardToHand(card: any) {
     const state = this.store.getState();
+    if (state.playMode === "vsComputer") return;
+
     const playerData = state[this.playerType];
     const newSet = playerData.set.filter(
       (c) => c.instanceId !== card.instanceId
@@ -311,6 +343,8 @@ export class PlayerZone {
   }
 
   private handleSurrender() {
+    if (this.store.getState().playMode === "vsComputer") return;
+
     // Show confirmation dialog
     const confirmSurrender = confirm("確定投降嗎？");
 
@@ -340,6 +374,8 @@ export class PlayerZone {
     const drawBtn = this.element.querySelector(".draw-btn");
     drawBtn?.addEventListener("click", () => {
       const state = this.store.getState();
+      if (state.playMode === "vsComputer") return;
+
       // Only allow draw if viewing this player's zone
       if (this.playerType !== state.viewPerspective) return;
 
@@ -366,6 +402,8 @@ export class PlayerZone {
     const shuffleBtn = this.element.querySelector(".shuffle-btn");
     shuffleBtn?.addEventListener("click", () => {
       const state = this.store.getState();
+      if (state.playMode === "vsComputer") return;
+
       if (state.viewPerspective === this.playerType) {
         this.store.shuffleDeck(this.playerType);
       } else {
@@ -696,7 +734,7 @@ export class PlayerZone {
         </div>
       </div>
       <div class="drop-area">
-          <h2>Drop</h2>
+          <h2>Drop <span class="count">0</span></h2>
           <div class="slot drop-slot" data-pos="drop">Drop</div>
         </div>
       </div>
@@ -713,6 +751,7 @@ export class PlayerZone {
 
     backBtn?.addEventListener("click", () => {
       const state = this.store.getState();
+      if (state.playMode === "vsComputer") return;
       if (this.playerType !== state.viewPerspective) return;
       this.store.undo();
     });
@@ -726,6 +765,7 @@ export class PlayerZone {
       if ((e.target as HTMLElement).closest(".card")) return;
 
       const state = this.store.getState();
+      if (state.playMode === "vsComputer") return;
       if (this.playerType !== state.viewPerspective) return;
 
       // Check for selected cards
@@ -742,6 +782,8 @@ export class PlayerZone {
     slots.forEach((slot) => {
       slot.addEventListener("click", () => {
         const state = this.store.getState();
+        if (state.playMode === "vsComputer") return;
+
         const pos = slot.getAttribute("data-pos");
         const playingCard = state.playingCard;
         const selectedCards = state.selectedCards || [];
@@ -918,6 +960,8 @@ export class PlayerZone {
 
   private moveCard(card: any, targetPos: string) {
     const state = this.store.getState();
+    if (state.playMode === "vsComputer") return;
+
     const playerData = state[this.playerType];
 
     // Determine cards to move
